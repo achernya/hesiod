@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.23 1998-09-02 17:30:05 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.24 1999-01-25 19:17:17 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -305,7 +305,7 @@ static int read_config_file(struct hesiod_p *ctx, const char *filename)
 
       if (cistrcmp(key, "lhs") == 0 || cistrcmp(key, "rhs") == 0)
 	{
-	  which = (strcmp(key, "lhs") == 0) ? &ctx->lhs : &ctx->rhs;
+	  which = (cistrcmp(key, "lhs") == 0) ? &ctx->lhs : &ctx->rhs;
 	  *which = malloc(strlen(data) + 1);
 	  if (!*which)
 	    {
