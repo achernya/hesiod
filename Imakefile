@@ -2,7 +2,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v $
 #	$Author: probe $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.4 1991-01-21 12:54:53 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.5 1991-01-21 13:12:04 probe Exp $
 
 #if defined(_AIX) && defined(_IBMR2)
 MACHDEF= -DBIT_ZERO_ON_LEFT
@@ -59,7 +59,7 @@ hesiod.a:	${OBJS}
 	-ranlib hesiod_p.a
 #endif
 
-program(hesinfo, hesinfo.o hesiod.a,,,,/bin/athena)
+build_program(hesinfo, hesinfo.o hesiod.a,,,,/bin/athena)
 
 saber:
 	saber ${INCPATH} ${DEFINES} hesinfo.c ${SRCS}
