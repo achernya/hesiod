@@ -10,8 +10,12 @@ AC_PROG_RANLIB
 
 AC_EGREP_HEADER(pw_quota, pwd.h, AC_DEFINE(HAVE_PW_QUOTA))
 AC_EGREP_HEADER(pw_comment, pwd.h, AC_DEFINE(HAVE_PW_COMMENT))
+AC_EGREP_HEADER(pw_class, pwd.h, AC_DEFINE(HAVE_PW_CLASS))
+AC_EGREP_HEADER(pw_change, pwd.h, AC_DEFINE(HAVE_PW_CHANGE))
+AC_EGREP_HEADER(pw_expire, pwd.h, AC_DEFINE(HAVE_PW_EXPIRE))
 
-AC_FUNC_CHECK(res_mkquery, :, [AC_CHECK_LIB(resolv, res_mkquery)])
+AC_CHECK_FUNC(res_mkquery, :, [AC_CHECK_LIB(resolv, res_mkquery)])
+AC_CHECK_FUNCS(strerror_r)
 
 AC_CONFIG_HEADER(config.h)
 AC_OUTPUT(Makefile)
