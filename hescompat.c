@@ -17,7 +17,7 @@
  * backward-compatibility interfaces.
  */
 
-static char rcsid[] = "$Id: hescompat.c,v 1.2 1996-12-16 08:32:39 ghudson Exp $";
+static const char rcsid[] = "$Id: hescompat.c,v 1.3 1999-10-23 19:29:15 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,7 +36,7 @@ static int errval = HES_ER_UNINIT;
 static int init_context(void);
 static void translate_errors(void);
 
-int hes_init()
+int hes_init(void)
 {
   init_context();
   return errval;
@@ -130,7 +130,7 @@ struct hes_postoffice *hes_getmailhost(const char *name)
   return &compatpo;
 }
 
-static int init_context()
+static int init_context(void)
 {
   if (!inited)
     {
@@ -145,7 +145,7 @@ static int init_context()
   return 0;
 }
 
-static void translate_errors()
+static void translate_errors(void)
 {
   switch (errno)
     {

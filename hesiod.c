@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.25 1999-03-08 05:33:51 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.26 1999-10-23 19:29:15 danw Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -84,6 +84,7 @@ struct hesiod_p {
   const char *uidmaps[2];	/* The uid map search order */
 };
 
+char **hesiod__uidresolve(void *context, const char *uidstr);
 static int read_config_file(struct hesiod_p *ctx, const char *filename);
 static char **get_txt_records(struct hesiod_p *ctx, int class,
 			      const char *name);
@@ -319,10 +320,10 @@ static int read_config_file(struct hesiod_p *ctx, const char *filename)
 	p++;
       *p++ = 0;
 		
-      while(isspace(*p) || *p == '=')
+      while(isspace((unsigned char)*p) || *p == '=')
 	p++;
       data = p;
-      while(!isspace(*p))
+      while(!isspace((unsigned char)*p))
 	p++;
       *p = 0;
 

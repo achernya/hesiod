@@ -17,7 +17,7 @@
  * information for a user.
  */
 
-static char rcsid[] = "$Id: hesmailhost.c,v 1.8 1996-12-08 21:40:32 ghudson Exp $";
+static const char rcsid[] = "$Id: hesmailhost.c,v 1.9 1999-10-23 19:29:15 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,11 +58,11 @@ struct hesiod_postoffice *hesiod_getmailhost(void *context, const char *user)
 
   /* Break up linebuf into fields. */
   po->hesiod_po_type = p;
-  while (!isspace(*p))
+  while (!isspace((unsigned char)*p))
     p++;
   *p++ = 0;
   po->hesiod_po_host = p;
-  while (!isspace(*p))
+  while (!isspace((unsigned char)*p))
     p++;
   *p++ = 0;
   po->hesiod_po_name = p;

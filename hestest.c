@@ -15,7 +15,7 @@
 
 /* This file is a test driver for the Hesiod library. */
 
-static char rcsid[] = "$Id: hestest.c,v 1.2 1996-12-08 21:41:45 ghudson Exp $";
+static const char rcsid[] = "$Id: hestest.c,v 1.3 1999-10-23 19:29:16 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,7 +46,7 @@ int saw_failure = 0;
 int main(int argc, char **argv)
 {
   FILE *fp;
-  char buf[1024], buf2[1024], *p, *q, name[128], type[128], proto[128], **list;
+  char buf[1024], *p, *q, name[128], type[128], proto[128], **list;
   int line, errval;
   struct passwd *pw;
   struct servent *serv;
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
       line++;
 
       /* Strip off trailing spaces (inefficiently). */
-      while (isspace(buf[strlen(buf) - 1]))
+      while (isspace((unsigned char)buf[strlen(buf) - 1]))
 	buf[strlen(buf) - 1] = 0;
 
       /* Get the first word, discard comment lines and invalid lines. */
@@ -284,14 +284,14 @@ int main(int argc, char **argv)
 
 static char *word_end(char *s)
 {
-  while (*s && !isspace(*s))
+  while (*s && !isspace((unsigned char)*s))
     s++;
   return s;
 }
 
 static char *find_word(char *s)
 {
-  while (isspace(*s))
+  while (isspace((unsigned char)*s))
     s++;
   return s;
 }

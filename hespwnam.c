@@ -18,7 +18,7 @@
  * information about a user.
  */
 
-static char rcsid[] = "$Id: hespwnam.c,v 1.14 1999-03-08 05:33:55 ghudson Exp $";
+static const char rcsid[] = "$Id: hespwnam.c,v 1.15 1999-10-23 19:29:15 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,7 +43,7 @@ struct passwd *hesiod_getpwuid(void *context, uid_t uid)
 {
   char uidstr[16];
 
-  sprintf(uidstr, "%d", uid);
+  sprintf(uidstr, "%u", (unsigned int)uid);
   return getpwcommon(context, uidstr, 1);
 }
 

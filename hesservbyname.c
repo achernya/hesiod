@@ -51,7 +51,7 @@
  * services.
  */
 
-static char rcsid[] = "$Id: hesservbyname.c,v 1.6 1996-12-08 21:40:44 ghudson Exp $";
+static const char rcsid[] = "$Id: hesservbyname.c,v 1.7 1999-10-23 19:29:16 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -70,7 +70,6 @@ struct servent *hesiod_getservbyname(void *context, const char *name,
 				     const char *proto)
 {
   char **item, **list;
-  int i = 0, status;
 
   /* Ask for all entries matching the given service name. */
   list = hesiod_resolve(context, name, "service");
@@ -81,24 +80,24 @@ struct servent *hesiod_getservbyname(void *context, const char *name,
   for (item = list; *item; item++)
     {
       char **alias, *servicename, *protoname, *port, *p2, *p = *item;
-      int len = strlen(p), naliases;
+      int naliases;
       struct servent *serv;
 
       /* Find the service name. */
-      while (isspace(*p))
+      while (isspace((unsigned char)*p))
 	p++;
       servicename = p;
-      while (*p && !isspace(*p) && *p != ';')
+      while (*p && !isspace((unsigned char)*p) && *p != ';')
 	p++;
       if (!*p) /* Malformed entry */
 	continue;
       *p++ = 0;
 
       /* Find the protocol name and check it. */
-      while (isspace(*p))
+      while (isspace((unsigned char)*p))
 	p++;
       protoname = p;
-      while (*p && !isspace(*p) && *p != ';')
+      while (*p && !isspace((unsigned char)*p) && *p != ';')
 	p++;
       if (!*p) /* Malformed entry */
 	continue;
@@ -107,15 +106,15 @@ struct servent *hesiod_getservbyname(void *context, const char *name,
 	continue;
 
       /* Find the port number. */
-      while (isspace(*p) || *p == ';')
+      while (isspace((unsigned char)*p) || *p == ';')
 	p++;
       if (!*p) /* Malformed entry */
 	continue;
       port = p;
 
-      while (*p && !isspace(*p) && *p != ';')
+      while (*p && !isspace((unsigned char)*p) && *p != ';')
 	p++;
-      while (isspace(*p) || *p == ';')
+      while (isspace((unsigned char)*p) || *p == ';')
 	p++;
 
       /* Count the number of aliases. */
@@ -124,9 +123,9 @@ struct servent *hesiod_getservbyname(void *context, const char *name,
       while (*p2)
 	{
 	  naliases++;
-	  while (*p2 && !isspace(*p2))
+	  while (*p2 && !isspace((unsigned char)*p2))
 	    p2++;
-	  while (isspace(*p2))
+	  while (isspace((unsigned char)*p2))
 	    p2++;
 	}
 
@@ -161,12 +160,12 @@ struct servent *hesiod_getservbyname(void *context, const char *name,
       while (*p2)
 	{
 	  *alias++ = p2;
-	  while (*p2 && !isspace(*p2))
+	  while (*p2 && !isspace((unsigned char)*p2))
 	    p2++;
 	  if (*p2)
 	    {
 	      *p2++ = 0;
-	      while (isspace(*p2))
+	      while (isspace((unsigned char)*p2))
 		p2++;
 	    }
 	}
