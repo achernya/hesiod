@@ -1,9 +1,13 @@
 /* This file is part of the Hesiod library.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.14  93/10/22  08:17:40  probe
+ * Use memmove [ANSI] instead of bcopy, except on the platforms where we
+ * don't have memmove.
+ * 
  * Revision 1.13  93/10/22  08:16:06  probe
  * ANSI says to use strchr, and even the BSD systems have this function.
  * 
@@ -69,7 +73,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.14 1993-10-22 08:17:40 probe Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.15 1993-10-22 12:02:36 epeisach Exp $";
 #endif
 
 #include <stdio.h>
@@ -79,6 +83,11 @@ static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
 #include <netinet/in.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
+#ifdef POSIX
+#include <stdlib.h>
+#else
+extern char *calloc(), *getenv();
+#endif
 #include "resscan.h"
 #include "hesiod.h"
 
@@ -97,7 +106,6 @@ hes_init()
 	register char *key, *cp, **cpp;
 	int len;
 	char buf[MAXDNAME+7];
-	char *calloc(), *getenv();
 
 	Hes_Errno = HES_ER_UNINIT;
 	Hes_LHS = NULL; Hes_RHS = NULL;
@@ -144,7 +152,6 @@ char *
 hes_to_bind(HesiodName, HesiodNameType)
 char *HesiodName, *HesiodNameType;
 {
-	char **hes_resolve();
 	register char *cp, **cpp;
 	static char bindname[MAXDNAME];
 	char *RHS;
@@ -188,9 +195,8 @@ char *HesiodName, *HesiodNameType;
 	register char *cp;
 	static char *retvec[100];
 	char *ocp, *dst;
-	char *calloc();
 	int i, j, n;
-	struct nsmsg *ns, *_resolve();
+	struct nsmsg *ns;
 	rr_t *rp;
 	extern int errno;
 
