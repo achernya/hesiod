@@ -7,9 +7,13 @@
  *
  *	$Author: probe $
  *	$Athena: hesiod.h,v 1.3 88/08/07 21:52:39 treese Locked $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.h.sed,v 1.5 1990-07-11 16:49:12 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.h.sed,v 1.6 1990-07-20 13:09:16 probe Exp $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.h.sed,v $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.5  90/07/11  16:49:12  probe
+ * Patches from <mar>
+ * Added missing declarations
+ * 
  * Revision 1.5  90/07/09  18:44:30  mar
  * mention hes_getservbyname(), hes_getpwent()
  * 
@@ -56,4 +60,4 @@ struct hes_postoffice {
 
 struct hes_postoffice *hes_getmailhost();
 struct servent *hes_getservbyname();
-struct pwent *hes_getpwnam();
+struct passwd *hes_getpwnam();
