@@ -1,80 +1,23 @@
-/* This file is part of the Hesiod library.
+/* Copyright 1988, 1996 by the Massachusetts Institute of Technology.
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
- *	$Author: epeisach $
- *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
- *	$Log: not supported by cvs2svn $
- * Revision 1.14  93/10/22  08:17:40  probe
- * Use memmove [ANSI] instead of bcopy, except on the platforms where we
- * don't have memmove.
- * 
- * Revision 1.13  93/10/22  08:16:06  probe
- * ANSI says to use strchr, and even the BSD systems have this function.
- * 
- * Revision 1.12  93/10/21  14:35:55  mar
- * include string.h instead of strings.h
- * 
- * Revision 1.11  93/06/15  10:26:37  mar
- * handle empty LHS
- * 
- * Revision 1.10  93/04/27  14:03:44  vrt
- * compatibility index in solaris is braindamaged.
- * 
- * Revision 1.9  90/07/19  09:20:09  epeisach
- * Declare that getenv returns a char*
- * 
- * Revision 1.8  90/07/11  16:46:44  probe
- * Patches from <mar>
- * Support for HES_DOMAIN environment variable added
- * 
- * Revision 1.9  90/07/11  16:41:18  probe
- * Patches from <mar>
- * Added description about error codes and the HES_DOMAIN environment
- * variable
- * 
- * Revision 1.7  89/11/16  06:49:31  probe
- * Uses T_TXT, as defined in the RFC.
- * 
- * Revision 1.6.1.1  89/11/03  17:50:12  probe
- * Changes T_TXT to T_UNSPECA.
- * 
- * The BIND 4.8.1 implementation of T_TXT is incorrect; BIND 4.8.1 declares
- * it as a NULL terminated string.  The RFC defines T_TXT to be a length
- * byte followed by arbitrary changes.
- * 
- * Because of this incorrect declaration in BIND 4.8.1, when this bug is fixed,
- * T_TXT requests between machines running different versions of BIND will
- * not be compatible (nor is there any way of adding compatibility).
- * 
- * Revision 1.6  88/08/07  23:17:03  treese
- * Second-public-distribution
- * 
- * Revision 1.5  88/08/07  22:00:44  treese
- * Changed T_UNSPECA to T_TXT.
- * Changed C_HESIOD to C_HS.
- * Deleted ifdef's based on USE_HS_QUERY -- they're obsolete.
- * 
- * Revision 1.4  88/08/07  21:52:31  treese
- * First public distribution
- * 
- * Revision 1.3  88/06/12  00:52:58  treese
- * Cleaned up to work with Saber.
- * First public distribution.
- * 
- * Revision 1.2  88/06/11  22:36:38  treese
- * Cleaned up for public distribution.
- * 
- * 
- *
- * Copyright 1988 by the Massachusetts Institute of Technology.  See the
- * file <mit-copyright.h> for copying and distribution information.
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-#include "mit-copyright.h"
+/* This file is part of the Hesiod library.  It implements the main
+ * interface routines.
+ */
 
-#ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.15 1993-10-22 12:02:36 epeisach Exp $";
-#endif
+static char rcsid[] = "$Id: hesiod.c,v 1.16 1996-11-07 02:27:08 ghudson Exp $";
 
 #include <stdio.h>
 #include <errno.h>
@@ -83,162 +26,290 @@ static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
 #include <netinet/in.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
-#ifdef POSIX
+#include <netdb.h>
+#include <pwd.h>
 #include <stdlib.h>
-#else
-extern char *calloc(), *getenv();
-#endif
+#include <ctype.h>
 #include "resscan.h"
 #include "hesiod.h"
 
-#define USE_HS_QUERY	/* undefine this if your higher-level name servers */
-			/* don't know class HS */
+/* Make sure none of these are longer than HES_MAX_ERRLEN - 1. */
+static char *error_table[] = {
+  "No error",
+  "Hesiod library uninitialized",
+  "Hesiod name not found by server",
+  "Invalid configuration file",
+  "Network problem",
+  "Return buffer not large enough",
+  "Insufficient memory is available",
+  "Invalid response from hesiod server"
+};
 
-char *HesConfigFile = HESIOD_CONF;
-static char *Hes_LHS, *Hes_RHS;
-static int Hes_Errno = HES_ER_UNINIT;
+static char *hes_config_file = CONFDIR "/hesiod.conf";
+static char *hes_lhs;
+static char *hes_rhs;
+int hes_errno = HES_ER_UNINIT;
 
-retransXretry_t NoRetryTime = { 0, 0};
-
-hes_init()
+int hes_init()
 {
-	register FILE *fp;
-	register char *key, *cp, **cpp;
-	int len;
-	char buf[MAXDNAME+7];
+  FILE *fp;
+  char *key, *p, **which;
+  int len;
+  char buf[MAXDNAME + 7];
 
-	Hes_Errno = HES_ER_UNINIT;
-	Hes_LHS = NULL; Hes_RHS = NULL;
-	if ((fp = fopen(HesConfigFile, "r")) == NULL) {
-		/* use defaults compiled in */
-		/* no file or no access uses defaults */
-		/* but poorly formed file returns error */
-		Hes_LHS = DEF_LHS; Hes_RHS = DEF_RHS;
-	} else {
-		while(fgets(buf, MAXDNAME+7, fp) != NULL) {
-			cp = buf;
-			if (*cp == '#' || *cp == '\n') continue;
-			while(*cp == ' ' || *cp == '\t') cp++;
-			key = cp;
-			while(*cp != ' ' && *cp != '\t' && *cp != '=') cp++;
-			*cp++ = '\0';
-			if (strcmp(key, "lhs") == 0) cpp = &Hes_LHS;
-			else if (strcmp(key, "rhs") == 0) cpp = &Hes_RHS;
-			else continue;
-			while(*cp == ' ' || *cp == '\t' || *cp == '=') cp++;
-			if (*cp != '.' && *cp != '\n') {
-				Hes_Errno = HES_ER_CONFIG;
-				fclose(fp);
-				return(Hes_Errno);
-			}
-			len = strlen(cp);
-			*cpp = calloc((unsigned int) len, sizeof(char));
-			(void) strncpy(*cpp, cp, len-1);
-		}
-		fclose(fp);
+  if (hes_errno != HES_ER_UNINIT && hes_errno != HES_ER_CONFIG)
+    return HES_ER_OK;
+  res_init();
+  hes_errno = HES_ER_UNINIT;
+  hes_lhs = NULL;
+  hes_rhs = NULL;
+
+  fp = fopen(hes_config_file, "r");
+  if (fp == NULL)
+    {
+      /* Use compiled-in defaults. */
+      hes_lhs = DEF_LHS;
+      hes_rhs = DEF_RHS;
+    }
+  else
+    {
+      while (fgets(buf, MAXDNAME + 7, fp) != NULL)
+	{
+	  p = buf;
+	  if (*p == '#' || *p == '\n')
+	    continue;
+	  while (isspace(*p))
+	    p++;
+	  key = p;
+	  while (!isspace(*p) && *p != '=')
+	    p++;
+	  *p++ = '\0';
+	  if (strcmp(key, "lhs") == 0)
+	    which = &hes_lhs;
+	  else if (strcmp(key, "rhs") == 0)
+	    which = &hes_rhs;
+	  else
+	    continue;
+	  while (isspace(*p) || *p == '=')
+	    p++;
+	  if (*p != '.' && *p != '\n')
+	    {
+	      hes_errno = HES_ER_CONFIG;
+	      fclose(fp);
+	      return hes_errno;
+	    }
+	  len = strlen(p);
+	  *which = malloc(len);
+	  if (*which == NULL)
+	    {
+	      hes_errno = HES_ER_NOMEM;
+	      fclose(fp);
+	      return hes_errno;
+	    }
+	  strncpy(*which, p, len - 1);
+	  p[len - 1] = 0;
 	}
-	/* see if the RHS is overridden by environment variable */
-	if ((cp = getenv("HES_DOMAIN")) != NULL)
-		Hes_RHS = strcpy(malloc(strlen(cp)+1),cp);
-	/* the LHS may be null, the RHS must not be null */
-	if (Hes_RHS == NULL)
-		Hes_Errno = HES_ER_CONFIG;
-	else
-		Hes_Errno = HES_ER_OK;	
-	return(Hes_Errno);
+      fclose(fp);
+    }
+
+  /* See if the RHS is overridden by environment variable. */
+  p = getenv("HES_DOMAIN");
+  if (p)
+    {
+      hes_rhs = malloc(strlen(p) + 1);
+      if (hes_rhs == NULL)
+	{
+	  hes_errno = HES_ER_NOMEM;
+	  return hes_errno;
+	}
+      strcpy(hes_rhs, p);
+    }
+
+  /* The LHS may be null, but the RHS must not be. */
+  hes_errno = (hes_rhs == NULL) ? HES_ER_CONFIG : HES_ER_OK;
+  return hes_errno;
 }
 
-char *
-hes_to_bind(HesiodName, HesiodNameType)
-char *HesiodName, *HesiodNameType;
+char *hes_to_bind(const char *name, const char *type)
 {
-	register char *cp, **cpp;
-	static char bindname[MAXDNAME];
-	char *RHS;
+  static char buffer[MAXDNAME];
 
-	if (Hes_Errno == HES_ER_UNINIT || Hes_Errno == HES_ER_CONFIG)
-		(void) hes_init();
-	if (Hes_Errno == HES_ER_CONFIG) return(NULL);
-	if (cp = strchr(HesiodName,'@')) {
-		if (strchr(++cp,'.'))
-			RHS = cp;
-		else
-			if (cpp = hes_resolve(cp, "rhs-extension"))
-				RHS = *cpp;
-			else {
-				Hes_Errno = HES_ER_NOTFOUND;
-				return(NULL);
-			}
-		(void) strcpy(bindname,HesiodName);
-		*strchr(bindname,'@') = '\0';
-	} else {
-		RHS = Hes_RHS;
-		(void) strcpy(bindname, HesiodName);
-	}
-	(void) strcat(bindname, ".");
-	(void) strcat(bindname, HesiodNameType);
-	if (Hes_LHS) {
-		if (Hes_LHS[0] != '.')
-			(void) strcat(bindname,".");
-		(void) strcat(bindname, Hes_LHS);
-	}
-	if (RHS[0] != '.')
-		(void) strcat(bindname,".");
-	(void) strcat(bindname, RHS);
-	return(bindname);
+  if (hes_errno == HES_ER_UNINIT || hes_errno == HES_ER_CONFIG)
+    hes_init();
+  if (hes_errno == HES_ER_CONFIG)
+    return NULL;
+  hes_errno = hes_to_bind_r(name, type, buffer, MAXDNAME);
+  return (hes_errno == HES_ER_OK) ? buffer : NULL;
 }
 
-char **
-hes_resolve(HesiodName, HesiodNameType)
-char *HesiodName, *HesiodNameType;
+int hes_to_bind_r(const char *name, const char *type, char *buffer,
+		  int bufsize)
 {
-	register char *cp;
-	static char *retvec[100];
-	char *ocp, *dst;
-	int i, j, n;
-	struct nsmsg *ns;
-	rr_t *rp;
-	extern int errno;
+  char *p, *vec[2], *rhs;
+  int len;
 
-	cp = hes_to_bind(HesiodName, HesiodNameType);
-	if (cp == NULL) return(NULL);
-	errno = 0;
-	ns = _resolve(cp, C_HS, T_TXT, NoRetryTime);
-	if (errno == ETIMEDOUT || errno == ECONNREFUSED) {
-		Hes_Errno = HES_ER_NET;
-		return(NULL);
+  *vec = NULL;
+  if (hes_errno == HES_ER_CONFIG)
+    return HES_ER_CONFIG;
+  if (hes_errno == HES_ER_UNINIT)
+    {
+      fprintf(stderr, "Library not initialized in hes_to_bind_r().\n");
+      abort();
+    }
+  p = strchr(name, '@');
+  if (p)
+    {
+      if (p - name > bufsize - 1)
+	return HES_ER_RANGE;
+      if (strchr(p + 1, '.'))
+	rhs = p + 1;
+      else
+	{
+	  if (hes_resolve_r(p + 1, "rhs-extension", vec, 2) == HES_ER_OK
+	      && *vec != NULL)
+	    rhs = *vec;
+	  else
+	    return HES_ER_NOTFOUND;
 	}
-	if (ns == NULL || ns->ns_off <= 0) {
-		Hes_Errno = HES_ER_NOTFOUND;
-		return(NULL);
-	}
-	for(i = j = 0, rp = &ns->rr; i < ns->ns_off; rp++, i++) {
-		if (
-		    rp->class == C_HS &&
-		    rp->type == T_TXT) { /* skip CNAME records */
-			retvec[j] = calloc(rp->dlen + 1, sizeof(char));
-			dst = retvec[j];
-			ocp = cp = rp->data;
-			while (cp < ocp + rp->dlen) {
-			    n = (unsigned char) *cp++;
-#if defined(vax)
-			    (void) bcopy(cp, dst, n);
-#else
-			    (void) memmove(dst, cp, n);
-#endif
-			    cp += n;
-			    dst += n;
-			}
-			*dst = 0;
-			j++;
-		}
-	}
-	retvec[j] = 0;
-	return(retvec);
+      strncpy(buffer, name, p - name);
+      buffer[p - name] = '\0';
+    }
+  else
+    {
+      rhs = hes_rhs;
+      if (strlen(name) > bufsize - 1)
+	return HES_ER_RANGE;
+      strcpy(buffer, name);
+    }
+  len = strlen(buffer) + 1 + strlen(type);
+  if (hes_lhs)
+    len += strlen(hes_lhs) + ((hes_lhs[0] != '.') ? 1 : 0);
+  len += strlen(rhs) + ((rhs[0] != '.') ? 1 : 0);
+  if (len > bufsize - 1)
+    {
+      if (*vec)
+	free(*vec);
+      return HES_ER_RANGE;
+    }
+  strcat(buffer, ".");
+  strcat(buffer, type);
+  if (hes_lhs)
+    {
+      if (hes_lhs[0] != '.')
+	strcat(buffer, ".");
+      strcat(buffer, hes_lhs);
+    }
+  if (rhs[0] != '.')
+    strcat(buffer, ".");
+  strcat(buffer, rhs);
+  if (*vec)
+    free(*vec);
+  return HES_ER_OK;
 }
 
-int
-hes_error()
+char **hes_resolve(const char *name, const char *type)
 {
-	return(Hes_Errno);
+  static char *retvec[100];
+
+  if (hes_errno == HES_ER_UNINIT || hes_errno == HES_ER_CONFIG)
+    hes_init();
+  if (hes_errno == HES_ER_CONFIG)
+    return NULL;
+  hes_errno = hes_resolve_r(name, type, retvec, 100);
+  return (hes_errno == HES_ER_OK) ? retvec : NULL;
+}
+
+int hes_resolve_r(const char *name, const char *type, char **retvec,
+		  int retveclen)
+{
+  const char *p;
+  char *dest, **vec;
+  char buffer[MAXDNAME], nmsgbuf[NMSGSIZE], databuf[DATASIZE];
+  int status, n;
+  struct nsmsg *ns;
+  rr_t *rp;
+
+  if (hes_errno == HES_ER_CONFIG)
+    return HES_ER_CONFIG;
+  if (hes_errno == HES_ER_UNINIT)
+    {
+      fprintf(stderr, "Library not initialized in hes_resolve_r().\n");
+      abort();
+    }
+  status = hes_to_bind_r(name, type, buffer, MAXDNAME);
+  if (status != HES_ER_OK)
+    return status;
+  p = buffer;
+  errno = 0;
+  ns = hes__resolve(p, C_HS, T_TXT, nmsgbuf, databuf);
+  if (ns == NULL && (errno == ETIMEDOUT || errno == ECONNREFUSED))
+    return HES_ER_NET;
+  if (ns == NULL || ns->ns_off <= 0)
+    return HES_ER_NOTFOUND;
+  vec = retvec;
+  for (rp = &ns->rr; rp < &ns->rr + ns->ns_off; rp++)
+    {
+      if (vec - retvec >= retveclen - 1)
+	{
+	  for (; vec > retvec; vec--)
+	    free(*(vec - 1));
+	  return HES_ER_RANGE;
+	}
+      /* XXX we're being way too trusting here */
+      if (rp->class == C_HS && rp->type == T_TXT)
+	{
+	  *vec = malloc(rp->dlen + 1);
+	  if (*vec == NULL)
+	    {
+	      for (; vec > retvec; vec--)
+		free(*(vec - 1));
+	      return HES_ER_NOMEM;
+	    }
+	  dest = *vec;
+	  p = rp->data;
+	  while (p < rp->data + rp->dlen)
+	    {
+	      n = *p++;
+	      memcpy(dest, p, n);
+	      p += n;
+	      dest += n;
+	    }
+	  *dest = 0;
+	  vec++;
+	}
+    }
+  *vec = 0;
+  return HES_ER_OK;
+}
+
+int hes_error()
+{
+  return hes_errno;
+}
+
+const char *hes_strerror(int errval)
+{
+  static char buf[HES_MAX_ERRLEN];
+
+  hes_strerror_r(errval, buf, sizeof(buf));
+  return buf;
+}
+
+int hes_strerror_r(int errval, char *buf, int bufsize)
+{
+  if (errval < 0 || errval >= sizeof(error_table))
+    {
+      if (bufsize >= 32)
+	sprintf(buf, "Unknown error %d", errval);
+      else
+	return -1;
+    }
+  else
+    {
+      if (bufsize > strlen(error_table[errval]))
+	strcpy(buf, error_table[errval]);
+      else
+	return -1;
+    }
+  return 0;
 }
