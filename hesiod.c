@@ -1,9 +1,12 @@
 /* This file is part of the Hesiod library.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
- *	$Author: vrt $
+ *	$Author: mar $
  *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.10  93/04/27  14:03:44  vrt
+ * compatibility index in solaris is braindamaged.
+ * 
  * Revision 1.9  90/07/19  09:20:09  epeisach
  * Declare that getenv returns a char*
  * 
@@ -57,7 +60,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.10 1993-04-27 14:03:44 vrt Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.11 1993-06-15 10:26:37 mar Exp $";
 #endif
 
 #include <stdio.h>
@@ -106,7 +109,7 @@ hes_init()
 			else if (strcmp(key, "rhs") == 0) cpp = &Hes_RHS;
 			else continue;
 			while(*cp == ' ' || *cp == '\t' || *cp == '=') cp++;
-			if (*cp != '.') {
+			if (*cp != '.' && *cp != '\n') {
 				Hes_Errno = HES_ER_CONFIG;
 				fclose(fp);
 				return(Hes_Errno);
