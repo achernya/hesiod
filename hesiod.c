@@ -4,6 +4,9 @@
  *	$Author: probe $
  *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.13  93/10/22  08:16:06  probe
+ * ANSI says to use strchr, and even the BSD systems have this function.
+ * 
  * Revision 1.12  93/10/21  14:35:55  mar
  * include string.h instead of strings.h
  * 
@@ -66,7 +69,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.13 1993-10-22 08:16:06 probe Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.14 1993-10-22 08:17:40 probe Exp $";
 #endif
 
 #include <stdio.h>
@@ -212,7 +215,11 @@ char *HesiodName, *HesiodNameType;
 			ocp = cp = rp->data;
 			while (cp < ocp + rp->dlen) {
 			    n = (unsigned char) *cp++;
+#if defined(vax)
 			    (void) bcopy(cp, dst, n);
+#else
+			    (void) memmove(dst, cp, n);
+#endif
 			    cp += n;
 			    dst += n;
 			}
