@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.24 1999-01-25 19:17:17 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.25 1999-03-08 05:33:51 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -63,6 +63,12 @@ static const char rcsid[] = "$Id: hesiod.c,v 1.24 1999-01-25 19:17:17 ghudson Ex
 #define T_TXT	16
 #endif
 
+/* We use the "uid" hesiod type for uid lookups.  Ultrix uses the
+ * "passwd" type.  Some constants for the compatibility code.
+ */
+#define UIDMAP_UID	"uid"
+#define UIDMAP_PASSWD	"passwd"
+
 /* Defaults if the configuration file is not present. */
 #define DEF_RHS ".athena.mit.edu"
 #define DEF_LHS ".ns"
@@ -74,7 +80,8 @@ static const char rcsid[] = "$Id: hesiod.c,v 1.24 1999-01-25 19:17:17 ghudson Ex
 struct hesiod_p {
   char *lhs;			/* normally ".ns" */
   char *rhs;			/* AKA the default hesiod domain */
-  int classes[2];		/* The class search order. */
+  int classes[2];		/* The class search order */
+  const char *uidmaps[2];	/* The uid map search order */
 };
 
 static int read_config_file(struct hesiod_p *ctx, const char *filename);
@@ -239,6 +246,18 @@ char **hesiod_resolve(void *context, const char *name, const char *type)
   return retvec;
 }
 
+/* Internal function for hesiod_getpwuid(). */
+char **hesiod__uidresolve(void *context, const char *uidstr)
+{
+  struct hesiod_p *ctx = (struct hesiod_p *) context;
+  char **retvec;
+
+  retvec = hesiod_resolve(context, uidstr, ctx->uidmaps[0]);
+  if (retvec == NULL && errno == ENOENT && ctx->uidmaps[1])
+    retvec = hesiod_resolve(context, uidstr, ctx->uidmaps[1]);
+  return retvec;
+}
+
 void hesiod_free_list(void *context, char **list)
 {
   char **p;
@@ -261,6 +280,10 @@ static int read_config_file(struct hesiod_p *ctx, const char *filename)
   /* Set default query classes. */
   ctx->classes[0] = C_IN;
   ctx->classes[1] = C_HS;
+
+  /* Set default uid maps. */
+  ctx->uidmaps[0] = UIDMAP_UID;
+  ctx->uidmaps[1] = NULL;
 
   /* Try to open the configuration file. */
   fp = fopen(filename, "r");
@@ -333,10 +356,33 @@ static int read_config_file(struct hesiod_p *ctx, const char *filename)
 	  while (n < 2)
 	    ctx->classes[n++] = 0;
 	}
+      else if (cistrcmp(key, "uidmaps") == 0)
+	{
+	  n = 0;
+	  while (*data && n < 2)
+	    {
+	      p = data;
+	      while (*p && *p != ',')
+		p++;
+	      if (*p)
+		*p++ = 0;
+	      if (cistrcmp(data, "uid") == 0)
+		ctx->uidmaps[n++] = UIDMAP_UID;
+	      else if (cistrcmp(data, "passwd") == 0)
+		ctx->uidmaps[n++] = UIDMAP_PASSWD;
+	      data = p;
+	    }
+	  while (n < 2)
+	    ctx->uidmaps[n++] = NULL;
+	}
     }
   fclose(fp);
 
-  if (!ctx->rhs || ctx->classes[0] == 0 || ctx->classes[0] == ctx->classes[1])
+  /* Make sure that the rhs is set and that the class search order and
+   * the uidmap search order both make sense.
+   */
+  if (!ctx->rhs || ctx->classes[0] == 0 || ctx->classes[0] == ctx->classes[1]
+      || ctx->uidmaps[0] == NULL || ctx->uidmaps[0] == ctx->uidmaps[1])
     {
       errno = ENOEXEC;
       return -1;
