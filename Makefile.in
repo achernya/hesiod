@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.8 1997-03-14 21:34:53 ghudson Exp $
+# $Id: Makefile.in,v 1.9 1997-03-18 21:35:17 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -21,7 +21,7 @@ CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
-ALL_CFLAGS=-DSYSCONFDIR=\"${sysconfdir}\" ${CPPFLAGS} ${CFLAGS}
+ALL_CFLAGS=-I. -DSYSCONFDIR=\"${sysconfdir}\" ${CPPFLAGS} ${CFLAGS}
 OBJS=hesiod.o hesmailhost.o hespwnam.o hesservbyname.o hescompat.o
 
 all: libhesiod.a hesinfo hestest
