@@ -14,6 +14,8 @@ static char sccsid[] = "@(#)getservbyname.c	5.3 (Berkeley) 5/19/86";
 #include <stdio.h>
 #include <ctype.h>
 
+extern char *malloc();
+
 #define LISTSIZE 15
 struct servent *
 hes_getservbyname(name, proto)
