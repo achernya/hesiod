@@ -1,0 +1,10 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define if struct passwd has a field pw_quota. */
+#undef HAVE_PW_QUOTA
+
+/* Deifne if struct passwd has a field pw_comment. */
+#undef HAVE_PW_COMMENT
+
+/* Define if you have the resolv library (-lresolv).  */
+#undef HAVE_LIBRESOLV

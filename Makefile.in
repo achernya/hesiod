@@ -1,0 +1,56 @@
+# $Id: Makefile.in,v 1.1 1996-11-07 01:51:56 ghudson Exp $
+
+SHELL=/bin/sh
+CC=@CC@
+LIBS=@LIBS@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+RANLIB=@RANLIB@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+libdir=@libdir@
+includedir=@includedir@
+sysconfdir=@sysconfdir@
+lbindir=@bindir@
+letcdir=@letcdir@
+
+CFLAGS=${CDEBUGFLAGS} -DCONFDIR=\"${letcdir}\"
+CDEBUGFLAGS=-g
+OBJS=hesiod.o hesmailhost.o hespwnam.o hesservbyname.o resolve.o
+
+all: libhesiod.a hesinfo hestest
+
+libhesiod.a: ${OBJS}
+	ar cru $@ ${OBJS}
+	${RANLIB} $@
+
+hesinfo: hesinfo.o libhesiod.a
+	${CC} ${LDFLAGS} -o $@ hesinfo.o libhesiod.a ${LIBS}
+
+hestest: hestest.o libhesiod.a
+	${CC} ${LDFLAGS} -o $@ hestest.o libhesiod.a ${LIBS}
+
+${OBJS}: hesiod.h resscan.h
+
+check:
+	./hestest ${srcdir}/hestest.conf
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${lbindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}
+	${INSTALL} -c -m 644 libhesiod.a ${DESTDIR}${libdir}
+	${RANLIB} ${DESTDIR}${libdir}/libhesiod.a
+	chmod u-w ${DESTDIR}${libdir}/libhesiod.a
+	${INSTALL_PROGRAM} -c -m 555 hesinfo ${DESTDIR}${bindir}
+	${INSTALL} -c -m 444 ${srcdir}/hesiod.h ${DESTDIR}${includedir}
+
+clean:
+	rm -f ${OBJS} libhesiod.a hesinfo.o hesinfo hestest.o hestest
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
