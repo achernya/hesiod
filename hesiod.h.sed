@@ -5,11 +5,17 @@
  *
  * Original version by Steve Dyer, IBM/Project Athena.
  *
- *	$Author: treese $
+ *	$Author: probe $
  *	$Athena: hesiod.h,v 1.3 88/08/07 21:52:39 treese Locked $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.h.sed,v 1.4 1988-08-07 23:18:00 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.h.sed,v 1.5 1990-07-11 16:49:12 probe Exp $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.h.sed,v $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.5  90/07/09  18:44:30  mar
+ * mention hes_getservbyname(), hes_getpwent()
+ * 
+ * Revision 1.4  88/08/07  23:18:00  treese
+ * Second-public-distribution
+ * 
  * Revision 1.3  88/08/07  21:52:39  treese
  * First public distribution
  * 
@@ -36,6 +42,7 @@
 
 char *hes_to_bind();
 char **hes_resolve();
+int hes_error();
 
 /* For use in getting post-office information. */
 
@@ -45,4 +52,8 @@ struct hes_postoffice {
 	char	*po_name;
 };
 
+/* Other routines */
+
 struct hes_postoffice *hes_getmailhost();
+struct servent *hes_getservbyname();
+struct pwent *hes_getpwnam();
