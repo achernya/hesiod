@@ -14,7 +14,7 @@
  * SOFTWARE.
  */
 
-/* Copyright 1996 by the Massachusetts Institute of Technology.
+/* Copyright 1996, 2000 by the Massachusetts Institute of Technology.
  *
  * Permission to use, copy, modify, and distribute this
  * software and its documentation for any purpose and without
@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.26 1999-10-23 19:29:15 danw Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.27 2000-01-05 16:28:51 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -243,7 +243,7 @@ char **hesiod_resolve(void *context, const char *name, const char *type)
   if (retvec == NULL && errno == ENOENT && ctx->classes[1])
     retvec = get_txt_records(ctx, ctx->classes[1], bindname);
 
-  free(bindname);
+  hesiod_free_string(bindname);
   return retvec;
 }
 
@@ -266,6 +266,11 @@ void hesiod_free_list(void *context, char **list)
   for (p = list; *p; p++)
     free(*p);
   free(list);
+}
+
+void hesiod_free_string(void *context, char *str)
+{
+  free(str);
 }
 
 /* This function parses the /etc/hesiod.conf file.  Returns 0 on success,

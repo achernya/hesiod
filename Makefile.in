@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.11 1999-10-23 19:29:14 danw Exp $
+# $Id: Makefile.in,v 1.12 2000-01-05 16:28:50 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -58,6 +58,8 @@ install:
 	${INSTALL} -m 444 ${srcdir}/hesiod_free_postoffice.3 \
 		${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/hesiod_free_servent.3 \
+		${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/hesiod_free_string.3 \
 		${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/hesiod_getmailhost.3 \
 		${DESTDIR}${mandir}/man3

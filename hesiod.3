@@ -1,6 +1,6 @@
-.\" $Id: hesiod.3,v 1.11 1998-09-02 17:30:05 ghudson Exp $
+.\" $Id: hesiod.3,v 1.12 2000-01-05 16:28:51 ghudson Exp $
 .\"
-.\" Copyright 1988, 1996 by the Massachusetts Institute of Technology.
+.\" Copyright 1988, 1996, 2000 by the Massachusetts Institute of Technology.
 .\"
 .\" Permission to use, copy, modify, and distribute this
 .\" software and its documentation for any purpose and without
@@ -16,7 +16,7 @@
 .\"
 .TH HESIOD 3 "30 November 1996"
 .SH NAME
-hesiod, hesiod_init, hesiod_resolve, hesiod_free_list, hesiod_to_bind, hesiod_end \- Hesiod name server interface library
+hesiod, hesiod_init, hesiod_resolve, hesiod_free_list, hesiod_to_bind, hesiod_free_string, hesiod_end \- Hesiod name server interface library
 .SH SYNOPSIS
 .nf
 .B #include <hesiod.h>
@@ -27,6 +27,7 @@ hesiod, hesiod_init, hesiod_resolve, hesiod_free_list, hesiod_to_bind, hesiod_en
 .B void hesiod_free_list(void *\fIcontext\fP, char **\fIlist\fP);
 .B char *hesiod_to_bind(void *\fIcontext\fP, const char *\fIname\fP,
 .B 	const char *\fItype\fP)
+.B void hesiod_free_string(void *\fIcontext\fP, char *\fIstr\fP);
 .B char **hesiod_parse_result(void *\fIcontext\fP,
 .B	unsigned const char *\fIresult\fP, int \fIrlen\fP)
 .B void hesiod_end(void *\fIcontext\fP)
@@ -67,7 +68,7 @@ and
 into the DNS name used by
 .IR hesiod_resolve .
 It is the caller's responsibility to free the returned string using
-.IR free .
+.IR hesiod_free_string .
 .PP
 .I hesiod_parse_result
 parses the result of a name server query into text records.  It is the
@@ -130,7 +131,8 @@ Steve Dyer, IBM/Project Athena
 .br
 Greg Hudson, MIT Team Athena
 .br
-Copyright 1987, 1988, 1995, 1996 by the Massachusetts Institute of Technology.
+Copyright 1987, 1988, 1995, 1996, 2000 by the Massachusetts Institute
+of Technology.
 .SH BUGS
 The strings corresponding to the
 .I errno
