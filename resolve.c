@@ -1,10 +1,10 @@
 #ifndef lint
-static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.3 1988-08-07 21:53:02 treese Exp $";
+static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.4 1988-08-07 21:58:40 treese Exp $";
 #endif
 /*
  * $Author: treese $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v $
- * $Athena: resolve.c,v 1.2 88/06/05 19:51:47 treese Locked $
+ * $Athena: resolve.c,v 1.3 88/08/07 21:53:02 treese Locked $
  */
 
 #define _RESOLVE_C_
@@ -35,13 +35,13 @@ rr_scan(cp, rr)
     }
 
     cp += n;
-    rr->type = getshort(cp);
+    rr->type = _getshort(cp);
     cp += sizeof(u_short/*type*/);
 
-    rr->class = getshort(cp);
+    rr->class = _getshort(cp);
     cp += sizeof(u_short/*class*/) + sizeof(u_long/*ttl*/);
 
-    rr->dlen = (int)getshort(cp);
+    rr->dlen = (int)_getshort(cp);
     rr->data = cp + sizeof(u_short/*dlen*/);
 
     return(rr->data + rr->dlen);
