@@ -1,4 +1,4 @@
-/* $Id: hesiod.h,v 1.2 1996-12-08 21:37:42 ghudson Exp $ */
+/* $Id: hesiod.h,v 1.3 1996-12-16 08:33:11 ghudson Exp $ */
 
 /*
  * Copyright (c) 1996 by Internet Software Consortium.
@@ -23,6 +23,9 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include <netdb.h>
+
+/* Application-visible define to signal that we have the new interfaces. */
+#define HESIOD_INTERFACES
 
 struct hesiod_postoffice {
   char *hesiod_po_type;
@@ -58,6 +61,7 @@ struct hes_postoffice {
   char *po_name;
 };
 
+int hes_init(void);
 char *hes_to_bind(const char *name, const char *type);
 char **hes_resolve(const char *name, const char *type);
 int hes_error(void);
