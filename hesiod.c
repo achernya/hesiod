@@ -1,9 +1,13 @@
 /* This file is part of the Hesiod library.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.8  90/07/11  16:46:44  probe
+ * Patches from <mar>
+ * Support for HES_DOMAIN environment variable added
+ * 
  * Revision 1.9  90/07/11  16:41:18  probe
  * Patches from <mar>
  * Added description about error codes and the HES_DOMAIN environment
@@ -50,7 +54,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.8 1990-07-11 16:46:44 probe Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.9 1990-07-19 09:20:09 epeisach Exp $";
 #endif
 
 #include <stdio.h>
@@ -78,7 +82,7 @@ hes_init()
 	register char *key, *cp, **cpp;
 	int len;
 	char buf[MAXDNAME+7];
-	char *calloc();
+	char *calloc(), *getenv();
 
 	Hes_Errno = HES_ER_UNINIT;
 	Hes_LHS = NULL; Hes_RHS = NULL;
