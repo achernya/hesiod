@@ -1,48 +1,56 @@
-/* $Id: hesiod.h,v 1.1 1996-11-07 02:28:09 ghudson Exp $ */
+/* $Id: hesiod.h,v 1.2 1996-12-08 21:37:42 ghudson Exp $ */
 
-/* Copyright 1988, 1996 by the Massachusetts Institute of Technology.
+/*
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
- * Permission to use, copy, modify, and distribute this
- * software and its documentation for any purpose and without
- * fee is hereby granted, provided that the above copyright
- * notice appear in all copies and that both that copyright
- * notice and this permission notice appear in supporting
- * documentation, and that the name of M.I.T. not be used in
- * advertising or publicity pertaining to distribution of the
- * software without specific, written prior permission.
- * M.I.T. makes no representations about the suitability of
- * this software for any purpose.  It is provided "as is"
- * without express or implied warranty.
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
+ * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
+ * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+ * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+ * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+ * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
  */
 
-/* Original version by Steve Dyer, IBM/Project Athena. */
+#ifndef HESIOD__INCLUDED
+#define HESIOD__INCLUDED
 
-/* This file is part of the Hesiod library.  It declares routines,
- * constants, and structures visible to users of the library.
- */
+#include <sys/types.h>
+#include <pwd.h>
+#include <netdb.h>
 
-#ifndef HES__HESIOD_H
-#define HES__HESIOD_H
+struct hesiod_postoffice {
+  char *hesiod_po_type;
+  char *hesiod_po_host;
+  char *hesiod_po_name;
+};
 
-/* Configuration information. */
+int hesiod_init(void **context);
+void hesiod_end(void *context);
+char *hesiod_to_bind(void *context, const char *name, const char *type);
+char **hesiod_resolve(void *context, const char *name, const char *type);
+void hesiod_free_list(void *context, char **list);
+struct passwd *hesiod_getpwnam(void *context, const char *name);
+struct passwd *hesiod_getpwuid(void *context, uid_t uid);
+void hesiod_free_passwd(void *context, struct passwd *pw);
+struct servent *hesiod_getservbyname(void *context, const char *name,
+				     const char *proto);
+void hesiod_free_servent(void *context, struct servent *serv);
+struct hesiod_postoffice *hesiod_getmailhost(void *context, const char *user);
+void hesiod_free_postoffice(void *context, struct hesiod_postoffice *po);
 
-#define DEF_RHS		".Athena.MIT.EDU"	/* Defaults if HESIOD_CONF */
-#define DEF_LHS		".ns"			/*    file is not present. */
+/* Compatibility stuff. */
 
-/* Error codes. */
-
-#define	HES_ER_OK	0	/* No error */
-#define	HES_ER_UNINIT	1	/* Uninitialized */
-#define	HES_ER_NOTFOUND	2	/* Hesiod name not found by server */
-#define HES_ER_CONFIG	3	/* Local problem (no config file?) */
-#define HES_ER_NET	4	/* Network problem */
-#define HES_ER_RANGE	5	/* Return buffer not large enough */
-#define HES_ER_NOMEM	6	/* Insufficient memory is available */
-#define HES_ER_INVAL	7	/* Invalid response from hesiod server */
-
-#define HES_MAX_ERRLEN	128	/* Max buffer space needed for error strings */
-
-/* For use in getting post-office information. */
+#define HES_ER_UNINIT	-1	/* uninitialized */
+#define HES_ER_OK	0	/* no error */
+#define HES_ER_NOTFOUND	1	/* Hesiod name not found by server */
+#define HES_ER_CONFIG	2	/* local problem (no config file?) */
+#define HES_ER_NET	3	/* network problem */
 
 struct hes_postoffice {
   char *po_type;
@@ -50,33 +58,12 @@ struct hes_postoffice {
   char *po_name;
 };
 
-struct passwd;
-struct servent;
-
-/* Thread-safe routines. */
-int hes_init(void);
-int hes_to_bind_r(const char *name, const char *type, char *buffer,
-		  int buflen);
-int hes_resolve_r(const char *name, const char *type, char **retvec,
-		  int retveclen);
-int hes_strerror_r(int errval, char *buf, int bufsize);
-int hes_getpwnam_r(const char *name, struct passwd *entry, char *buf,
-		   int bufsize, struct passwd **result);
-int hes_getpwuid_r(int uid, struct passwd *entry, char *buf, int bufsize,
-		   struct passwd **result);
-int hes_getmailhost_r(const char *user, struct hes_postoffice *ret,
-		      char *linebuf, int bufsize);
-int hes_getservbyname_r(const char *name, const char *proto,
-			struct servent *result, char *buffer, int buflen);
-
-/* Non-thread-safe routines. */
 char *hes_to_bind(const char *name, const char *type);
 char **hes_resolve(const char *name, const char *type);
 int hes_error(void);
-const char *hes_strerror(int errval);
-struct passwd *hes_getpwnam(const char *nam);
-struct passwd *hes_getpwuid(int uid);
-struct hes_postoffice *hes_getmailhost(const char *user);
+struct passwd *hes_getpwnam(const char *name);
+struct passwd *hes_getpwuid(uid_t uid);
 struct servent *hes_getservbyname(const char *name, const char *proto);
+struct hes_postoffice *hes_getmailhost(const char *name);
 
-#endif /* HES__HESIOD_H */
+#endif
