@@ -5,7 +5,7 @@
  *
  * Original version by Steve Dyer, IBM/Project Athena.
  *
- *	$Author: probe $
+ *	$Author: mar $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v $
  *	$Athena: hespwnam.c,v 1.4 88/08/07 21:52:51 treese Locked $
  */
@@ -13,11 +13,11 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.8 1991-06-10 03:15:41 probe Exp $";
+static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.9 1993-10-21 14:36:11 mar Exp $";
 #endif
 #include <stdio.h>
 #include <pwd.h>
-#include <strings.h>
+#include <string.h>
 
 static struct passwd pw_entry;
 static char buf[256];

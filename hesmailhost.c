@@ -5,10 +5,13 @@
  *
  * Original version by Steve Dyer, IBM/Project Athena.
  *
- *	$Author: treese $
+ *	$Author: mar $
  *	$Athena: hesmailhost.c,v 1.4 88/08/07 21:52:45 treese Locked $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesmailhost.c,v $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.5  88/08/07  23:17:10  treese
+ * Second-public-distribution
+ * 
  * Revision 1.4  88/08/07  21:52:45  treese
  * First public distribution
  * 
@@ -25,12 +28,12 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesmailhost_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesmailhost.c,v 1.5 1988-08-07 23:17:10 treese Exp $";
+static char rcsid_hesmailhost_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesmailhost.c,v 1.6 1993-10-21 14:36:09 mar Exp $";
 #endif
 
 #include <ctype.h>
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 
 #include "hesiod.h"
 
