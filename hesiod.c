@@ -1,9 +1,23 @@
 /* This file is part of the Hesiod library.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
- *	$Author: treese $
+ *	$Author: probe $
  *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.6.1.1  89/11/03  17:50:12  probe
+ * Changes T_TXT to T_UNSPECA.
+ * 
+ * The BIND 4.8.1 implementation of T_TXT is incorrect; BIND 4.8.1 declares
+ * it as a NULL terminated string.  The RFC defines T_TXT to be a length
+ * byte followed by arbitrary changes.
+ * 
+ * Because of this incorrect declaration in BIND 4.8.1, when this bug is fixed,
+ * T_TXT requests between machines running different versions of BIND will
+ * not be compatible (nor is there any way of adding compatibility).
+ * 
+ * Revision 1.6  88/08/07  23:17:03  treese
+ * Second-public-distribution
+ * 
  * Revision 1.5  88/08/07  22:00:44  treese
  * Changed T_UNSPECA to T_TXT.
  * Changed C_HESIOD to C_HS.
@@ -28,7 +42,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.6 1988-08-07 23:17:03 treese Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.7 1989-11-16 06:49:31 probe Exp $";
 #endif
 
 #include <stdio.h>
@@ -142,8 +156,9 @@ char *HesiodName, *HesiodNameType;
 {
 	register char *cp;
 	static char *retvec[100];
+	char *ocp, *dst;
 	char *calloc();
-	int i, j;
+	int i, j, n;
 	struct nsmsg *ns, *_resolve();
 	rr_t *rp;
 	extern int errno;
@@ -164,9 +179,17 @@ char *HesiodName, *HesiodNameType;
 		if (
 		    rp->class == C_HS &&
 		    rp->type == T_TXT) { /* skip CNAME records */
-			retvec[j] = calloc((unsigned int) rp->dlen,
-					   sizeof(char));
-			(void) strcpy(retvec[j++], rp->data);
+			retvec[j] = calloc(rp->dlen + 1, sizeof(char));
+			dst = retvec[j];
+			ocp = cp = rp->data;
+			while (cp < ocp + rp->dlen) {
+			    n = (unsigned char) *cp++;
+			    (void) bcopy(cp, dst, n);
+			    cp += n;
+			    dst += n;
+			}
+			*dst = 0;
+			j++;
 		}
 	}
 	retvec[j] = 0;
