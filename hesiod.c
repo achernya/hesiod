@@ -1,9 +1,12 @@
 /* This file is part of the Hesiod library.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
- *	$Author: epeisach $
+ *	$Author: vrt $
  *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.9  90/07/19  09:20:09  epeisach
+ * Declare that getenv returns a char*
+ * 
  * Revision 1.8  90/07/11  16:46:44  probe
  * Patches from <mar>
  * Support for HES_DOMAIN environment variable added
@@ -54,7 +57,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.9 1990-07-19 09:20:09 epeisach Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.10 1993-04-27 14:03:44 vrt Exp $";
 #endif
 
 #include <stdio.h>
@@ -148,7 +151,11 @@ char *HesiodName, *HesiodNameType;
 				return(NULL);
 			}
 		(void) strcpy(bindname,HesiodName);
+#ifndef SOLARIS
 		*index(bindname,'@') = '\0';
+#else
+		*strchr(bindname,'@') = '\0';
+#endif /* SOLARIS */
 	} else {
 		RHS = Hes_RHS;
 		(void) strcpy(bindname, HesiodName);
