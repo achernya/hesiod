@@ -2,8 +2,11 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
  *	$Author: treese $
- *	$Athena: hesiod.c,v 1.3 88/06/12 00:52:58 treese Locked $
+ *	$Athena: hesiod.c,v 1.4 88/08/07 21:52:31 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.4  88/08/07  21:52:31  treese
+ * First public distribution
+ * 
  * Revision 1.3  88/06/12  00:52:58  treese
  * Cleaned up to work with Saber.
  * First public distribution.
@@ -20,7 +23,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.4 1988-08-07 21:52:31 treese Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.5 1988-08-07 22:00:44 treese Exp $";
 #endif
 
 #include <stdio.h>
@@ -143,11 +146,7 @@ char *HesiodName, *HesiodNameType;
 	cp = hes_to_bind(HesiodName, HesiodNameType);
 	if (cp == NULL) return(NULL);
 	errno = 0;
-#ifdef USE_HS_QUERY
-	ns = _resolve(cp, C_HESIOD, T_UNSPECA, NoRetryTime);
-#else
-	ns = _resolve(cp, C_ANY, T_UNSPECA, NoRetryTime);
-#endif
+	ns = _resolve(cp, C_HS, T_TXT, NoRetryTime);
 	if (errno == ETIMEDOUT || errno == ECONNREFUSED) {
 		Hes_Errno = HES_ER_NET;
 		return(NULL);
@@ -158,10 +157,8 @@ char *HesiodName, *HesiodNameType;
 	}
 	for(i = j = 0, rp = &ns->rr; i < ns->ns_off; rp++, i++) {
 		if (
-#ifndef USE_HS_QUERY
-		    rp->class == C_HESIOD &&
-#endif
-		    rp->type == T_UNSPECA) { /* skip CNAME records */
+		    rp->class == C_HS &&
+		    rp->type == T_TXT) { /* skip CNAME records */
 			retvec[j] = calloc((unsigned int) rp->dlen,
 					   sizeof(char));
 			(void) strcpy(retvec[j++], rp->data);
