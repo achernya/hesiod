@@ -1,8 +1,8 @@
 #ifndef lint
-static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.9 1993-10-22 14:19:43 epeisach Exp $";
+static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.10 1996-06-27 17:26:56 ghudson Exp $";
 #endif
 /*
- * $Author: epeisach $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v $
  * $Athena: resolve.c,v 1.4 88/08/07 21:58:40 treese Locked $
  */
@@ -56,15 +56,16 @@ rr_scan(cp, rr)
 
 
 nsmsg_p
-res_scan(msg)
+res_scan(msg, msg_len)
     char *msg;
+    int msg_len;
 {
     static char bigmess[sizeof(nsmsg_t) + sizeof(rr_t)*((PACKETSZ-sizeof(HEADER))/RRFIXEDSZ)];
     static char datmess[PACKETSZ-sizeof(HEADER)];
     register char *cp;
     register rr_t *rp;
     register HEADER *hp;
-    register char *data = datmess;
+    register char *data = datmess, *dend = data + sizeof(datmess);
     register int n, n_an, n_ns, n_ar, nrec;
     register nsmsg_t *mess = (nsmsg_t *)bigmess;
 
@@ -94,8 +95,8 @@ res_scan(msg)
 
     /* scan answers */
     if (n = n_an) {
-        while (--n >= 0) {
-            if ((cp = rr_scan(cp, rp)) == NULL)
+        while (--n >= 0 && cp < msg + msg_len) {
+            if ((cp = rr_scan(cp, rp)) == NULL || rp->dlen + 1 > dend - data)
                 return((nsmsg_t *)NULL);
             (void) strncpy(data, rp->data, rp->dlen);
             rp->data = data;
@@ -107,8 +108,8 @@ res_scan(msg)
 
     /* scan name servers */
     if (n = n_ns) {
-        while (--n >= 0) {
-            if ((cp = rr_scan(cp, rp)) == NULL)
+        while (--n >= 0 && cp < msg + msg_len) {
+            if ((cp = rr_scan(cp, rp)) == NULL || rp->dlen + 1 > dend - data)
                 return((nsmsg_t *)NULL);
             (void) strncpy(data, rp->data, rp->dlen);
             rp->data = data;
@@ -120,8 +121,8 @@ res_scan(msg)
 
     /* scan additional records */
     if (n = n_ar) {
-        while (--n >= 0) {
-            if ((cp = rr_scan(cp, rp)) == NULL)
+        while (--n >= 0 && cp < msg + msg_len) {
+            if ((cp = rr_scan(cp, rp)) == NULL || rp->dlen + 1 > dend - data)
                 return((nsmsg_t *)NULL);
             (void) strncpy(data, rp->data, rp->dlen);
             rp->data = data;
@@ -188,7 +189,7 @@ _resolve(name, class, type, patience)
         return((nsmsg_t *)NULL);
     }
 
-    return(res_scan(abuf));
+    return(res_scan(abuf, n));
 }
 
 
