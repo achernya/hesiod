@@ -15,7 +15,7 @@
 
 /* This file is a simple driver for the Hesiod library. */
 
-static char rcsid[] = "$Id: hesinfo.c,v 1.1 1998-09-03 01:12:50 ghudson Exp $";
+static const char rcsid[] = "$Id: hesinfo.c,v 1.2 1999-09-21 01:40:47 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,7 +28,7 @@ extern int optind;
 int main(int argc, char **argv)
 {
   char **list, **p, *bindname, *name, *type;
-  int lflag = 0, errflg = 0, bflag = 0, c, status;
+  int lflag = 0, errflg = 0, bflag = 0, c;
   void *context;
 
   while ((c = getopt(argc, argv, "lb")) != EOF)
