@@ -2,7 +2,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v $
 #	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.1 1990-07-12 11:34:13 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.2 1990-07-12 11:35:08 epeisach Exp $
 
 DEFINES= -DHESIOD
 INCPATH=
@@ -33,21 +33,34 @@ MAN3= man3
 all::	hesiod.a ${TOOLS} llib-lhesiod.ln
 
 install::	all
-	install -m 644 hesiod.a ${DESTDIR}${LIBDIR}/libhesiod.a
+	install -c -m 644 hesiod.a ${DESTDIR}${LIBDIR}/libhesiod.a
 	ranlib ${DESTDIR}${LIBDIR}/libhesiod.a
-	install -m 644 hesiod_p.a ${DESTDIR}${LIBDIR}/libhesiod_p.a
+	install -c -m 644 hesiod_p.a ${DESTDIR}${LIBDIR}/libhesiod_p.a
 	ranlib ${DESTDIR}${LIBDIR}/libhesiod_p.a
-	install -m 644 hesiod.h ${DESTDIR}${INCDIR}/hesiod.h
-	cp hesiod.3 ${DESTDIR}${MANDIR}${MAN3}
-	cp hesinfo.1 ${DESTDIR}${MANDIR}${MAN1}
-	install -m 755 hesinfo ${DESTDIR}${BINDIR}
+	install -c -m 644 hesiod.h ${DESTDIR}${INCDIR}/hesiod.h
+	install -c -m 644 hesiod.3 ${DESTDIR}${MANDIR}${MAN3}
+	install -c -m 644 hesinfo.1 ${DESTDIR}${MANDIR}${MAN1}
+	install -c -m 755 -s hesinfo ${DESTDIR}${BINDIR}
 	install -c -m 644 llib-lhesiod.ln ${DESTDIR}${LINTDIR}/llib-lhesiod.ln
 
 hesiod.a:	${OBJS}
+#ifdef ultrix
+	rm -rf tmp
+	mkdir tmp
+	(cd tmp; ar x /usr/local/lib/libresolv.a)
+	ar rc $@ ${OBJS} tmp//**/*.o
+	ranlib $@
+	rm -rf tmp
+	mkdir tmp
+	(cd tmp; ar x /usr/local/lib/libresolv_p.a)
+	cd profiled; ar rc ../hesiod_p.a ${OBJS} ../tmp//**/*.o
+	ranlib hesiod_p.a
+#else
 	ar rc $@ ${OBJS}
 	ranlib $@
 	cd profiled; ar rc ../hesiod_p.a ${OBJS}
 	ranlib hesiod_p.a
+#endif
 
 hesinfo:	hesiod.a hesinfo.c
 	cc ${CFLAGS} -o hesinfo hesinfo.c hesiod.a
