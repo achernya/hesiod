@@ -8,29 +8,12 @@
  *	$Author: probe $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v $
  *	$Athena: hespwnam.c,v 1.4 88/08/07 21:52:51 treese Locked $
- *	$Log: not supported by cvs2svn $
- * Revision 1.6  91/01/21  12:53:54  probe
- * PS/2, RS/6000 integration
- * 
- * Revision 1.5  88/08/07  23:17:19  treese
- * Second-public-distribution
- * 
- * Revision 1.4  88/08/07  21:52:51  treese
- * First public distribution
- * 
- * Revision 1.3  88/08/07  21:48:34  treese
- * Cleaned up using saber.
- * 
- * Revision 1.2  88/06/05  19:51:41  treese
- * Cleaned up for public distribution
- * 
- *
  */
 
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.7 1991-01-22 12:58:24 probe Exp $";
+static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.8 1991-06-10 03:15:41 probe Exp $";
 #endif
 #include <stdio.h>
 #include <pwd.h>
@@ -39,13 +22,14 @@ static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athen
 static struct passwd pw_entry;
 static char buf[256];
 
-struct passwd *
-hes_getpwnam(nam)
-	char *nam;
+static struct passwd *
+hes_getpwcommon(arg, which)
+	char *arg;
+	int which;	/* 0=hes_getpwnam, 1=hes_getpwuid */
 {
 	register char *p, **pp; char *_NextPWField(), **hes_resolve();
 
-	pp = hes_resolve(nam, "passwd");
+	pp = hes_resolve(arg, which ? "uid" : "passwd");
 	if (pp == NULL || *pp == NULL)
 		return(NULL);
 	/* choose only the first response (only 1 expected) */
@@ -58,7 +42,7 @@ hes_getpwnam(nam)
 	pw_entry.pw_uid = atoi(p);
 	p = _NextPWField(p);
 	pw_entry.pw_gid = atoi(p);
-#if !defined(_AIX) || (AIXV < 31)
+#if (!defined(_AIX) || (AIXV < 31)) && !defined(sun)
 	pw_entry.pw_quota = 0;
 #if defined(_AIX) && (AIXV < 31)
 	pw_entry.pw_age =
@@ -92,3 +76,19 @@ char *ptr;
 	return(ptr);
 }
 
+struct passwd *
+hes_getpwnam(nam)
+	char *nam;
+{
+	return hes_getpwcommon(nam, 0);
+}
+
+struct passwd *
+hes_getpwuid(uid)
+	int uid;
+{
+	char uidstr[16];
+
+	sprintf(uidstr, "%d", uid);
+	return hes_getpwcommon(uidstr, 1);
+}
