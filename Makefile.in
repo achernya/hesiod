@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 1997-01-03 20:42:57 ghudson Exp $
+# $Id: Makefile.in,v 1.6 1997-01-17 21:07:12 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -52,37 +52,37 @@ install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man3
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man5
-	${INSTALL} -c -m 644 libhesiod.a ${DESTDIR}${libdir}
+	${INSTALL} -m 644 libhesiod.a ${DESTDIR}${libdir}
 	${RANLIB} ${DESTDIR}${libdir}/libhesiod.a
 	chmod u-w ${DESTDIR}${libdir}/libhesiod.a
-	${INSTALL_PROGRAM} -c -m 555 hesinfo ${DESTDIR}${lbindir}
-	${INSTALL} -c -m 444 ${srcdir}/hesiod.h ${DESTDIR}${includedir}
-	${INSTALL} -c -m 444 ${srcdir}/hesinfo.1 ${DESTDIR}${mandir}/man1
-	${INSTALL} -c -m 444 ${srcdir}/hesiod.3 ${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_end.3 \
+	${INSTALL_PROGRAM} -m 555 hesinfo ${DESTDIR}${lbindir}
+	${INSTALL} -m 444 ${srcdir}/hesiod.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 ${srcdir}/hesinfo.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/hesiod.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/hesiod_end.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_free_list.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_free_list.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_free_passwd.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_free_passwd.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_free_postoffice.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_free_postoffice.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_free_servent.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_free_servent.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_getmailhost.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_getmailhost.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_getpwnam.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_getpwnam.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_getpwuid.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_getpwuid.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_getservbyname.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_getservbyname.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_init.3 ${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_resolve.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_init.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/hesiod_resolve.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod_to_bind.3 \
+	${INSTALL} -m 444 ${srcdir}/hesiod_to_bind.3 \
 		${DESTDIR}${mandir}/man3
-	${INSTALL} -c -m 444 ${srcdir}/hesiod.conf.5 ${DESTDIR}${mandir}/man5
+	${INSTALL} -m 444 ${srcdir}/hesiod.conf.5 ${DESTDIR}${mandir}/man5
 
 clean:
 	rm -f ${OBJS} libhesiod.a hesinfo.o hesinfo hestest.o hestest
