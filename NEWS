@@ -1,3 +1,8 @@
+Major changes in release 3.0.1:
+* hes_init() function added to backward compatibility interfaces.
+* You can use "#ifdef HESIOD_INTERFACES" in an application to test if
+  the new interfaces are available.
+
 Major changes in release 3.0.0:
 * This NEWS file added.
 * Wire protocol change: Hesiod data on the name servers should now be
