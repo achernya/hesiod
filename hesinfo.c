@@ -15,11 +15,12 @@
 
 /* This file is a simple driver for the Hesiod library. */
 
-static const char rcsid[] = "$Id: hesinfo.c,v 1.2 1999-09-21 01:40:47 danw Exp $";
+static const char rcsid[] = "$Id: hesinfo.c,v 1.3 1999-09-22 20:52:12 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <errno.h>
 #include "hesiod.h"
 
