@@ -1,8 +1,8 @@
 #ifndef lint
-static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.5 1988-08-07 23:17:27 treese Exp $";
+static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.6 1990-07-11 16:51:27 probe Exp $";
 #endif
 /*
- * $Author: treese $
+ * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v $
  * $Athena: resolve.c,v 1.4 88/08/07 21:58:40 treese Locked $
  */
@@ -10,6 +10,7 @@ static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/he
 #define _RESOLVE_C_
 
 #include <strings.h>
+#include <sys/types.h>
 #include <sys/param.h>
 #include <netinet/in.h>
 #include <sys/errno.h>
