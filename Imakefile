@@ -1,44 +1,46 @@
 # Makefile for the Project Athena Hesiod Nameserver library
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v $
-#	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.3 1990-11-07 11:39:39 epeisach Exp $
+#	$Author: probe $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.4 1991-01-21 12:54:53 probe Exp $
 
-DEFINES= -DHESIOD
-INCPATH=
-CFLAGS = -O ${INCPATH} ${DEFINES}
-LINTFLAGS=-uhvb
+#if defined(_AIX) && defined(_IBMR2)
+MACHDEF= -DBIT_ZERO_ON_LEFT
+#endif
+
+DEFINES= -DHESIOD $(MACHDEF)
+INCPATH= -I.
 
 SRCS = hesiod.c hespwnam.c hesmailhost.c hesservbyname.c resolve.c cistrcmp.c 
 OBJS = hesiod.o hespwnam.o hesmailhost.o hesservbyname.o resolve.o cistrcmp.o 
 TOOLS = hesinfo
-LIBDIR= ${ATHLIBDIR}
+INCDIR= $(ATHINCDIR)
+LIBDIR= $(ATHLIBDIR)
 LINTDIR= /usr/lib/lint
-INCDIR= /usr/include
 BINDIR= /bin/athena
 MANDIR= /usr/man/
 MAN1= man1
 MAN3= man3
 
 .c.o:
-	cc -c -pg ${CFLAGS} $*.c
-	mv $*.o profiled/$*.o
-	cc -c ${CFLAGS} $*.c
+	-$(CC) -c -pg ${CFLAGS} $*.c
+	-mv $*.o profiled/$*.o
+	$(CC) -c ${CFLAGS} $*.c
 
 all::	hesiod.a ${TOOLS} llib-lhesiod.ln
 
-install::	all
+install::
 	install -c -m 644 hesiod.a ${DESTDIR}${LIBDIR}/libhesiod.a
-	ranlib ${DESTDIR}${LIBDIR}/libhesiod.a
+	ranlib ${DESTDIR}/${LIBDIR}/libhesiod.a
 	install -c -m 644 hesiod_p.a ${DESTDIR}${LIBDIR}/libhesiod_p.a
-	ranlib ${DESTDIR}${LIBDIR}/libhesiod_p.a
+	ranlib ${DESTDIR}/${LIBDIR}/libhesiod_p.a
 	install -c -m 644 hesiod.h ${DESTDIR}${INCDIR}/hesiod.h
 	install -c -m 644 hesiod.3 ${DESTDIR}${MANDIR}${MAN3}
 	install -c -m 644 hesinfo.1 ${DESTDIR}${MANDIR}${MAN1}
-	install -c -m 755 -s hesinfo ${DESTDIR}${BINDIR}
 	install -c -m 644 llib-lhesiod.ln ${DESTDIR}${LINTDIR}/llib-lhesiod.ln
 
 hesiod.a:	${OBJS}
+	@echo Building Hesiod library...
 #if defined(ultrix) && defined(ULTRIX31)
 	rm -rf tmp
 	mkdir tmp
@@ -52,23 +54,22 @@ hesiod.a:	${OBJS}
 	ranlib hesiod_p.a
 #else
 	ar rc $@ ${OBJS}
-	ranlib $@
+	-ranlib $@
 	cd profiled; ar rc ../hesiod_p.a ${OBJS}
-	ranlib hesiod_p.a
+	-ranlib hesiod_p.a
 #endif
 
-hesinfo:	hesiod.a hesinfo.c
-	cc ${CFLAGS} -o hesinfo hesinfo.c hesiod.a
+program(hesinfo, hesinfo.o hesiod.a,,,,/bin/athena)
 
 saber:
 	saber ${INCPATH} ${DEFINES} hesinfo.c ${SRCS}
 
-clean:	
+clean::	
 	-rm -f hesiod.a hesiod_p.a *.o ${TOOLS} *~ profiled/?*.o llib-lhesiod.ln
 
 llib-lhesiod.ln: $(SRCS)
 	lint ${LINTCFLAG}hesiod $(LINTFLAGS) $(CFLAGS) $(SRCS)
 
-depend:
+depend::
 	touch Make.depend; makedepend -fMake.depend ${CFLAGS} ${SRCS} hesinfo.c
 # DO NOT DELETE THIS LINE -- make depend depends on it.
