@@ -5,10 +5,13 @@
  *
  * Original version by Steve Dyer, IBM/Project Athena.
  *
- *	$Author: treese $
+ *	$Author: probe $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v $
  *	$Athena: hespwnam.c,v 1.4 88/08/07 21:52:51 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.5  88/08/07  23:17:19  treese
+ * Second-public-distribution
+ * 
  * Revision 1.4  88/08/07  21:52:51  treese
  * First public distribution
  * 
@@ -24,7 +27,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.5 1988-08-07 23:17:19 treese Exp $";
+static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.6 1991-01-21 12:53:54 probe Exp $";
 #endif
 #include <stdio.h>
 #include <pwd.h>
@@ -40,7 +43,7 @@ hes_getpwnam(nam)
 	register char *p, **pp; char *_NextPWField(), **hes_resolve();
 
 	pp = hes_resolve(nam, "passwd");
-	if (pp == NULL)
+	if (pp == NULL || *pp == NULL)
 		return(NULL);
 	/* choose only the first response (only 1 expected) */
 	(void) strcpy(buf, pp[0]);
@@ -52,8 +55,13 @@ hes_getpwnam(nam)
 	pw_entry.pw_uid = atoi(p);
 	p = _NextPWField(p);
 	pw_entry.pw_gid = atoi(p);
+#if !defined(_AIX) || (AIXV < 31)
 	pw_entry.pw_quota = 0;
+#if (AIXV < 31)
+	pw_entry.pw_age =
+#endif
 	pw_entry.pw_comment = "";
+#endif
 	p = _NextPWField(p);
 	pw_entry.pw_gecos = p;
 	p = _NextPWField(p);
