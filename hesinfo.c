@@ -15,7 +15,7 @@
 
 /* This file is a simple driver for the Hesiod library. */
 
-static const char rcsid[] = "$Id: hesinfo.c,v 1.4 2000-01-05 16:29:02 ghudson Exp $";
+static const char rcsid[] = "$Id: hesinfo.c,v 1.5 2000-01-05 22:00:46 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 	  exit(1);
 	}
       printf("%s\n", bindname);
-      hesiod_free_string(bindname);
+      hesiod_free_string(context, bindname);
       if (lflag)
 	printf("which ");
     }
