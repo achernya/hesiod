@@ -2,46 +2,26 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v $
 #	$Author: probe $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.5 1991-01-21 13:12:04 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.6 1991-01-22 13:22:03 probe Exp $
 
 #if defined(_AIX) && defined(_IBMR2)
 MACHDEF= -DBIT_ZERO_ON_LEFT
 #endif
 
-DEFINES= -DHESIOD $(MACHDEF)
-INCPATH= -I.
+DEFINES=-I. -DHESIOD $(MACHDEF)
 
 SRCS = hesiod.c hespwnam.c hesmailhost.c hesservbyname.c resolve.c cistrcmp.c 
 OBJS = hesiod.o hespwnam.o hesmailhost.o hesservbyname.o resolve.o cistrcmp.o 
-TOOLS = hesinfo
-INCDIR= $(ATHINCDIR)
-LIBDIR= $(ATHLIBDIR)
-LINTDIR= /usr/lib/lint
-BINDIR= /bin/athena
-MANDIR= /usr/man/
-MAN1= man1
-MAN3= man3
 
+
+#ifdef ULTRIX31
 .c.o:
 	-$(CC) -c -pg ${CFLAGS} $*.c
 	-mv $*.o profiled/$*.o
 	$(CC) -c ${CFLAGS} $*.c
 
-all::	hesiod.a ${TOOLS} llib-lhesiod.ln
-
-install::
-	install -c -m 644 hesiod.a ${DESTDIR}${LIBDIR}/libhesiod.a
-	ranlib ${DESTDIR}/${LIBDIR}/libhesiod.a
-	install -c -m 644 hesiod_p.a ${DESTDIR}${LIBDIR}/libhesiod_p.a
-	ranlib ${DESTDIR}/${LIBDIR}/libhesiod_p.a
-	install -c -m 644 hesiod.h ${DESTDIR}${INCDIR}/hesiod.h
-	install -c -m 644 hesiod.3 ${DESTDIR}${MANDIR}${MAN3}
-	install -c -m 644 hesinfo.1 ${DESTDIR}${MANDIR}${MAN1}
-	install -c -m 644 llib-lhesiod.ln ${DESTDIR}${LINTDIR}/llib-lhesiod.ln
-
-hesiod.a:	${OBJS}
+libhesiod.a:	${OBJS}
 	@echo Building Hesiod library...
-#if defined(ultrix) && defined(ULTRIX31)
 	rm -rf tmp
 	mkdir tmp
 	(cd tmp; ar x /usr/local/lib/libresolv.a)
@@ -50,26 +30,22 @@ hesiod.a:	${OBJS}
 	rm -rf tmp
 	mkdir tmp
 	(cd tmp; ar x /usr/local/lib/libresolv_p.a)
-	cd profiled; ar rc ../hesiod_p.a ${OBJS} ../tmp//**/*.o
-	ranlib hesiod_p.a
+	cd profiled; ar rc ../libhesiod_p.a ${OBJS} ../tmp//**/*.o
+	ranlib libhesiod_p.a
+
 #else
-	ar rc $@ ${OBJS}
-	-ranlib $@
-	cd profiled; ar rc ../hesiod_p.a ${OBJS}
-	-ranlib hesiod_p.a
+
+ProfiledObjectRule()
+
+SimpleLibrary(hesiod,$(OBJS),$(ATHLIBDIR))
+
 #endif
 
-build_program(hesinfo, hesinfo.o hesiod.a,,,,/bin/athena)
+SimpleLint(hesiod,$(SRCS))
 
-saber:
-	saber ${INCPATH} ${DEFINES} hesinfo.c ${SRCS}
+SimpleProgram(hesinfo,hesinfo.o libhesiod.a,,/bin/athena/)
 
-clean::	
-	-rm -f hesiod.a hesiod_p.a *.o ${TOOLS} *~ profiled/?*.o llib-lhesiod.ln
+install_man(hesiod.3,hesiod.3)
+install_man(hesinfo.1,hesinfo.1)
 
-llib-lhesiod.ln: $(SRCS)
-	lint ${LINTCFLAG}hesiod $(LINTFLAGS) $(CFLAGS) $(SRCS)
-
-depend::
-	touch Make.depend; makedepend -fMake.depend ${CFLAGS} ${SRCS} hesinfo.c
-# DO NOT DELETE THIS LINE -- make depend depends on it.
+install_file(hesiod.h,$(ATHINCDIR)/hesiod.h)
