@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.27 2000-01-05 16:28:51 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.28 2000-01-05 22:01:54 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -243,7 +243,7 @@ char **hesiod_resolve(void *context, const char *name, const char *type)
   if (retvec == NULL && errno == ENOENT && ctx->classes[1])
     retvec = get_txt_records(ctx, ctx->classes[1], bindname);
 
-  hesiod_free_string(bindname);
+  hesiod_free_string(context, bindname);
   return retvec;
 }
 
