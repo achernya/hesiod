@@ -15,17 +15,21 @@
 
 /* This file is a simple driver for the Hesiod library. */
 
-static char rcsid[] = "$Id: hesinfo.c,v 1.7 1996-11-07 02:25:05 ghudson Exp $";
+static char rcsid[] = "$Id: hesinfo.c,v 1.8 1996-12-08 21:29:54 ghudson Exp $";
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 #include "hesiod.h"
 
 extern int optind;
 
 int main(int argc, char **argv)
 {
-  char errbuf[HES_MAX_ERRLEN], buf[1024], *vec[128], **p, *identifier, *type;
+  char **list, **p, *bindname, *name, *type;
   int lflag = 0, errflg = 0, bflag = 0, c, status;
+  void *context;
 
   while ((c = getopt(argc, argv, "lb")) != EOF)
     {
@@ -34,41 +38,51 @@ int main(int argc, char **argv)
 	case 'l':
 	  lflag = 1;
 	  break;
-	case 'c':
+	case 'b':
 	  bflag = 1;
 	  break;
 	default:
 	  errflg++;
+	  break;
 	}
     }
   if (argc - optind != 2 || errflg)
     {
-      fprintf(stderr,"Usage: %s [-bl] identifier type\n",argv[0]);
-      fprintf(stderr,"	-l selects long format\n");
-      fprintf(stderr,"	-b also does hes_to_bind conversion\n");
+      fprintf(stderr,"Usage: %s [-bl] name type\n",argv[0]);
+      fprintf(stderr,"\t-l selects long format\n");
+      fprintf(stderr,"\t-b also does hes_to_bind conversion\n");
       return 2;
     }
 
-  identifier = argv[optind];
+  name = argv[optind];
   type = argv[optind + 1];
 
-  hes_init();
+  if (hesiod_init(&context) < 0)
+    {
+      if (errno == ENOEXEC)
+	fprintf(stderr, "hesiod_init: Invalid Hesiod configuration file.\n");
+      else
+	perror("hesiod_init");
+    }
 
   /* Display bind name if requested. */
   if (bflag)
     {
       if (lflag)
-	printf("hes_to_bind(%s, %s) expands to\n", identifier, type);
-      status = hes_to_bind_r(identifier, type, buf, sizeof(buf));
-      if (status != HES_ER_OK)
+	printf("hes_to_bind(%s, %s) expands to\n", name, type);
+      bindname = hesiod_to_bind(context, name, type);
+      if (!bindname)
 	{
 	  if (lflag)
 	    printf("nothing\n");
-	  hes_strerror_r(status, errbuf, sizeof(errbuf));
-	  fprintf(stderr, "%s\n", errbuf);
+	  if (errno == ENOENT)
+	    fprintf(stderr, "hesiod_to_bind: Unknown rhs-extension.\n");
+	  else
+	    perror("hesiod_to_bind");
 	  exit(1);
 	}
-      printf("%s\n", buf);
+      printf("%s\n", bindname);
+      free(bindname);
       if (lflag)
 	printf("which ");
     }
@@ -77,18 +91,23 @@ int main(int argc, char **argv)
     printf("resolves to\n");
 
   /* Do the hesiod resolve and check for errors. */
-  status = hes_resolve_r(identifier, type, vec, sizeof(vec));
-  if (status != HES_ER_OK)
+  list = hesiod_resolve(context, name, type);
+  if (!list)
     { 
       if (lflag)
 	printf("nothing\n");
-      hes_strerror_r(status, errbuf, sizeof(errbuf));
-      fprintf(stderr, "%s\n", errbuf);
+      if (errno == ENOENT)
+	fprintf(stderr, "hesiod_resolve: Hesiod name not found.\n");
+      else
+	perror("hesiod_resolve");
       return 1;
     }
 
   /* Display the results. */
-  for (p = vec; *p; p++)
+  for (p = list; *p; p++)
     printf("%s\n", *p);
+
+  hesiod_free_list(context, list);
+  hesiod_end(context);
   return 0;
 }
