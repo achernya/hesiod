@@ -17,7 +17,7 @@
  * backward-compatibility interfaces.
  */
 
-static char rcsid[] = "$Id: hescompat.c,v 1.1 1996-12-08 21:28:41 ghudson Exp $";
+static char rcsid[] = "$Id: hescompat.c,v 1.2 1996-12-16 08:32:39 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,6 +35,12 @@ static int errval = HES_ER_UNINIT;
 
 static int init_context(void);
 static void translate_errors(void);
+
+int hes_init()
+{
+  init_context();
+  return errval;
+}
 
 char *hes_to_bind(const char *name, const char *type)
 {
