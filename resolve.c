@@ -1,15 +1,28 @@
-#ifndef lint
-static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.10 1996-06-27 17:26:56 ghudson Exp $";
-#endif
-/*
- * $Author: ghudson $
- * $Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v $
- * $Athena: resolve.c,v 1.4 88/08/07 21:58:40 treese Locked $
+/* Copyright 1988, 1996 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-#define _RESOLVE_C_
+/* This file is part of the Hesiod library.  It implements routines
+ * for communicating with the name servers and interpreting their
+ * results.
+ */
 
+static char rcsid[] = "$Id: resolve.c,v 1.11 1996-11-07 02:39:56 ghudson Exp $";
+
+#include <stdio.h>
 #include <string.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <netinet/in.h>
@@ -18,206 +31,111 @@ static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/he
 #include <resolv.h>
 #include "resscan.h"
 
-#define DEF_RETRANS 4
-#define DEF_RETRY 3
+static nsmsg_t *res_scan(const char *msg, int msg_len, char *nmsgbuf,
+			 char *databuf);
+static int dn_skip(const char *comp_dn);
+static const char *rr_scan(const char *cp, rr_t *rr);
 
-extern int errno;
-
-static dn_skip();
-
-static caddr_t
-rr_scan(cp, rr)
-    char *cp;
-    rr_t *rr;
+/* Resolve name into data records. */
+nsmsg_t *hes__resolve(const char *name, int class, int type, char *nmsgbuf,
+		      char *databuf)
 {
-    register int n;
+  char qbuf[PACKETSZ], abuf[8192];
+  int n;
 
-    if ((n = dn_skip(cp)) < 0) {
-        errno = EINVAL;
-        return((char *)NULL);
-    }
-
-    cp += n;
-    rr->type = _getshort(cp);
-    cp += sizeof(u_short/*type*/);
-
-    rr->class = _getshort(cp);
-#ifdef __alpha
-    cp += sizeof(u_short/*class*/) + sizeof(u_int/*ttl*/);
-#else
-    cp += sizeof(u_short/*class*/) + sizeof(u_long/*ttl*/);
-#endif
-
-    rr->dlen = (int)_getshort(cp);
-    rr->data = cp + sizeof(u_short/*dlen*/);
-
-    return(rr->data + rr->dlen);
+  if (class >= 0 && type >= 0)
+    {
+      n = res_mkquery(QUERY, name, class, type, NULL, 0, NULL, qbuf, PACKETSZ);
+      if (n >= 0)
+	{
+	  n = res_send(qbuf, n, abuf, sizeof(abuf));
+	  if (n >= 0)
+	    return res_scan(abuf, n, nmsgbuf, databuf);
+	  else
+	    errno = ECONNREFUSED;
+	} else
+	  errno = EMSGSIZE;
+    } else
+      errno = EINVAL;
+  return NULL;
 }
 
-
-nsmsg_p
-res_scan(msg, msg_len)
-    char *msg;
-    int msg_len;
+static nsmsg_t *res_scan(const char *msg, int msg_len, char *nmsgbuf,
+			 char *databuf)
 {
-    static char bigmess[sizeof(nsmsg_t) + sizeof(rr_t)*((PACKETSZ-sizeof(HEADER))/RRFIXEDSZ)];
-    static char datmess[PACKETSZ-sizeof(HEADER)];
-    register char *cp;
-    register rr_t *rp;
-    register HEADER *hp;
-    register char *data = datmess, *dend = data + sizeof(datmess);
-    register int n, n_an, n_ns, n_ar, nrec;
-    register nsmsg_t *mess = (nsmsg_t *)bigmess;
+  const char *p;
+  rr_t *rp;
+  HEADER *hp = (HEADER *) msg;
+  char *data = databuf;
+  int i, n_an, n_ns, n_ar, nrec;
+  nsmsg_t *mess = (nsmsg_t *) nmsgbuf;
 
-    hp = (HEADER *)msg;
-    cp = msg + sizeof(HEADER);
-    n_an = ntohs(hp->ancount);
-    n_ns = ntohs(hp->nscount);
-    n_ar = ntohs(hp->arcount);
-    nrec = n_an + n_ns + n_ar;
+  p = msg + sizeof(HEADER);
+  n_an = ntohs(hp->ancount);
+  n_ns = ntohs(hp->nscount);
+  n_ar = ntohs(hp->arcount);
+  nrec = n_an + n_ns + n_ar;
 
-    mess->len = 0;
-    mess->hd = hp;
-    mess->ns_off = n_an;
-    mess->ar_off = n_an + n_ns;
-    mess->count = nrec;
-    rp = &mess->rr;
+  mess->len = 0;
+  mess->hd = hp;
+  mess->ns_off = n_an;
+  mess->ar_off = n_an + n_ns;
+  mess->count = nrec;
+  rp = &mess->rr;
 
-    /* skip over questions */
-    if (n = ntohs(hp->qdcount)) {
-        while (--n >= 0) {
-            register int i;
-            if ((i = dn_skip(cp)) < 0)
-                return((nsmsg_t *)NULL);
-            cp += i + (sizeof(u_short/*type*/) + sizeof(u_short/*class*/));
-        }
+  /* Skip over questions. */
+  for (i = 0; i < ntohs(hp->qdcount); i++)
+    {
+      i = dn_skip(p);
+      if (i < 0)
+	return NULL;
+      p += i + 4;
     }
 
-    /* scan answers */
-    if (n = n_an) {
-        while (--n >= 0 && cp < msg + msg_len) {
-            if ((cp = rr_scan(cp, rp)) == NULL || rp->dlen + 1 > dend - data)
-                return((nsmsg_t *)NULL);
-            (void) strncpy(data, rp->data, rp->dlen);
-            rp->data = data;
-            data += rp->dlen;
-            *data++ = '\0';
-            rp++;
-        }
+  /* Scan answers, name servers, and additional records. */
+  for (i = 0; i < n_an + n_ns + n_ar && p < msg + msg_len; i++)
+    {
+      p = rr_scan(p, rp);
+      if (p == NULL || data + rp->dlen > databuf + DATASIZE)
+	return NULL;
+      memcpy(data, rp->data, rp->dlen);
+      rp->data = data;
+      data += rp->dlen;
+      *data++ = 0;
+      rp++;
     }
 
-    /* scan name servers */
-    if (n = n_ns) {
-        while (--n >= 0 && cp < msg + msg_len) {
-            if ((cp = rr_scan(cp, rp)) == NULL || rp->dlen + 1 > dend - data)
-                return((nsmsg_t *)NULL);
-            (void) strncpy(data, rp->data, rp->dlen);
-            rp->data = data;
-            data += rp->dlen;
-            *data++ = '\0';
-            rp++;
-        }
-    }
+  mess->len = p - msg;
 
-    /* scan additional records */
-    if (n = n_ar) {
-        while (--n >= 0 && cp < msg + msg_len) {
-            if ((cp = rr_scan(cp, rp)) == NULL || rp->dlen + 1 > dend - data)
-                return((nsmsg_t *)NULL);
-            (void) strncpy(data, rp->data, rp->dlen);
-            rp->data = data;
-            data += rp->dlen;
-            *data++ = '\0';
-            rp++;
-        }
-    }
-
-    mess->len = (int)cp - (int)msg;
-
-    return(mess);
+  return mess;
 }
 
-/*
- * Resolve name into data records
- */
-
-nsmsg_p
-_resolve(name, class, type, patience)
-    char *name;
-    int class, type;
-    retransXretry_t patience;
+/* Skip over a compressed domain name.  Return the size or -1. */
+static int dn_skip(const char *comp_dn)
 {
-    static char qbuf[PACKETSZ], abuf[PACKETSZ];
-    register int n;
-#ifdef __alpha
-    register int res_options = _res.options;
-#else
-    register long res_options = _res.options;
-#endif
-    register int res_retrans = _res.retrans;
-    register int res_retry = _res.retry;
+  const char *p;
 
-#ifdef DEBUG
-    if (_res.options & RES_DEBUG)
-        printf("_resolve: class = %d, type = %d\n", class, type);
-#endif
-
-    if (class < 0 || type < 0) {
-        errno = EINVAL;
-        return((nsmsg_t *)NULL);
-    }
-
-    _res.options |= RES_IGNTC;
-
-    n = res_mkquery(QUERY, name, class, type, (char *)0, 0, NULL, qbuf, PACKETSZ);
-    if (n < 0) {
-        errno = EMSGSIZE;
-        return((nsmsg_t *)NULL);
-    }
-
-    _res.retrans = (patience.retrans ? patience.retrans : DEF_RETRANS);
-    _res.retry = (patience.retry ? patience.retry : DEF_RETRY);
-
-    n = res_send(qbuf, n, abuf, PACKETSZ);
-
-    _res.options = res_options;
-    _res.retrans = res_retrans;
-    _res.retry = res_retry;
-
-    if (n < 0) {
-        errno = ECONNREFUSED;
-        return((nsmsg_t *)NULL);
-    }
-
-    return(res_scan(abuf, n));
+  p = comp_dn;
+  while (*p && (*p & INDIR_MASK) == 0)
+    p += *p + 1;
+  if (*p && (*p & INDIR_MASK) != INDIR_MASK)
+    return -1;
+  return p + (*p ? 2 : 1) - comp_dn;
 }
 
-
-/*
- * Skip over a compressed domain name. Return the size or -1.
- */
-static
-dn_skip(comp_dn)
-	char *comp_dn;
+static const char *rr_scan(const char *p, rr_t *rr)
 {
-	register char *cp;
-	register int n;
+  int n;
 
-	cp = comp_dn;
-	while (n = *cp++) {
-		/*
-		 * check for indirection
-		 */
-		switch (n & INDIR_MASK) {
-		case 0:		/* normal case, n == len */
-			cp += n;
-			continue;
-		default:	/* illegal type */
-			return (-1);
-		case INDIR_MASK:	/* indirection */
-			cp++;
-		}
-		break;
-	}
-	return (cp - comp_dn);
+  n = dn_skip(p);
+  if (n >= 0)
+    {
+      rr->type = p[n] << 8 | p[n + 1];
+      rr->class = p[n + 2] << 8 | p[n + 3];
+      rr->dlen = p[n + 8] << 8 | p[n + 9];
+      rr->data = p + n + 10;
+      return rr->data + rr->dlen;
+    }
+  errno = EINVAL;
+  return NULL;
 }
