@@ -17,7 +17,7 @@
  * interface routines.
  */
 
-static char rcsid[] = "$Id: hesiod.c,v 1.16 1996-11-07 02:27:08 ghudson Exp $";
+static char rcsid[] = "$Id: hesiod.c,v 1.17 1996-11-08 04:04:18 ghudson Exp $";
 
 #include <stdio.h>
 #include <errno.h>
@@ -45,7 +45,6 @@ static char *error_table[] = {
   "Invalid response from hesiod server"
 };
 
-static char *hes_config_file = CONFDIR "/hesiod.conf";
 static char *hes_lhs;
 static char *hes_rhs;
 int hes_errno = HES_ER_UNINIT;
@@ -64,7 +63,11 @@ int hes_init()
   hes_lhs = NULL;
   hes_rhs = NULL;
 
-  fp = fopen(hes_config_file, "r");
+  /* Look for hesiod.conf in /etc, then fall back to hesiod.conf. */
+  fp = fopen("/etc/hesiod.conf", "r");
+  if (fp == NULL)
+    fp = fopen(SYSCONFDIR "/hesiod.conf", "r");
+
   if (fp == NULL)
     {
       /* Use compiled-in defaults. */
