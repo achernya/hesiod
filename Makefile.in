@@ -1,8 +1,6 @@
-# $Id: Makefile.in,v 1.4 1996-12-08 21:23:52 ghudson Exp $
+# $Id: Makefile.in,v 1.5 1997-01-03 20:42:57 ghudson Exp $
 
 SHELL=/bin/sh
-CC=@CC@
-LIBS=@LIBS@
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
 RANLIB=@RANLIB@
@@ -18,8 +16,12 @@ mandir=@mandir@
 sysconfdir=@sysconfdir@
 lbindir=@lbindir@
 
-CFLAGS=-I. ${CDEBUGFLAGS} -DSYSCONFDIR=\"${sysconfdir}\"
-CDEBUGFLAGS=-g
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=-I. -DSYSCONFDIR=\"${sysconfdir}\" ${CPPFLAGS} ${CFLAGS}
 OBJS=hesiod.o hesmailhost.o hespwnam.o hesservbyname.o hescompat.o
 
 all: libhesiod.a hesinfo hestest
@@ -35,6 +37,9 @@ hestest: hestest.o libhesiod.a
 	${CC} ${LDFLAGS} -o $@ hestest.o libhesiod.a ${LIBS}
 
 ${OBJS}: hesiod.h resscan.h
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
 
 check:
 	HESIOD_CONFIG=${srcdir}/hesiod.config.sample \
@@ -83,4 +88,4 @@ clean:
 	rm -f ${OBJS} libhesiod.a hesinfo.o hesinfo hestest.o hestest
 
 distclean: clean
-	rm -f config.cache config.log config.status Makefile
+	rm -f config.cache config.log config.status Makefile config.h
