@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.6 1997-01-17 21:07:12 ghudson Exp $
+# $Id: Makefile.in,v 1.7 1997-02-11 18:42:40 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -36,7 +36,7 @@ hesinfo: hesinfo.o libhesiod.a
 hestest: hestest.o libhesiod.a
 	${CC} ${LDFLAGS} -o $@ hestest.o libhesiod.a ${LIBS}
 
-${OBJS}: hesiod.h resscan.h
+${OBJS}: hesiod.h
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<

@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.20 1997-01-03 20:43:54 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.21 1997-02-11 18:42:41 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -54,7 +54,6 @@ static const char rcsid[] = "$Id: hesiod.c,v 1.20 1997-01-03 20:43:54 ghudson Ex
 #include <string.h>
 #include <ctype.h>
 #include "hesiod.h"
-#include "hesiod_p.h"
 
 /* A few operating systems don't define these. */
 #ifndef C_HS
@@ -63,6 +62,20 @@ static const char rcsid[] = "$Id: hesiod.c,v 1.20 1997-01-03 20:43:54 ghudson Ex
 #ifndef T_TXT
 #define T_TXT	16
 #endif
+
+/* Defaults if the configuration file is not present. */
+#define DEF_RHS ".athena.mit.edu"
+#define DEF_LHS ".ns"
+
+/* Maximum size of a Hesiod response from the DNS. */
+#define MAX_HESRESP 1024
+
+/* The contents of a Hesiod context. */
+struct hesiod_p {
+  char *lhs;			/* normally ".ns" */
+  char *rhs;			/* AKA the default hesiod domain */
+  int classes[2];		/* The class search order. */
+};
 
 static int read_config_file(struct hesiod_p *ctx, const char *filename);
 static char **get_txt_records(struct hesiod_p *ctx, int class,
