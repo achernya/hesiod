@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1996-11-07 01:51:56 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1996-11-08 04:03:55 ghudson Exp $
 
 SHELL=/bin/sh
 CC=@CC@
@@ -16,9 +16,8 @@ libdir=@libdir@
 includedir=@includedir@
 sysconfdir=@sysconfdir@
 lbindir=@bindir@
-letcdir=@letcdir@
 
-CFLAGS=${CDEBUGFLAGS} -DCONFDIR=\"${letcdir}\"
+CFLAGS=${CDEBUGFLAGS} -DSYSCONFDIR=\"${sysconfdir}\"
 CDEBUGFLAGS=-g
 OBJS=hesiod.o hesmailhost.o hespwnam.o hesservbyname.o resolve.o
 
