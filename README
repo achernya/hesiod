@@ -1,21 +1,11 @@
-This directory contains the Hesiod name service library, test program, and
-documentation.  The following files are included:
+This is public release 2.0 of the Hesiod name service library.  Hesiod
+can provide general name service for a variety of applications and is
+based on the Berkeley Internet Name Daemon (BIND).
 
-	Makefile - for building the library, test program, and manual pages.
-	README - this file
-	cistrcmp.c - Case-insensitive string comparison routines.  These
-		have been distributed as a bug fix to 4.3BSD with the
-		names "strcasecmp" and "strncasecmp."
-	hesinfo.1 - Manual page source for the 'hesinfo' program.
-	hesinfo.c - Source for the 'hesinfo' program.
-	hesiod.3 - Manul page for the Hesiod library routines.
-	hesiod.c - Source code for the Hesiod library.
-	hesiod.h - Header file for Hesiod library and applications.
-	hesmailhost.c - Routines for finding a user's mail host using Hesiod.
-	hespwnam.c - Routines for getting a user's password entry using Hesiod.
-	hesservbyname.c - Routines for getting service port information using
-		Hesiod.
-	resolve.c - Routines for interacting with the BIND nameserver and
-		parsing responses.
+To prepare this directory for building, run the command "./configure".
+configure takes a number of options; use "./configure --help" to find
+out what they are.
 
-	
+Run "make" or "make all" to build the Hesiod library and programs.
+
+Run "make install" to install Hesiod.
