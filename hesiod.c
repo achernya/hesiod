@@ -2,8 +2,13 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
  *	$Author: treese $
- *	$Athena: hesiod.c,v 1.4 88/08/07 21:52:31 treese Locked $
+ *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.5  88/08/07  22:00:44  treese
+ * Changed T_UNSPECA to T_TXT.
+ * Changed C_HESIOD to C_HS.
+ * Deleted ifdef's based on USE_HS_QUERY -- they're obsolete.
+ * 
  * Revision 1.4  88/08/07  21:52:31  treese
  * First public distribution
  * 
@@ -23,7 +28,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.5 1988-08-07 22:00:44 treese Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.6 1988-08-07 23:17:03 treese Exp $";
 #endif
 
 #include <stdio.h>

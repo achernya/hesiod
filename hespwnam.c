@@ -7,8 +7,11 @@
  *
  *	$Author: treese $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v $
- *	$Athena: hespwnam.c,v 1.3 88/08/07 21:48:34 treese Locked $
+ *	$Athena: hespwnam.c,v 1.4 88/08/07 21:52:51 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.4  88/08/07  21:52:51  treese
+ * First public distribution
+ * 
  * Revision 1.3  88/08/07  21:48:34  treese
  * Cleaned up using saber.
  * 
@@ -21,7 +24,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.4 1988-08-07 21:52:51 treese Exp $";
+static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.5 1988-08-07 23:17:19 treese Exp $";
 #endif
 #include <stdio.h>
 #include <pwd.h>
