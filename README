@@ -4,7 +4,8 @@ and is based on the Berkeley Internet Name Daemon (BIND).
 
 To prepare this directory for building, run the command "./configure".
 configure takes a number of options; use "./configure --help" to find
-out what they are.
+out what they are.  Hesiod requires a vaguely ANSI compiler to build;
+gcc will do.
 
 Run "make" or "make all" to build the Hesiod library and programs.
 
@@ -53,3 +54,6 @@ And then in named.hesiod, you need data looking something like:
 	haynes.grplist	HS	TXT	"haynes:2638"
 	zephyr.sloc	HS	TXT	"zephyrserver1.my.domain"
 	zephyr.sloc	HS	TXT	"zephyrserver2.my.domain"
+
+There is a mailing list at MIT for Hesiod users, hesiod@mit.edu.  To
+get yourself on or off the list, send mail to hesiod-request@mit.edu.
