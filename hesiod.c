@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.22 1997-09-20 06:47:26 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.23 1998-09-02 17:30:05 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -351,10 +351,8 @@ static int read_config_file(struct hesiod_p *ctx, const char *filename)
 static char **get_txt_records(struct hesiod_p *ctx, int qclass,
 			      const char *name)
 {
-  HEADER *hp;
-  unsigned char qbuf[PACKETSZ], abuf[MAX_HESRESP], *p, *eom, *eor;
-  char *dst, **list;
-  int ancount, qdcount, i, j, n, skip, type, class, len;
+  unsigned char qbuf[PACKETSZ], abuf[MAX_HESRESP];
+  int n;
 
   /* Make sure the resolver is initialized. */
   if ((_res.options & RES_INIT) == 0 && res_init() == -1)
@@ -374,12 +372,22 @@ static char **get_txt_records(struct hesiod_p *ctx, int qclass,
       return NULL;
     }
 
+  return hesiod_parse_result(ctx, abuf, n);
+}
+
+char **hesiod_parse_result(void *ctx, const unsigned char *abuf, int alen)
+{
+  HEADER *hp;
+  unsigned const char *p, *eom, *eor;
+  char *dst, **list;
+  int ancount, qdcount, i, j, skip, type, class, len, n;
+
   /* Parse the header of the result. */
   hp = (HEADER *) abuf;
   ancount = ntohs(hp->ancount);
   qdcount = ntohs(hp->qdcount);
   p = abuf + sizeof(HEADER);
-  eom = abuf + n;
+  eom = abuf + alen;
 
   /* Skip questions, trying to get to the answer section which follows. */
   for (i = 0; i < qdcount; i++)
@@ -419,8 +427,8 @@ static char **get_txt_records(struct hesiod_p *ctx, int qclass,
 	  break;
 	}
 
-      /* Skip entries of the wrong class and type. */
-      if (class != qclass || type != T_TXT)
+      /* Skip entries of the wrong type. */
+      if (type != T_TXT)
 	{
 	  p += len;
 	  continue;

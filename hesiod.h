@@ -1,4 +1,4 @@
-/* $Id: hesiod.h,v 1.3 1996-12-16 08:33:11 ghudson Exp $ */
+/* $Id: hesiod.h,v 1.4 1998-09-02 17:30:20 ghudson Exp $ */
 
 /*
  * Copyright (c) 1996 by Internet Software Consortium.
@@ -37,6 +37,7 @@ int hesiod_init(void **context);
 void hesiod_end(void *context);
 char *hesiod_to_bind(void *context, const char *name, const char *type);
 char **hesiod_resolve(void *context, const char *name, const char *type);
+char **hesiod_parse_result(void *context, const unsigned char *abuf, int alen);
 void hesiod_free_list(void *context, char **list);
 struct passwd *hesiod_getpwnam(void *context, const char *name);
 struct passwd *hesiod_getpwuid(void *context, uid_t uid);

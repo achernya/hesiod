@@ -1,4 +1,4 @@
-.\" $Id: hesiod.3,v 1.10 1997-01-03 20:43:55 ghudson Exp $
+.\" $Id: hesiod.3,v 1.11 1998-09-02 17:30:05 ghudson Exp $
 .\"
 .\" Copyright 1988, 1996 by the Massachusetts Institute of Technology.
 .\"
@@ -27,6 +27,8 @@ hesiod, hesiod_init, hesiod_resolve, hesiod_free_list, hesiod_to_bind, hesiod_en
 .B void hesiod_free_list(void *\fIcontext\fP, char **\fIlist\fP);
 .B char *hesiod_to_bind(void *\fIcontext\fP, const char *\fIname\fP,
 .B 	const char *\fItype\fP)
+.B char **hesiod_parse_result(void *\fIcontext\fP,
+.B	unsigned const char *\fIresult\fP, int \fIrlen\fP)
 .B void hesiod_end(void *\fIcontext\fP)
 .PP
 .B cc file.c -lhesiod
@@ -66,6 +68,12 @@ into the DNS name used by
 .IR hesiod_resolve .
 It is the caller's responsibility to free the returned string using
 .IR free .
+.PP
+.I hesiod_parse_result
+parses the result of a name server query into text records.  It is the
+caller's responsibility to call
+.I hesiod_free_list
+to free the resources used by the returned list.
 .SH RETURN VALUES
 If successful,
 .I hesiod_init
