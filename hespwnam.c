@@ -7,18 +7,22 @@
  *
  *	$Author: treese $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v $
- *	$Athena$
+ *	$Athena: hespwnam.c,v 1.2 88/06/05 19:51:41 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.2  88/06/05  19:51:41  treese
+ * Cleaned up for public distribution
+ * 
  *
  */
 
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.2 1988-06-05 19:51:41 treese Exp $";
+static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.3 1988-08-07 21:48:34 treese Exp $";
 #endif
 #include <stdio.h>
 #include <pwd.h>
+#include <strings.h>
 
 static struct passwd pw_entry;
 static char buf[256];
@@ -27,14 +31,13 @@ struct passwd *
 hes_getpwnam(nam)
 	char *nam;
 {
-	register struct passwd *pw;
 	register char *p, **pp; char *_NextPWField(), **hes_resolve();
 
 	pp = hes_resolve(nam, "passwd");
 	if (pp == NULL)
 		return(NULL);
 	/* choose only the first response (only 1 expected) */
-	strcpy(buf, pp[0]);
+	(void) strcpy(buf, pp[0]);
 	p = buf;
 	pw_entry.pw_name = p;
 	p = _NextPWField(p);
