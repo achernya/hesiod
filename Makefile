@@ -1,16 +1,16 @@
 # Makefile for the Project Athena Hesiod Nameserver library
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v $
-#	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.7 1989-10-11 11:06:05 epeisach Exp $
+#	$Author: probe $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.8 1989-10-18 09:43:53 probe Exp $
 
 DEFINES= -DHESIOD
 INCPATH=
 CFLAGS = -O ${INCPATH} ${DEFINES}
 LINTFLAGS= -uhvpb
 
-SRCS = hesiod.c hespwnam.c hesmailhost.c resolve.c cistrcmp.c 
-OBJS = hesiod.o hespwnam.o hesmailhost.o resolve.o cistrcmp.o 
+SRCS = hesiod.c hespwnam.c hesmailhost.c hesservbyname.c resolve.c cistrcmp.c 
+OBJS = hesiod.o hespwnam.o hesmailhost.o hesservbyname.o resolve.o cistrcmp.o 
 TOOLS = hesinfo
 LIBDIR= /usr/athena/lib
 LINTDIR= /usr/lib/lint
