@@ -1,54 +1,21 @@
-HESIOD DISTRIBUTION INFORMATION				7 AUGUST 1988
+This directory contains the Hesiod name service library, test program, and
+documentation.  The following files are included:
 
-Welcome to Hesiod, the Project Athena nameserver.  Hesiod can provide
-general name service for a variety of applications and is based on the
-Berkeley Internet Name Daemon (BIND).  This is version 1.1 of the Hesiod
-distribution.
+	Makefile - for building the library, test program, and manual pages.
+	README - this file
+	cistrcmp.c - Case-insensitive string comparison routines.  These
+		have been distributed as a bug fix to 4.3BSD with the
+		names "strcasecmp" and "strncasecmp."
+	hesinfo.1 - Manual page source for the 'hesinfo' program.
+	hesinfo.c - Source for the 'hesinfo' program.
+	hesiod.3 - Manul page for the Hesiod library routines.
+	hesiod.c - Source code for the Hesiod library.
+	hesiod.h - Header file for Hesiod library and applications.
+	hesmailhost.c - Routines for finding a user's mail host using Hesiod.
+	hespwnam.c - Routines for getting a user's password entry using Hesiod.
+	hesservbyname.c - Routines for getting service port information using
+		Hesiod.
+	resolve.c - Routines for interacting with the BIND nameserver and
+		parsing responses.
 
-This distribution currently does not include application code, except for a
-simple test program.  Hesiod-based applications will be made available
-shortly.
-
-This version of Hesiod is based on BIND 4.8, the version currently available
-from Berkeley.  If you do not have BIND 4.8 already, you should install it
-first.  It is available via anonymous FTP from ucbarpa.berkeley.edu in the
-directory pub/4.3.  The configuration is a bit unusual, since Hesiod queries
-are not yet supported by the root name servers.
-
-This directory contains the following files and subdirectories:
-
-	README - this file.
-	INSTALL - installation instructions.
-	doc - documents on Hesiod. (See doc/README for a description of
-		them.)
-	examples - Example data files for the nameserver.  (See examples/README
-		for descriptions.)
-	hesiod - sources for the Hesiod library, test program, and
-		manual pages.
-	include - new versions of include files.
-	named - new version of the BIND 4.8 named program.
-	res - new version of the C library resolver routines.
-
-The file INSTALL describes the installation procedure.  Currently, the
-only system the instructions apply to is 4.3BSD with source code.  At
-some point we hope to include support for other systems, including IBM
-4.3/RT, DEC Ultrix, and SunOS.  It should be straightforward to install
-Hesiod on any system that runs BIND 4.8, however.
-
-It should be noted that at this time, this version is in only limited use
-at Project Athena.
-
-A discussion of Hesiod takes place on the mailing list
-"hesiod@athena.mit.edu."  To join, please send mail to
-"hesiod-request@athena.mit.edu."  Please send any bug reports or suggested
-changes to the mailing list.
-
-Some of the configuration files and documents refer to other software
-packages developed at Project Athena.  For more information about them, send
-mail to "info-athena@athena.mit.edu."
-
-Thank you for using Hesiod, and good luck.
-
-	Win Treese
-	DEC/Cambridge Research Lab & Project Athena
-	treese@athena.MIT.EDU
+	
