@@ -1,6 +1,6 @@
-This is public release 2.0 of the Hesiod name service library.  Hesiod
-can provide general name service for a variety of applications and is
-based on the Berkeley Internet Name Daemon (BIND).
+This is public release 2.0.0 of the Hesiod name service library.
+Hesiod can provide general name service for a variety of applications
+and is based on the Berkeley Internet Name Daemon (BIND).
 
 To prepare this directory for building, run the command "./configure".
 configure takes a number of options; use "./configure --help" to find
