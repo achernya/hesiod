@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.12 2000-01-05 16:28:50 ghudson Exp $
+# $Id: Makefile.in,v 1.13 2005-04-06 19:35:55 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -12,41 +12,44 @@ libdir=@libdir@
 includedir=@includedir@
 mandir=@mandir@
 sysconfdir=@sysconfdir@
+top_builddir=.
 
+LIBTOOL=@LIBTOOL@
 CC=@CC@
 CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 ALL_CFLAGS=-I. -DSYSCONFDIR=\"${sysconfdir}\" ${CPPFLAGS} ${CFLAGS}
-OBJS=hesiod.o hesmailhost.o hespwnam.o hesservbyname.o hescompat.o
+OBJS=hesiod.lo hesmailhost.lo hespwnam.lo hesservbyname.lo hescompat.lo
 
-all: libhesiod.a hestest
+.SUFFIXES: .lo
 
-libhesiod.a: ${OBJS}
-	ar cru $@ ${OBJS}
-	${RANLIB} $@
+all: libhesiod.la hestest
 
-hestest: hestest.o libhesiod.a
-	${CC} ${LDFLAGS} -o $@ hestest.o libhesiod.a ${LIBS}
+libhesiod.la: ${OBJS}
+	${LIBTOOL} --mode=link ${CC} -rpath ${libdir} -version-info 0:0:0 \
+	  -o $@ ${OBJS} ${LIBS}
+
+hestest: hestest.lo libhesiod.la
+	${LIBTOOL} --mode=link ${CC} -o $@ hestest.lo libhesiod.la
 
 ${OBJS}: hesiod.h
 
-.c.o:
-	${CC} -c ${ALL_CFLAGS} $<
+.c.lo:
+	${LIBTOOL} --mode=compile ${CC} -c -o $@ ${ALL_CFLAGS} $<
 
 check:
 	HESIOD_CONFIG=${srcdir}/hesiod.config.sample \
-		./hestest ${srcdir}/hestest.conf
+		${LIBTOOL} --mode=execute ./hestest ${srcdir}/hestest.conf
 
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man3
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man5
-	${INSTALL} -m 644 libhesiod.a ${DESTDIR}${libdir}
-	${RANLIB} ${DESTDIR}${libdir}/libhesiod.a
-	chmod u-w ${DESTDIR}${libdir}/libhesiod.a
+	${LIBTOOL} --mode=install ${INSTALL} -m 644 libhesiod.la \
+	  ${DESTDIR}${libdir}
 	${INSTALL} -m 444 ${srcdir}/hesiod.h ${DESTDIR}${includedir}
 	${INSTALL} -m 444 ${srcdir}/hesiod.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/hesiod_end.3 \
@@ -78,7 +81,7 @@ install:
 	${INSTALL} -m 444 ${srcdir}/hesiod.conf.5 ${DESTDIR}${mandir}/man5
 
 clean:
-	rm -f ${OBJS} libhesiod.a hestest.o hestest
+	${LIBTOOL} --mode=clean rm -f ${OBJS} libhesiod.la hestest.lo hestest
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile config.h
