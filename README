@@ -9,3 +9,47 @@ out what they are.
 Run "make" or "make all" to build the Hesiod library and programs.
 
 Run "make install" to install Hesiod.
+
+You will want to create a configuration file named /etc/hesiod.conf
+(/usr/local/etc/hesiod.conf will also work, assuming you used the
+default of /usr/local as your install prefix) on your client machines,
+reading something like:
+
+	lhs	ns
+	rhs	your.domain
+
+If you run named on your client machines, you will need to configure
+it to know where to delegate queries of class HS.  Generally, this
+configuration information should live in a file named something like
+/etc/named.root or /etc/namedb/named.root, which should already exist
+and specify the locations of the root name servers for class IN.  You
+should add lines which look like:
+
+	; Root HS servers
+	.			3600000	HS	NS	server1.your.domain
+	server1.your.domain.	3600000	HS	A	XXX.YYY.ZZZ.WWW
+	server1.your.domain.	3600000	IN	A	XXX.YYY.ZZZ.WWW
+	.			3600000	HS	NS	server2.your.domain
+	server2.your.domain.	3600000	HS	A	XXX.YYY.ZZZ.WWW
+	server2.your.domain.	3600000	IN	A	XXX.YYY.ZZZ.WWW
+
+To actually create Hesiod information on your central name servers,
+you need to make them authoritative for the domain ns.your.domain with
+a line in named.boot reading something like:
+
+	primary		ns.your.domain		named.hesiod
+
+And then in named.hesiod, you need data looking something like:
+
+	@	HS	SOA	server.your.domain admin-address.your.domain (
+			40000	      ; serial - database version number
+			1800	      ; refresh - sec servers
+			300	      ; retry - for refresh
+			3600          ; expire - unrefreshed data
+			7200 )        ; min
+		HS	NS	server1.your.domain
+		HS	NS	server2.your.domain
+
+	haynes.grplist	HS	TXT	"haynes:2638"
+	zephyr.sloc	HS	TXT	"zephyrserver1.my.domain"
+	zephyr.sloc	HS	TXT	"zephyrserver2.my.domain"
