@@ -5,7 +5,7 @@
  *
  * Original version by Steve Dyer, IBM/Project Athena.
  *
- *	$Id: hesiod.h.sed,v 1.7 1991-06-02 14:03:56 probe Exp $
+ *	$Id: hesiod.h.sed,v 1.8 1992-01-08 15:47:17 probe Exp $
  */
 
 /* Configuration information. */
@@ -40,4 +40,4 @@ struct hes_postoffice {
 
 struct hes_postoffice *hes_getmailhost();
 struct servent *hes_getservbyname();
-struct passwd *hes_getpwnam();
+struct passwd *hes_getpwnam(), *hes_getpwuid();
