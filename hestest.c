@@ -15,14 +15,16 @@
 
 /* This file is a test driver for the Hesiod library. */
 
-static char rcsid[] = "$Id: hestest.c,v 1.1 1996-11-07 02:30:53 ghudson Exp $";
+static char rcsid[] = "$Id: hestest.c,v 1.2 1996-12-08 21:41:45 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
 #include <netdb.h>
+#include <errno.h>
 #include <pwd.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <stdarg.h>
 #include "hesiod.h"
@@ -34,7 +36,8 @@ static char *get_field(char *p, int delim, char *buf);
 static int compare_vector(char **vector, char *spec);
 static int compare_pwnam(struct passwd *pw, char *spec);
 static int compare_serv(struct servent *serv, char *spec);
-static int compare_office(struct hes_postoffice *office, char *spec);
+static int compare_office(struct hesiod_postoffice *office, char *spec);
+static int compare_compat_office(struct hes_postoffice *office, char *spec);
 static void free_ptrs(char **ptrs);
 static void failure(const char *fmt, ...);
 
@@ -43,26 +46,33 @@ int saw_failure = 0;
 int main(int argc, char **argv)
 {
   FILE *fp;
-  char buf[1024], buf2[1024], *p, *q, name[128], type[128], *vec[128], **vecp;
-  int line, status;
-  struct passwd pw, *pwp;
-  struct servent serv, *servp;
-  struct hes_postoffice office, *officep;
+  char buf[1024], buf2[1024], *p, *q, name[128], type[128], proto[128], **list;
+  int line, errval;
+  struct passwd *pw;
+  struct servent *serv;
+  struct hesiod_postoffice *po;
+  struct hes_postoffice *compatpo;
+  void *context;
 
   if (argc != 2)
     {
       fprintf(stderr, "Usage: %s filename\n", argv[0]);
-      exit(1);
+      return 1;
     }
 
   fp = fopen(argv[1], "r");
   if (!fp)
     {
       fprintf(stderr, "Couldn't open %s for reading.\n", argv[1]);
-      exit(1);
+      return 1;
     }
 
-  hes_init();
+  if (hesiod_init(&context) < 0)
+    {
+      fprintf(stderr, "Can't initialize hesiod library.\n");
+      return 1;
+    }
+
   line = 0;
   while (fgets(buf, sizeof(buf), fp))
     {
@@ -77,196 +87,186 @@ int main(int argc, char **argv)
       if (*p == '#' || !*p)
 	continue;
 
-      /* Test for hes_resolve and hes_resolve_r. */
       if (*q && q - p == 7 && strncmp(p, "resolve", 7) == 0)
 	{
+	  /* Test for hesiod_resolve and hes_resolve. */
 	  q = get_word(find_word(q), name);
 	  q = get_word(find_word(q), type);
 	  p = find_word(q);
-	  status = hes_resolve_r(name, type, vec, 100);
-	  if (status != HES_ER_OK && !(*p == 'E' && p[1] == 0))
+	  list = hesiod_resolve(context, name, type);
+	  errval = errno;
+	  if (!list && !(*p == 'E' && p[1] == 0))
 	    {
-	      failure("Line %d failed (hes_resolve_r error %d).\n",
-		      line, status);
+	      failure("Line %d failed (hesiod_resolve error %d).\n", line,
+		      errval);
 	      continue;
 	    }
-	  if (status == HES_ER_OK && compare_vector(vec, p) < 0)
+	  if (list && compare_vector(list, p) < 0)
 	    {
-	      failure("Line %d failed in hes_resolve_r().\n", line);
-	      free_ptrs(vec);
+	      failure("Line %d failed in hesiod_resolve().\n", line);
+	      hesiod_free_list(context, list);
 	      continue;
 	    }
-	  if (status == HES_ER_OK)
-	    free_ptrs(vec);
-	  vecp = hes_resolve(name, type);
-	  if (!vecp)
+	  if (list)
+	    hesiod_free_list(context, list);
+	  list = hes_resolve(name, type);
+	  if (!list)
 	    {
 	      if (*p == 'E' && p[1] == 0)
-		{
-		  printf("Line %d passed (errors are %d, %d).\n",
-			 line, status, hes_error());
-		}
+		printf("Line %d passed (%d, %d).\n", line, errval,
+		       hes_error());
 	      else
-		{
-		  failure("Line %d failed (hes_resolve error %d).\n",
-			  line, hes_error());
-		}
+		failure("Line %d failed (hes_resolve error %d).\n", line,
+			hes_error());
 	      continue;
 	    }
-	  if (compare_vector(vecp, p) < 0)
+	  if (compare_vector(list, p) < 0)
 	    failure("Line %d failed in hes_resolve().\n", line);
 	  else
 	    printf("Line %d passed.\n", line);
-	  free_ptrs(vecp);
-
-	  /* Test for hes_getpwnam and hes_getpwnam_r. */
+	  free_ptrs(list);
 	}
       else if (*q && q - p == 8 && strncmp(p, "getpwnam", 8) == 0)
 	{
+	  /* Test for hesiod_getpwnam and hes_getpwnam. */
 	  q = get_word(find_word(q), name);
 	  p = find_word(q);
-	  status = hes_getpwnam_r(name, &pw, buf2, sizeof(buf2), &pwp);
-	  if (status != HES_ER_OK && !(*p == 'E' && p[1] == 0))
+	  pw = hesiod_getpwnam(context, name);
+	  errval = errno;
+	  if (!pw && !(*p == 'E' && p[1] == 0))
 	    {
-	      failure("Line %d failed (hes_getpwnam_r error %d).\n",
-		      line, status);
+	      failure("Line %d failed (hesiod_getpwnam error %d).\n", line,
+		      errval);
 	      continue;
 	    }
-	  if (status == HES_ER_OK && compare_pwnam(&pw, p) < 0)
+	  if (pw && compare_pwnam(pw, p) < 0)
 	    {
-	      failure("Line %d failed in hes_getpwnam_r().\n", line);
+	      failure("Line %d failed in hesiod_getpwnam().\n", line);
 	      continue;
 	    }
-	  pwp = hes_getpwnam(name);
-	  if (!pwp)
+	  if (pw)
+	    hesiod_free_passwd(context, pw);
+	  pw = hes_getpwnam(name);
+	  if (!pw)
 	    {
-	      if (*p == 'E' && p[1] == 0) {
-		printf("Line %d passed (errors are %d, %d).\n",
-		       line, status, hes_error());
-	      }
+	      if (*p == 'E' && p[1] == 0)
+		printf("Line %d passed (%d, %d).\n", line, errval,
+		       hes_error());
 	      else
-		{
-		  failure("Line %d failed (hes_getpwnam error %d).\n",
-			  line, hes_error());
-		}
+		failure("Line %d failed (hes_getpwnam error %d).\n", line,
+			hes_error());
 	      continue;
 	    }
-	  if (compare_pwnam(pwp, p) < 0)
+	  if (compare_pwnam(pw, p) < 0)
 	    failure("Line %d failed in hes_getpwnam().\n", line);
 	  else
 	    printf("Line %d passed.\n", line);
-
-	  /* Test for hes_getpwuid and hes_getpwuid_r. */
 	}
       else if (*q && q - p == 8 && strncmp(p, "getpwuid", 8) == 0)
 	{
+	  /* Test for hesiod_getpwuid and hes_getpwuid. */
 	  q = get_word(find_word(q), name);
 	  p = find_word(q);
-	  status = hes_getpwuid_r(atoi(name), &pw, buf2, sizeof(buf2), &pwp);
-	  if (status != HES_ER_OK && !(*p == 'E' && p[1] == 0))
+	  pw = hesiod_getpwuid(context, atoi(name));
+	  errval = errno;
+	  if (!pw && !(*p == 'E' && p[1] == 0))
 	    {
-	      failure("Line %d failed (hes_getpwuid_r error %d).\n",
-		      line, status);
+	      failure("Line %d failed (hesiod_getpwuid error %d).\n", line,
+		      errval);
 	      continue;
 	    }
-	  if (status == HES_ER_OK && compare_pwnam(&pw, p) < 0)
+	  if (pw && compare_pwnam(pw, p) < 0)
 	    {
-	      failure("Line %d failed in hes_getpwuid_r().\n", line);
+	      failure("Line %d failed in hesiod_getpwuid().\n", line);
 	      continue;
 	    }
-	  pwp = hes_getpwuid(atoi(name));
-	  if (!pwp) {
-	    if (*p == 'E' && p[1] == 0)
-	      {
-		printf("Line %d passed (errors are %d, %d).\n",
-		       line, status, hes_error());
-	      }
-	    else
-	      {
-		failure("Line %d failed (hes_getpwuid error %d).\n",
-			line, hes_error());
-	      }
-	    continue;
-	  }
-	  if (compare_pwnam(pwp, p) < 0)
+	  if (pw)
+	    hesiod_free_passwd(context, pw);
+	  pw = hes_getpwuid(atoi(name));
+	  if (!pw)
+	    {
+	      if (*p == 'E' && p[1] == 0)
+		printf("Line %d passed (%d, %d).\n", line, errval,
+		       hes_error());
+	      else
+		failure("Line %d failed (hes_getpwuid error %d).\n", line,
+			hes_error());
+	      continue;
+	    }
+	  if (compare_pwnam(pw, p) < 0)
 	    failure("Line %d failed in hes_getpwuid().\n", line);
 	  else
 	    printf("Line %d passed.\n", line);
-
-	  /* Test for hes_getservbyname and hes_getservbyname_r. */
 	}
       else if (*q && q - p == 13 && strncmp(p, "getservbyname", 13) == 0)
 	{
+	  /* Test for hesiod_getservbyname and hes_getservbyname. */
 	  q = get_word(find_word(q), name);
-	  q = get_word(find_word(q), type);
+	  q = get_word(find_word(q), proto);
 	  p = find_word(q);
-	  status = hes_getservbyname_r(name, type, &serv, buf2,
-				       sizeof(buf2));
-	  if (status != HES_ER_OK && !(*p == 'E' && p[1] == 0))
+	  serv = hesiod_getservbyname(context, name, proto);
+	  errval = errno;
+	  if (!serv && !(*p == 'E' && p[1] == 0))
 	    {
-	      failure("Line %d failed (hes_getservbyname_r error %d).\n",
-		      line, status);
+	      failure("Line %d failed (hesiod_getservbyname error %d).\n",
+		      line, errno);
 	      continue;
 	    }
-	  if (status == HES_ER_OK && compare_serv(&serv, p) < 0)
+	  if (serv && compare_serv(serv, p) < 0)
 	    {
-	      failure("Line %d failed in hes_getservbyname_r.\n", line);
+	      failure("Line %d failed in hesiod_getservbyname.\n", line);
 	      continue;
 	    }
-	  servp = hes_getservbyname(name, type);
-	  if (!servp)
+	  if (serv)
+	    hesiod_free_servent(context, serv);
+	  serv = hes_getservbyname(name, proto);
+	  if (!serv)
 	    {
 	      if (*p == 'E' && p[1] == 0)
-		{
-		  printf("Line %d passed (errors are %d, %d).\n",
-			 line, status, hes_error());
-		}
+		printf("Line %d passed (%d, %d).\n", line, errval,
+		       hes_error());
 	      else
-		{
-		  failure("Line %d failed (hes_getservbyname error %d).\n",
-			  line, hes_error());
-		}
+		failure("Line %d failed (hes_getservbyname error %d).\n", line,
+			hes_error());
 	      continue;
 	    }
-	  if (compare_serv(servp, p) < 0)
+	  if (compare_serv(serv, p) < 0)
 	    failure("Line %d failed in hes_getservbyname().\n", line);
 	  else
 	    printf("Line %d passed.\n", line);
-
-	  /* Test for hes_getmailhost and hes_getmailhost_r. */
 	}
       else if (*q && q - p == 11 && strncmp(p, "getmailhost", 11) == 0)
 	{
+	  /* Test for hesiod_getmailhost and hes_getmailhost. */
 	  q = get_word(find_word(q), name);
 	  p = find_word(q);
-	  status = hes_getmailhost_r(name, &office, buf2, sizeof(buf2));
-	  if (status != HES_ER_OK && !(*p == 'E' && p[1] == 0))
+	  po = hesiod_getmailhost(context, name);
+	  errval = errno;
+	  if (!po && !(*p == 'E' && p[1] == 0))
 	    {
-	      failure("Line %d failed (hes_getmailhost_r error %d).\n",
-		      line, status);
+	      failure("Line %d failed (hesiod_getmailhost error %d).\n",
+		      line, errval);
 	      continue;
 	    }
-	  if (status == HES_ER_OK && compare_office(&office, p) < 0)
+	  if (po && compare_office(po, p) < 0)
 	    {
-	      failure("Line %d failed in hes_getmailhost_r.\n", line);
+	      failure("Line %d failed in hesiod_getmailhost.\n", line);
 	      continue;
 	    }
-	  officep = hes_getmailhost(name);
-	  if (!officep)
+	  if (po)
+	    hesiod_free_postoffice(context, po);
+	  compatpo = hes_getmailhost(name);
+	  if (!compatpo)
 	    {
 	      if (*p == 'E' && p[1] == 0)
-		{
-		  printf("Line %d passed (errors are %d, %d).\n",
-			 line, status, hes_error());
-		}
+		printf("Line %d passed (%d, %d).\n", line, errval,
+		       hes_error());
 	      else
-		{
-		  failure("Line %d failed (hes_getmailhost error %d).\n",
-			  line, hes_error());
-		}
+		failure("Line %d failed (hes_getmailhost error %d).\n", line,
+			hes_error());
 	      continue;
 	    }
-	  if (compare_office(officep, p) < 0)
+	  if (compare_compat_office(compatpo, p) < 0)
 	    failure("Line %d failed in hes_getmailhost().\n", line);
 	  else
 	    printf("Line %d passed.\n", line);
@@ -374,14 +374,32 @@ static int compare_serv(struct servent *serv, char *spec)
     return -1;
   for (aliases = serv->s_aliases; *aliases; aliases++)
     {
+      if (!spec)
+	return -1;
       spec = get_field(spec, '\\', field);
-      if ((!spec && aliases[1]) || strcmp(*aliases, field) != 0)
+      if (strcmp(*aliases, field) != 0)
 	return -1;
     }
   return (spec) ? -1 : 0;
 }
 
-static int compare_office(struct hes_postoffice *office, char *spec)
+static int compare_office(struct hesiod_postoffice *office, char *spec)
+{
+  char field[100];
+
+  spec = get_field(spec, ':', field);
+  if (!spec || strcmp(office->hesiod_po_type, field) != 0)
+    return -1;
+  spec = get_field(spec, ':', field);
+  if (!spec || strcmp(office->hesiod_po_host, field) != 0)
+    return -1;
+  spec = get_field(spec, ':', field);
+  if (spec || strcmp(office->hesiod_po_name, field) != 0)
+    return -1;
+  return 0;
+}
+
+static int compare_compat_office(struct hes_postoffice *office, char *spec)
 {
   char field[100];
 
