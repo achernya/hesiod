@@ -3,8 +3,11 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v $
  *	$Author: treese $
- *	$Athena: hesinfo.c,v 1.1 88/06/05 17:50:15 treese Locked $
+ *	$Athena: hesinfo.c,v 1.2 88/06/05 19:51:18 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.2  88/06/05  19:51:18  treese
+ * Cleaned up for public distribution
+ * 
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.  See the
  * file <mit-copyright.h> for copying and distribution information.
@@ -13,7 +16,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesinfo_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v 1.2 1988-06-05 19:51:18 treese Exp $";
+static char rcsid_hesinfo_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v 1.3 1988-06-12 00:52:34 treese Exp $";
 #endif
 
 #include <stdio.h>
@@ -63,5 +66,8 @@ char *argv[];
 	} else {
 		while(*cpp) printf("%s\n", *cpp++);
 	}
-	if (!cpp) exit(1);
+	if (!cpp)
+		 exit(1);
+	else
+		exit(0);
 }

@@ -2,8 +2,11 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
  *	$Author: treese $
- *	$Athena: hesinfo.c,v 1.2 88/06/05 19:51:18 treese Dist $
+ *	$Athena: hesiod.c,v 1.2 88/06/11 22:36:38 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.2  88/06/11  22:36:38  treese
+ * Cleaned up for public distribution.
+ * 
  * 
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.  See the
@@ -13,7 +16,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.2 1988-06-11 22:36:38 treese Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.3 1988-06-12 00:52:58 treese Exp $";
 #endif
 
 #include <stdio.h>
@@ -137,9 +140,9 @@ char *HesiodName, *HesiodNameType;
 	if (cp == NULL) return(NULL);
 	errno = 0;
 #ifdef USE_HS_QUERY
-	ns = _resolve(cp, C_HESIOD, T_TXT, NoRetryTime);
+	ns = _resolve(cp, C_HESIOD, T_UNSPECA, NoRetryTime);
 #else
-	ns = _resolve(cp, C_ANY, T_TXT, NoRetryTime);
+	ns = _resolve(cp, C_ANY, T_UNSPECA, NoRetryTime);
 #endif
 	if (errno == ETIMEDOUT || errno == ECONNREFUSED) {
 		Hes_Errno = HES_ER_NET;
@@ -154,7 +157,7 @@ char *HesiodName, *HesiodNameType;
 #ifndef USE_HS_QUERY
 		    rp->class == C_HESIOD &&
 #endif
-		    rp->type == T_TXT) { /* skip CNAME records */
+		    rp->type == T_UNSPECA) { /* skip CNAME records */
 			retvec[j] = calloc((unsigned int) rp->dlen,
 					   sizeof(char));
 			(void) strcpy(retvec[j++], rp->data);

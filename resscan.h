@@ -1,6 +1,21 @@
-/*
- * resolver scanning utilities
+/* This file contains definitions for the name resolver scanning routines
+ * used by the Hesiod library.
+ *
+ * For copying and distribution information, see the file <mit-copyright.h>.
+ *
+ * Original version by Steve Dyer, IBM/Project Athena, and Sam Hsu,
+ * DEC/Project Athena.
+ *
+ *	$Author: treese $
+ *	$Athena: hesiod.h,v 1.2 88/06/05 19:51:32 treese Dist $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resscan.h,v 1.2 1988-06-12 00:53:14 treese Exp $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resscan.h,v $
+ *	$Log: not supported by cvs2svn $
+ * Revision 1.2  88/06/05  19:51:32  treese
+ * Cleaned up for public distribution
+ * 
  */
+
 typedef struct rr {
     short type;			     /* RR type */
     short class;		     /* RR class */
