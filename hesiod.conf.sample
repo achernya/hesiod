@@ -1,0 +1,13 @@
+# This file determines the behavior of the Hesiod library.
+
+# This line should pretty much always be the same, unless you have a
+# funny environment.
+lhs=.ns
+
+# This determines the Hesiod domain.  You must specify an rhs line.
+rhs=.athena.mit.edu
+
+# This line specifies the class search order.  You can reverse the
+# order or leave out IN or HS if you want.  Don't add spaces after the
+# beginning of the value.
+classes=IN,HS
