@@ -2,7 +2,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v $
 #	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.6 1989-10-11 10:43:28 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.7 1989-10-11 11:06:05 epeisach Exp $
 
 DEFINES= -DHESIOD
 INCPATH=
@@ -13,9 +13,10 @@ SRCS = hesiod.c hespwnam.c hesmailhost.c resolve.c cistrcmp.c
 OBJS = hesiod.o hespwnam.o hesmailhost.o resolve.o cistrcmp.o 
 TOOLS = hesinfo
 LIBDIR= /usr/athena/lib
+LINTDIR= /usr/lib/lint
 INCDIR= /usr/include
 BINDIR= /bin/athena
-MANDIR= /usr/man
+MANDIR= /usr/man/
 MAN1= man1
 MAN3= man3
 
@@ -35,7 +36,7 @@ install:	all
 	cp hesiod.3 ${DESTDIR}${MANDIR}${MAN3}
 	cp hesinfo.1 ${DESTDIR}${MANDIR}${MAN3}
 	install -m 755 hesinfo ${DESTDIR}${BINDIR}
-	install -c -m 644 llib-lhesiod.ln ${DESTDIR}${LIBDIR}/llib-lhesiod.ln
+	install -c -m 644 llib-lhesiod.ln ${DESTDIR}${LINTDIR}/llib-lhesiod.ln
 
 hesiod.a:	${OBJS}
 	ar rc $@ ${OBJS}
