@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 1996-11-08 04:03:55 ghudson Exp $
+# $Id: Makefile.in,v 1.3 1996-11-09 00:33:21 ghudson Exp $
 
 SHELL=/bin/sh
 CC=@CC@
@@ -15,7 +15,7 @@ bindir=@bindir@
 libdir=@libdir@
 includedir=@includedir@
 sysconfdir=@sysconfdir@
-lbindir=@bindir@
+lbindir=@lbindir@
 
 CFLAGS=${CDEBUGFLAGS} -DSYSCONFDIR=\"${sysconfdir}\"
 CDEBUGFLAGS=-g
@@ -45,7 +45,7 @@ install:
 	${INSTALL} -c -m 644 libhesiod.a ${DESTDIR}${libdir}
 	${RANLIB} ${DESTDIR}${libdir}/libhesiod.a
 	chmod u-w ${DESTDIR}${libdir}/libhesiod.a
-	${INSTALL_PROGRAM} -c -m 555 hesinfo ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} -c -m 555 hesinfo ${DESTDIR}${lbindir}
 	${INSTALL} -c -m 444 ${srcdir}/hesiod.h ${DESTDIR}${includedir}
 
 clean:
