@@ -16,8 +16,8 @@ You will want to create a configuration file named /etc/hesiod.conf
 default of /usr/local as your install prefix) on your client machines,
 reading something like:
 
-	lhs	ns
-	rhs	your.domain
+	rhs=your.domain
+	lhs=ns
 
 If you run named on your client machines, you will need to configure
 it to know where to delegate queries of class HS.  Generally, this
