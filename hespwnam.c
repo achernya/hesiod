@@ -9,6 +9,9 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v $
  *	$Athena: hespwnam.c,v 1.4 88/08/07 21:52:51 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.6  91/01/21  12:53:54  probe
+ * PS/2, RS/6000 integration
+ * 
  * Revision 1.5  88/08/07  23:17:19  treese
  * Second-public-distribution
  * 
@@ -27,7 +30,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.6 1991-01-21 12:53:54 probe Exp $";
+static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.7 1991-01-22 12:58:24 probe Exp $";
 #endif
 #include <stdio.h>
 #include <pwd.h>
@@ -57,7 +60,7 @@ hes_getpwnam(nam)
 	pw_entry.pw_gid = atoi(p);
 #if !defined(_AIX) || (AIXV < 31)
 	pw_entry.pw_quota = 0;
-#if (AIXV < 31)
+#if defined(_AIX) && (AIXV < 31)
 	pw_entry.pw_age =
 #endif
 	pw_entry.pw_comment = "";
