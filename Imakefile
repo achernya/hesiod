@@ -1,51 +1,46 @@
 # Makefile for the Project Athena Hesiod Nameserver library
 #
-#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v $
-#	$Author: probe $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.6 1991-01-22 13:22:03 probe Exp $
+# $Id: Imakefile,v 1.7 1991-06-02 14:04:11 probe Exp $
+#
 
 #if defined(_AIX) && defined(_IBMR2)
-MACHDEF= -DBIT_ZERO_ON_LEFT
+OSDEF= -DBIT_ZERO_ON_LEFT
 #endif
 
-DEFINES=-I. -DHESIOD $(MACHDEF)
+DEFINES=-I. -DHESIOD $(OSDEF)
 
 SRCS = hesiod.c hespwnam.c hesmailhost.c hesservbyname.c resolve.c cistrcmp.c 
 OBJS = hesiod.o hespwnam.o hesmailhost.o hesservbyname.o resolve.o cistrcmp.o 
 
+ProfiledObjectRule()
 
-#ifdef ULTRIX31
-.c.o:
-	-$(CC) -c -pg ${CFLAGS} $*.c
-	-mv $*.o profiled/$*.o
-	$(CC) -c ${CFLAGS} $*.c
-
+#ifdef ultrix
 libhesiod.a:	${OBJS}
 	@echo Building Hesiod library...
 	rm -rf tmp
 	mkdir tmp
-	(cd tmp; ar x /usr/local/lib/libresolv.a)
+	(cd tmp; ar x $(ATHLIBDIR)/libresolv.a)
 	ar rc $@ ${OBJS} tmp//**/*.o
 	ranlib $@
 	rm -rf tmp
 	mkdir tmp
-	(cd tmp; ar x /usr/local/lib/libresolv_p.a)
+	(cd tmp; ar x $(ATHLIBDIR)/libresolv_p.a)
 	cd profiled; ar rc ../libhesiod_p.a ${OBJS} ../tmp//**/*.o
 	ranlib libhesiod_p.a
-
 #else
-
-ProfiledObjectRule()
-
 SimpleLibrary(hesiod,$(OBJS),$(ATHLIBDIR))
-
 #endif
 
 SimpleLint(hesiod,$(SRCS))
-
-SimpleProgram(hesinfo,hesinfo.o libhesiod.a,,/bin/athena/)
+SimpleProgram(hesinfo,hesinfo.o libhesiod.a,,$(ATHRBINDIR))
 
 install_man(hesiod.3,hesiod.3)
 install_man(hesinfo.1,hesinfo.1)
 
 install_file(hesiod.h,$(ATHINCDIR)/hesiod.h)
+
+$(OBJS):: hesiod.h
+
+hesiod.h: hesiod.h.sed
+	$(RM) hesiod.h
+	sed s:CONFDIR:$(ATHCONFDIR): < hesiod.h.sed > hesiod.h
