@@ -4,6 +4,14 @@
  *	$Author: probe $
  *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.9  90/07/11  16:41:18  probe
+ * Patches from <mar>
+ * Added description about error codes and the HES_DOMAIN environment
+ * variable
+ * 
+ * Revision 1.7  89/11/16  06:49:31  probe
+ * Uses T_TXT, as defined in the RFC.
+ * 
  * Revision 1.6.1.1  89/11/03  17:50:12  probe
  * Changes T_TXT to T_UNSPECA.
  * 
@@ -42,7 +50,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.7 1989-11-16 06:49:31 probe Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.8 1990-07-11 16:46:44 probe Exp $";
 #endif
 
 #include <stdio.h>
@@ -79,33 +87,37 @@ hes_init()
 		/* no file or no access uses defaults */
 		/* but poorly formed file returns error */
 		Hes_LHS = DEF_LHS; Hes_RHS = DEF_RHS;
-		Hes_Errno = HES_ER_OK;
-		return(Hes_Errno);
-	}
-	while(fgets(buf, MAXDNAME+7, fp) != NULL) {
-		cp = buf;
-		if (*cp == '#' || *cp == '\n') continue;
-		while(*cp == ' ' || *cp == '\t') cp++;
-		key = cp;
-		while(*cp != ' ' && *cp != '\t' && *cp != '=') cp++;
-		*cp++ = '\0';
-		if (strcmp(key, "lhs") == 0) cpp = &Hes_LHS;
-		else if (strcmp(key, "rhs") == 0) cpp = &Hes_RHS;
-		else continue;
-		while(*cp == ' ' || *cp == '\t' || *cp == '=') cp++;
-		if (*cp != '.') {
-			Hes_Errno = HES_ER_CONFIG;
-			return(Hes_Errno);
+	} else {
+		while(fgets(buf, MAXDNAME+7, fp) != NULL) {
+			cp = buf;
+			if (*cp == '#' || *cp == '\n') continue;
+			while(*cp == ' ' || *cp == '\t') cp++;
+			key = cp;
+			while(*cp != ' ' && *cp != '\t' && *cp != '=') cp++;
+			*cp++ = '\0';
+			if (strcmp(key, "lhs") == 0) cpp = &Hes_LHS;
+			else if (strcmp(key, "rhs") == 0) cpp = &Hes_RHS;
+			else continue;
+			while(*cp == ' ' || *cp == '\t' || *cp == '=') cp++;
+			if (*cp != '.') {
+				Hes_Errno = HES_ER_CONFIG;
+				fclose(fp);
+				return(Hes_Errno);
+			}
+			len = strlen(cp);
+			*cpp = calloc((unsigned int) len, sizeof(char));
+			(void) strncpy(*cpp, cp, len-1);
 		}
-		len = strlen(cp);
-		*cpp = calloc((unsigned int) len, sizeof(char));
-		(void) strncpy(*cpp, cp, len-1);
+		fclose(fp);
 	}
+	/* see if the RHS is overridden by environment variable */
+	if ((cp = getenv("HES_DOMAIN")) != NULL)
+		Hes_RHS = strcpy(malloc(strlen(cp)+1),cp);
 	/* the LHS may be null, the RHS must not be null */
 	if (Hes_RHS == NULL)
 		Hes_Errno = HES_ER_CONFIG;
 	else
-		Hes_Errno = HES_ER_OK;
+		Hes_Errno = HES_ER_OK;	
 	return(Hes_Errno);
 }
 
