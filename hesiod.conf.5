@@ -1,4 +1,4 @@
-.\" $Id: hesiod.conf.5,v 1.1 1996-12-08 21:36:38 ghudson Exp $
+.\" $Id: hesiod.conf.5,v 1.2 1999-03-08 15:07:42 ghudson Exp $
 .\"
 .\" Copyright 1996 by the Massachusetts Institute of Technology.
 .\"
@@ -44,6 +44,14 @@ still used by some sites).  You may specify both classes separated by
 a comma to try one class first and then the other if no entry is
 available in the first class.  The default value of the classes
 variable is ``IN,HS''.
+.IP uidmaps
+Specifies which Hesiod types to try for lookups of uid values when
+.I hesiod_getpwuid
+is invoked.  Possible values are ``uid'' (the preferred type) and
+``passwd'' (the type historically used by Ultrix).  You may specify
+both types separated by a comma to try one type first and then the
+other if no entry is available using the first type.  The default
+value of the uidmaps variable is ``uid''.
 .SH SEE ALSO
 hesiod(3)
 .SH BUGS
