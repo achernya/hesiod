@@ -1,0 +1,63 @@
+.\" $Id: hesiod_getpwnam.3,v 1.1 1996-12-08 21:38:24 ghudson Exp $
+.\"
+.\" Copyright 1996 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH HESIOD 3 "30 November 1996"
+.SH NAME
+hesiod_getpwnam, hesiod_getpwuid, hesiod_free_passwd \- Hesiod functions for retrieving passwd information
+.SH SYNOPSIS
+.nf
+.B #include <hesiod.h>
+.PP
+.B struct passwd *hesiod_getpwnam(void *\fIcontext\fP, const char *\fIname\fP)
+.B struct passwd *hesiod_getpwuid(void *\fIcontext\fP, uid_t \fIuid\fP)
+.B void hesiod_free_passwd(void *\fIcontext\fP, struct passwd *\fIpw\fP)
+.PP
+.B cc file.c -lhesiod
+.fi
+.SH DESCRIPTION
+This family of functions allows you to retrieve passwd database
+information using Hesiod.  To perform lookups, you need an initialized
+Hesiod context; see hesiod(3) for details.  You may look up passwd
+information by name or by uid; information is returned in the same
+format as by
+.I getpwnam
+or
+.IR getpwuid .
+It is the caller's responsibility to call
+.I hesiod_free_passwd
+with the returned passwd entry to free the resources used by the
+passwd entry.
+.PP
+Hesiod queries for passwd information are made using the ``passwd'' or
+``uid'' Hesiod type, using either the username or the decimal
+representation of the uid as the Hesiod name.  The corresponding
+records should be a colon-separated list of fields giving the
+username, encrypted password, uid, gid, GECOS information, home
+directory, and shell of the user.
+.SH RETURN VALUES
+On failure,
+.I hesiod_getpwnam
+and
+.I hesiod_getpwuid
+return NULL and set the global variable
+.I errno
+to indicate the error.
+.SH ERRORS
+These calls may fail for any of the reasons the routine
+.I hesiod_resolve
+may fail.
+.SH SEE ALSO
+hesiod(3)
