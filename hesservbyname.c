@@ -8,6 +8,8 @@
 static char sccsid[] = "@(#)getservbyname.c	5.3 (Berkeley) 5/19/86";
 #endif LIBC_SCCS and not lint
 
+#include <sys/types.h>
+#include <netinet/in.h>
 #include <netdb.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -54,7 +56,7 @@ hes_getservbyname(name, proto)
 		}
 		aliases[i] = NULL;
 		p->s_name = servicename;
-		p->s_port = atoi(port);
+		p->s_port = htons((u_short)atoi(port));
 		p->s_proto = protoname;
 		p->s_aliases = aliases;
 		return (p);
