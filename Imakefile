@@ -1,6 +1,6 @@
 # Makefile for the Project Athena Hesiod Nameserver library
 #
-# $Id: Imakefile,v 1.7 1991-06-02 14:04:11 probe Exp $
+# $Id: Imakefile,v 1.8 1991-06-19 09:05:16 epeisach Exp $
 #
 
 #if defined(_AIX) && defined(_IBMR2)
@@ -27,6 +27,7 @@ libhesiod.a:	${OBJS}
 	(cd tmp; ar x $(ATHLIBDIR)/libresolv_p.a)
 	cd profiled; ar rc ../libhesiod_p.a ${OBJS} ../tmp//**/*.o
 	ranlib libhesiod_p.a
+install_library(hesiod,$(ATHLIBDIR))
 #else
 SimpleLibrary(hesiod,$(OBJS),$(ATHLIBDIR))
 #endif
