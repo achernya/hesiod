@@ -1,63 +1,77 @@
-/* This file contains hes_postoffice, which retrieves post-office information
- * for a user.
+/* Copyright 1988, 1996 by the Massachusetts Institute of Technology.
  *
- * For copying and distribution information, see the file <mit-copyright.h>
- *
- * Original version by Steve Dyer, IBM/Project Athena.
- *
- *	$Author: mar $
- *	$Athena: hesmailhost.c,v 1.4 88/08/07 21:52:45 treese Locked $
- *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesmailhost.c,v $
- *	$Log: not supported by cvs2svn $
- * Revision 1.5  88/08/07  23:17:10  treese
- * Second-public-distribution
- * 
- * Revision 1.4  88/08/07  21:52:45  treese
- * First public distribution
- * 
- * Revision 1.3  88/06/12  00:53:06  treese
- * Cleaned up to work with Saber.
- * First public distribution.
- * 
- * Revision 1.2  88/06/05  19:51:36  treese
- * Cleaned up for public distribution
- * 
- *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-#include "mit-copyright.h"
+/* This file contains hes_postoffice, which retrieves post-office information
+ * for a user.
+ */
 
-#ifndef lint
-static char rcsid_hesmailhost_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesmailhost.c,v 1.6 1993-10-21 14:36:09 mar Exp $";
-#endif
+static char rcsid[] = "$Id: hesmailhost.c,v 1.7 1996-11-07 02:30:18 ghudson Exp $";
 
-#include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
-
+#include <netdb.h>
+#include <pwd.h>
 #include "hesiod.h"
 
 #define LINESIZE 80
 
-struct hes_postoffice *
-hes_getmailhost(user)
-char *user;
-{
-	static struct hes_postoffice ret;
-	static char linebuf[LINESIZE];
-	char *p;
-	char **cp;
+extern int hes_errno;
 
-	cp = hes_resolve(user, "pobox");
-	if (cp == NULL) return(NULL);
-	strcpy(linebuf, *cp);
-	ret.po_type = linebuf;
-	p = linebuf;
-	while(!isspace(*p)) p++;
-	*p++ = '\0';
-	ret.po_host = p;
-	while(!isspace(*p)) p++;
-	*p++ = '\0';
-	ret.po_name = p;
-	return(&ret);
+struct hes_postoffice *hes_getmailhost(const char *user)
+{
+  static struct hes_postoffice ret;
+  static char linebuf[LINESIZE];
+
+  hes_init();
+  hes_errno = hes_getmailhost_r(user, &ret, linebuf, LINESIZE);
+  return (hes_errno == HES_ER_OK) ? &ret : NULL;
+}
+
+int hes_getmailhost_r(const char *user, struct hes_postoffice *ret,
+		      char *linebuf, int bufsize)
+{
+  char *p, *vec[2];
+  int status;
+
+  /* Get the result, sanity-check it, and copy it into linebuf. */
+  status = hes_resolve_r(user, "pobox", vec, 2);
+  if (status != HES_ER_OK)
+    return(status);
+  if (*vec == NULL)
+    return HES_ER_INVAL;
+  if (strlen(*vec) > bufsize - 1)
+    {
+      free(*vec);
+      return HES_ER_RANGE;
+    }
+  strcpy(linebuf, *vec);
+  free(*vec);
+
+  /* Break up linebuf into fields. */
+  ret->po_type = linebuf;
+  p = linebuf;
+  while (!isspace(*p))
+    p++;
+  *p++ = 0;
+  ret->po_host = p;
+  while (!isspace(*p))
+    p++;
+  *p++ = 0;
+  ret->po_name = p;
+
+  return HES_ER_OK;
 }
