@@ -13,8 +13,12 @@ static char sccsid[] = "@(#)getservbyname.c	5.3 (Berkeley) 5/19/86";
 #include <netdb.h>
 #include <stdio.h>
 #include <ctype.h>
-
+#ifdef POSIX
+#include <stdlib.h>
+#else
 extern char *malloc();
+#endif
+#include "hesiod.h"
 
 #define LISTSIZE 15
 struct servent *
@@ -24,7 +28,6 @@ hes_getservbyname(name, proto)
 	register struct servent *p;
 	register char *l, **cp;
 	register int i = 0;
-	char **hes_resolve();
 	static char *aliases[LISTSIZE];
 
 	cp = hes_resolve(name, "service");
