@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.18 1996-12-08 21:32:57 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.19 1996-12-30 18:39:58 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -133,8 +133,9 @@ void hesiod_end(void *context)
 char *hesiod_to_bind(void *context, const char *name, const char *type)
 {
   struct hesiod_p *ctx = (struct hesiod_p *) context;
-  char bindname[MAXDNAME], *p, *rhs, *ret;
+  char bindname[MAXDNAME], *p, *ret;
   char **rhs_list = NULL;
+  const char *rhs;
 	
   strcpy(bindname, name);
   p = strchr(bindname, '@');
@@ -142,7 +143,7 @@ char *hesiod_to_bind(void *context, const char *name, const char *type)
     {
       *p++ = 0;
       if (strchr(p, '.'))
-	rhs = p;
+	rhs = name + (p - bindname);
       else
 	{
 	  rhs_list = hesiod_resolve(context, p, "rhs-extension");
@@ -165,7 +166,7 @@ char *hesiod_to_bind(void *context, const char *name, const char *type)
       strcat(bindname, ctx->lhs);
     }
   if (rhs[0] != '.')
-    strcat(bindname,".");
+    strcat(bindname, ".");
   strcat(bindname, rhs);
   if (rhs_list)
     hesiod_free_list(context, rhs_list);
