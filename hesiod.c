@@ -1,3 +1,21 @@
+/* This file is part of the Hesiod library.
+ *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
+ *	$Author: treese $
+ *	$Athena: hesinfo.c,v 1.2 88/06/05 19:51:18 treese Dist $
+ *	$Log: not supported by cvs2svn $
+ * 
+ *
+ * Copyright 1988 by the Massachusetts Institute of Technology.  See the
+ * file <mit-copyright.h> for copying and distribution information.
+ */
+
+#include "mit-copyright.h"
+
+#ifndef lint
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.2 1988-06-11 22:36:38 treese Exp $";
+#endif
+
 #include <stdio.h>
 #include <errno.h>
 #include <strings.h>
