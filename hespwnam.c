@@ -18,7 +18,7 @@
  * information about a user.
  */
 
-static const char rcsid[] = "$Id: hespwnam.c,v 1.15 1999-10-23 19:29:15 danw Exp $";
+static const char rcsid[] = "$Id: hespwnam.c,v 1.16 2002-04-03 21:40:55 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,8 +59,7 @@ static struct passwd *getpwcommon(void *context, const char *arg, int which)
   struct passwd *pw;
 
   /* Get the response and copy the first entry into a buffer. */
-  list = (which) ? hesiod__uidresolve(context, arg)
-    : hesiod_resolve(context, arg, "passwd");
+  list = hesiod_resolve(context, arg, which ? "uid" : "passwd");
   if (!list)
     return NULL;
   p = malloc(strlen(*list) + 1);
