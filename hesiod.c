@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.21 1997-02-11 18:42:41 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.22 1997-09-20 06:47:26 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -149,7 +149,12 @@ char *hesiod_to_bind(void *context, const char *name, const char *type)
   char bindname[MAXDNAME], *p, *ret, **rhs_list = NULL;
   const char *rhs;
   int len;
-	
+
+  if (strlen(name) > sizeof(bindname) - 1)
+    {
+      errno = EMSGSIZE;
+      return NULL;
+    }
   strcpy(bindname, name);
 
   /* Find the right right hand side to use, possibly truncating bindname. */
