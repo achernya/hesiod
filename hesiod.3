@@ -6,8 +6,7 @@
 .\"	$Author: probe $
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.3,v $
 .\"	$Athena: hesiod.3,v 1.3 88/08/07 21:52:25 treese Locked $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.3,v 1.5 1989-12-03 18:08:32 probe Exp $
-.\"
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.3,v 1.6 1990-07-11 16:44:07 probe Exp $
 .TH HESIOD 3 "2 April 1987"
 .SH NAME
 hesiod \- C Language Hesiod name server Interface Library
@@ -31,7 +30,13 @@ strings (a la argv), one for each resource record
 containing Hesiod data, or NULL if there is any error.  The
 function
 .I hes_error
-may be called to determine the source of the error.
+may be called to determine the source of the error.  It will return
+one of the HES_ER_* codes defined in
+.I hesiod.h.
+
+If the environment variable
+.B HES_DOMAIN
+is set, this domain will override what is in /etc/hesiod.conf.
 .SH FILES
 /usr/include/hesiod.h, /etc/hesiod.conf
 .SH "SEE ALSO"
