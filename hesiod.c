@@ -1,9 +1,12 @@
 /* This file is part of the Hesiod library.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v $
- *	$Author: mar $
+ *	$Author: probe $
  *	$Athena: hesiod.c,v 1.5 88/08/07 22:00:44 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.12  93/10/21  14:35:55  mar
+ * include string.h instead of strings.h
+ * 
  * Revision 1.11  93/06/15  10:26:37  mar
  * handle empty LHS
  * 
@@ -63,7 +66,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.12 1993-10-21 14:35:55 mar Exp $";
+static char rcsid_hesiod_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.c,v 1.13 1993-10-22 08:16:06 probe Exp $";
 #endif
 
 #include <stdio.h>
@@ -146,8 +149,8 @@ char *HesiodName, *HesiodNameType;
 	if (Hes_Errno == HES_ER_UNINIT || Hes_Errno == HES_ER_CONFIG)
 		(void) hes_init();
 	if (Hes_Errno == HES_ER_CONFIG) return(NULL);
-	if (cp = index(HesiodName,'@')) {
-		if (index(++cp,'.'))
+	if (cp = strchr(HesiodName,'@')) {
+		if (strchr(++cp,'.'))
 			RHS = cp;
 		else
 			if (cpp = hes_resolve(cp, "rhs-extension"))
@@ -157,11 +160,7 @@ char *HesiodName, *HesiodNameType;
 				return(NULL);
 			}
 		(void) strcpy(bindname,HesiodName);
-#ifndef SOLARIS
-		*index(bindname,'@') = '\0';
-#else
 		*strchr(bindname,'@') = '\0';
-#endif /* SOLARIS */
 	} else {
 		RHS = Hes_RHS;
 		(void) strcpy(bindname, HesiodName);
