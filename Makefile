@@ -1,8 +1,8 @@
 # Makefile for the Project Athena Hesiod Nameserver library
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v $
-#	$Author: probe $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.9 1989-12-03 17:58:59 probe Exp $
+#	$Author: epeisach $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.10 1990-02-09 08:39:07 epeisach Exp $
 
 DEFINES= -DHESIOD
 INCPATH=
@@ -57,5 +57,5 @@ llib-lhesiod.ln: $(SRCS)
 	lint -Chesiod $(LINTFLAGS) $(CFLAGS) $(SRCS)
 
 depend:
-	makedepend ${CFLAGS} ${SRCS} hesinfo.c
+	touch Make.depend; makedepend -fMake.depend ${CFLAGS} ${SRCS} hesinfo.c
 # DO NOT DELETE THIS LINE -- make depend depends on it.
