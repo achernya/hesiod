@@ -2,10 +2,13 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v $
 #	$Author: treese $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.2 1988-06-05 19:51:02 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.3 1988-08-07 21:47:04 treese Exp $
 
-CFLAGS = -O -I../include -DHESIOD
+DEFINES= -DHESIOD
+INCPATH= -I../include
+CFLAGS = -O ${INCPATH} ${DEFINES}
 
+SRCS = hesiod.c hespwnam.c hesmailhost.c resolve.c cistrcmp.c 
 OBJS = hesiod.o hespwnam.o hesmailhost.o resolve.o cistrcmp.o 
 TOOLS = hesinfo
 LIBDIR= /usr/athena/lib
@@ -40,6 +43,9 @@ hesiod.a:	${OBJS}
 
 hesinfo:	hesiod.a hesinfo.c
 	cc ${CFLAGS} -o hesinfo hesinfo.c hesiod.a
+
+saber:
+	saber ${INCPATH} ${DEFINES} hesinfo.c ${SRCS}
 
 clean:	
 	-rm -f hesiod.a hesiod_p.a *.o ${TOOLS} *~ profiled/*.o
