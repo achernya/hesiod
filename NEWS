@@ -1,0 +1,35 @@
+Major changes in release 3.0.0:
+* This NEWS file added.
+* Wire protocol change: Hesiod data on the name servers should now be
+  in class C_IN, not C_HS.  Data in class C_HS will still work for
+  now, but this backward compatibility hack may not stick around
+  forever.  (You can specify which classes to look at in your
+  hesiod.conf file.)
+* Interface change: the preferred interfaces are now named
+  hesiod_*() and take a context argument.  They also return allocated
+  memory which must be freed by the caller.  The *_r() interfaces are
+  gone, and the hes_*() interfaces are deprecated.
+* Hesiod no longer looks for /etc/hesiod.conf (unless sysconfdir is
+  /etc).  It does, however, allow the environment variable
+  HESIOD_CONFIG to specify where the configuration file lives.
+* hesiod.conf is no longer case-sensitive.
+* Hesiod compiles on systems which don't define C_HS or T_TXT.
+* Bugs fixed: "hesinfo -b" works, better length-checking on response
+  packets, string termination error in configuration file reading,
+  README left out periods in sample rhs and lhs values, "make check"
+  didn't set fixed hesiod configuration, manual pages weren't
+  installed.
+
+Major changes in release 2.0.0:
+* The hesiod.3 man page now documents all exported functions.
+* Reentrant interfaces were added to the API.  See the man page for
+  details.
+* hes_strerror() was added to the API.
+* Function prototypes were added to <hesiod.h>.  Hesiod now assumes a
+  compiler which can handle most ANSI constructs.
+* Bugs fixed: memory leaks in hes_getpwnam(), hes_getmailhost,
+  hes_getservbyname(); bounds checking added in res_scan().
+* Hesiod builds with Autoconf instead of imake now.
+* An automated test driver is included.
+* The maximum Hesiod response length is no longer coupled to the DNS
+  datagram transport size limit.
