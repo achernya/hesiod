@@ -1,3 +1,11 @@
+Major changes in release 3.0.2:
+* Better observance of Autoconf environment variable conventions (you
+  can set CPPFLAGS, CFLAGS, LDFLAGS, and LIBS).  CDEBUGFLAGS is gone;
+  CFLAGS specifies debugging and optimization flags only.
+* Bugs fixed: "make clean" missed config.h, hesiod_to_bind() would
+  core dump on names with right hand sides, hesiod_to_bind() didn't
+  length-check its arguments.
+
 Major changes in release 3.0.1:
 * hes_init() function added to backward compatibility interfaces.
 * You can use "#ifdef HESIOD_INTERFACES" in an application to test if
