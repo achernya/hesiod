@@ -1,9 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(hesiod.c)
 
-test -z "$lbindir" && lbindir='${bindir}'
-AC_SUBST(lbindir)
-
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_RANLIB
@@ -15,7 +12,6 @@ AC_EGREP_HEADER(pw_change, pwd.h, AC_DEFINE(HAVE_PW_CHANGE))
 AC_EGREP_HEADER(pw_expire, pwd.h, AC_DEFINE(HAVE_PW_EXPIRE))
 
 AC_CHECK_FUNC(res_mkquery, :, [AC_CHECK_LIB(resolv, res_mkquery)])
-AC_CHECK_FUNCS(strerror_r)
 
 AC_CONFIG_HEADER(config.h)
 AC_OUTPUT(Makefile)

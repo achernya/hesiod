@@ -1,20 +1,17 @@
-# $Id: Makefile.in,v 1.9 1997-03-18 21:35:17 ghudson Exp $
+# $Id: Makefile.in,v 1.10 1998-09-03 01:12:00 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
-INSTALL_PROGRAM=@INSTALL_PROGRAM@
 RANLIB=@RANLIB@
 VPATH=@srcdir@
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-bindir=@bindir@
 libdir=@libdir@
 includedir=@includedir@
 mandir=@mandir@
 sysconfdir=@sysconfdir@
-lbindir=@lbindir@
 
 CC=@CC@
 CPPFLAGS=@CPPFLAGS@
@@ -24,14 +21,11 @@ LIBS=@LIBS@
 ALL_CFLAGS=-I. -DSYSCONFDIR=\"${sysconfdir}\" ${CPPFLAGS} ${CFLAGS}
 OBJS=hesiod.o hesmailhost.o hespwnam.o hesservbyname.o hescompat.o
 
-all: libhesiod.a hesinfo hestest
+all: libhesiod.a hestest
 
 libhesiod.a: ${OBJS}
 	ar cru $@ ${OBJS}
 	${RANLIB} $@
-
-hesinfo: hesinfo.o libhesiod.a
-	${CC} ${LDFLAGS} -o $@ hesinfo.o libhesiod.a ${LIBS}
 
 hestest: hestest.o libhesiod.a
 	${CC} ${LDFLAGS} -o $@ hestest.o libhesiod.a ${LIBS}
@@ -47,17 +41,13 @@ check:
 
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${lbindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man3
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man5
 	${INSTALL} -m 644 libhesiod.a ${DESTDIR}${libdir}
 	${RANLIB} ${DESTDIR}${libdir}/libhesiod.a
 	chmod u-w ${DESTDIR}${libdir}/libhesiod.a
-	${INSTALL_PROGRAM} -m 555 hesinfo ${DESTDIR}${lbindir}
 	${INSTALL} -m 444 ${srcdir}/hesiod.h ${DESTDIR}${includedir}
-	${INSTALL} -m 444 ${srcdir}/hesinfo.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 444 ${srcdir}/hesiod.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/hesiod_end.3 \
 		${DESTDIR}${mandir}/man3
@@ -78,6 +68,7 @@ install:
 	${INSTALL} -m 444 ${srcdir}/hesiod_getservbyname.3 \
 		${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/hesiod_init.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/hesiod_parse_result.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/hesiod_resolve.3 \
 		${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/hesiod_to_bind.3 \
@@ -85,7 +76,7 @@ install:
 	${INSTALL} -m 444 ${srcdir}/hesiod.conf.5 ${DESTDIR}${mandir}/man5
 
 clean:
-	rm -f ${OBJS} libhesiod.a hesinfo.o hesinfo hestest.o hestest
+	rm -f ${OBJS} libhesiod.a hestest.o hestest
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile config.h
