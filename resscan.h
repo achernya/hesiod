@@ -6,11 +6,14 @@
  * Original version by Steve Dyer, IBM/Project Athena, and Sam Hsu,
  * DEC/Project Athena.
  *
- *	$Author: treese $
+ *	$Author: cfields $
  *	$Athena: resscan.h,v 1.3 88/08/07 21:53:09 treese Locked $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resscan.h,v 1.4 1988-08-07 23:17:42 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resscan.h,v 1.5 1995-06-25 01:36:21 cfields Exp $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resscan.h,v $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.4  1988/08/07  23:17:42  treese
+ * Second-public-distribution
+ *
  * Revision 1.3  88/08/07  21:53:09  treese
  * First public distribution
  * 
@@ -47,6 +50,5 @@ typedef struct retransXretry {
 
 #define RES_INITCHECK() if(!(_res.options&RES_INIT))res_init();
 
-extern struct state _res;
 extern char *p_cdname(), *p_rr(), *p_type(), *p_class();
 extern struct nsmsg *res_scan(), *resolve(), *_resolve(); 
