@@ -5,7 +5,7 @@
  *
  * Original version by Steve Dyer, IBM/Project Athena.
  *
- *	$Author: mar $
+ *	$Author: epeisach $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v $
  *	$Athena: hespwnam.c,v 1.4 88/08/07 21:52:51 treese Locked $
  */
@@ -13,21 +13,24 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.9 1993-10-21 14:36:11 mar Exp $";
+static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.10 1993-10-22 14:06:11 epeisach Exp $";
 #endif
 #include <stdio.h>
 #include <pwd.h>
 #include <string.h>
+#include "hesiod.h"
 
 static struct passwd pw_entry;
 static char buf[256];
+
+static char *_NextPWField();    /* For later definition in file */
 
 static struct passwd *
 hes_getpwcommon(arg, which)
 	char *arg;
 	int which;	/* 0=hes_getpwnam, 1=hes_getpwuid */
 {
-	register char *p, **pp; char *_NextPWField(), **hes_resolve();
+	register char *p, **pp;
 
 	pp = hes_resolve(arg, which ? "uid" : "passwd");
 	if (pp == NULL || *pp == NULL)
