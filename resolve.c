@@ -1,8 +1,8 @@
 #ifndef lint
-static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.6 1990-07-11 16:51:27 probe Exp $";
+static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.7 1993-06-15 10:25:45 mar Exp $";
 #endif
 /*
- * $Author: probe $
+ * $Author: mar $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v $
  * $Athena: resolve.c,v 1.4 88/08/07 21:58:40 treese Locked $
  */
@@ -40,7 +40,11 @@ rr_scan(cp, rr)
     cp += sizeof(u_short/*type*/);
 
     rr->class = _getshort(cp);
+#ifdef __alpha
+    cp += sizeof(u_short/*class*/) + sizeof(u_int/*ttl*/);
+#else
     cp += sizeof(u_short/*class*/) + sizeof(u_long/*ttl*/);
+#endif
 
     rr->dlen = (int)_getshort(cp);
     rr->data = cp + sizeof(u_short/*dlen*/);
@@ -142,7 +146,11 @@ _resolve(name, class, type, patience)
 {
     static char qbuf[PACKETSZ], abuf[PACKETSZ];
     register int n;
+#ifdef __alpha
+    register int res_options = _res.options;
+#else
     register long res_options = _res.options;
+#endif
     register int res_retrans = _res.retrans;
     register int res_retry = _res.retry;
 
