@@ -1,8 +1,8 @@
 #ifndef lint
-static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.8 1993-10-21 14:36:12 mar Exp $";
+static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v 1.9 1993-10-22 14:19:43 epeisach Exp $";
 #endif
 /*
- * $Author: mar $
+ * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/resolve.c,v $
  * $Athena: resolve.c,v 1.4 88/08/07 21:58:40 treese Locked $
  */
@@ -22,6 +22,8 @@ static char *RCS_ID = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/he
 #define DEF_RETRY 3
 
 extern int errno;
+
+static dn_skip();
 
 static caddr_t
 rr_scan(cp, rr)
