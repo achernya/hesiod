@@ -513,7 +513,7 @@ fi
 
 
 
-test -z "$lbindir" && letcdir='${bindir}'
+test -z "$lbindir" && lbindir='${bindir}'
 
 
 # Extract the first word of "gcc", so it can be a program name with args.
