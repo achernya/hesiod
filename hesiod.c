@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.19 1996-12-30 18:39:58 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.20 1997-01-03 20:43:54 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -133,11 +133,13 @@ void hesiod_end(void *context)
 char *hesiod_to_bind(void *context, const char *name, const char *type)
 {
   struct hesiod_p *ctx = (struct hesiod_p *) context;
-  char bindname[MAXDNAME], *p, *ret;
-  char **rhs_list = NULL;
+  char bindname[MAXDNAME], *p, *ret, **rhs_list = NULL;
   const char *rhs;
+  int len;
 	
   strcpy(bindname, name);
+
+  /* Find the right right hand side to use, possibly truncating bindname. */
   p = strchr(bindname, '@');
   if (p)
     {
@@ -157,6 +159,21 @@ char *hesiod_to_bind(void *context, const char *name, const char *type)
 	}
     } else
       rhs = ctx->rhs;
+
+  /* See if we have enough room. */
+  len = strlen(bindname) + 1 + strlen(type);
+  if (ctx->lhs)
+    len += strlen(ctx->lhs) + ((ctx->lhs[0] != '.') ? 1 : 0);
+  len += strlen(rhs) + ((rhs[0] != '.') ? 1 : 0);
+  if (len > sizeof(bindname) - 1)
+    {
+      if (rhs_list)
+	hesiod_free_list(context, rhs_list);
+      errno = EMSGSIZE;
+      return NULL;
+    }
+
+  /* Put together the rest of the domain. */
   strcat(bindname, ".");
   strcat(bindname, type);
   if (ctx->lhs)
@@ -168,8 +185,12 @@ char *hesiod_to_bind(void *context, const char *name, const char *type)
   if (rhs[0] != '.')
     strcat(bindname, ".");
   strcat(bindname, rhs);
+
+  /* rhs_list is no longer needed, since we're done with rhs. */
   if (rhs_list)
     hesiod_free_list(context, rhs_list);
+
+  /* Make a copy of the result and return it to the caller. */
   ret = malloc(strlen(bindname) + 1);
   if (!ret)
     {

@@ -1,4 +1,4 @@
-.\" $Id: hesiod.3,v 1.9 1996-12-08 21:31:41 ghudson Exp $
+.\" $Id: hesiod.3,v 1.10 1997-01-03 20:43:55 ghudson Exp $
 .\"
 .\" Copyright 1988, 1996 by the Massachusetts Institute of Technology.
 .\"
@@ -101,6 +101,8 @@ failed because the Hesiod configuration file was invalid.
 failed because no name server could be contacted to answer the query.
 .IP EMSGSIZE
 .I hesiod_resolve
+or
+.I hesiod_to_bind
 failed because the query or response was too big to fit into the
 packet buffers.
 .IP ENOENT
