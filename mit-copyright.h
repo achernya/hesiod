@@ -1,7 +1,7 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/mit-copyright.h,v 1.1 1988-06-05 18:52:08 treese Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/mit-copyright.h,v 1.2 1988-06-05 18:52:48 treese Exp $ */
 /*
 
-Copyright 1985, 1986, 1987 by the Massachusetts Institute of Technology
+Copyright 1988 by the Massachusetts Institute of Technology.
 
 Permission to use, copy, modify, and distribute this
 software and its documentation for any purpose and without
