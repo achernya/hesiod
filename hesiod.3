@@ -1,49 +1,119 @@
-.\" Copyright 1988 by the Massachusetts Institute of Technology.  For
-.\" copying and distribution information, see the file <mit-copyright.h>.
+.\" $Id: hesiod.3,v 1.8 1996-11-07 02:26:05 ghudson Exp $
+.\"
+.\" Copyright 1988, 1996 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
 .\"
 .\" Original version by Steve Dyer, IBM/Project Athena.
 .\"
-.\"	$Author: lwvanels $
-.\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.3,v $
-.\"	$Athena: hesiod.3,v 1.3 88/08/07 21:52:25 treese Locked $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.3,v 1.7 1991-08-15 14:15:28 lwvanels Exp $
-.TH HESIOD 3 "2 April 1987"
+.TH HESIOD 3 "27 October 1996"
 .SH NAME
 hesiod \- C Language Hesiod name server Interface Library
 .SH SYNOPSIS
 .nf
+.B #include <netdb.h>
+.B #include <pwd.h>
 .B #include <hesiod.h>
 .PP
-.B char **hes_resolve(name, HesiodNameType)
-.B char *name, *HesiodNameType;
+.B char **hes_resolve(const char *\fIname\fP, const char *\fItype\fP)
+.B char *hes_to_bind(const char *\fIname\fP, const char *\fItype\fP)
+.B int hes_error(void)
+.B const char *hes_strerror(int \fIerrval\fP)
+.B struct passwd *hes_getpwnam(char *\fIname\fP)
+.B struct passwd *hes_getpwuid(int \fIuid\fP)
+.B struct hes_postoffice *hes_getmailhost(char *\fIuser\fP)
+.B struct servent *hes_getservbyname(char *\fIname\fP, char *\fIproto\fP)
 .PP
-.B int hes_error()
+.B int hes_init()
+.B int hes_resolve_r(const char *\fIname\fP, const char *\fItype\fP,
+.B 	char **\fIretvec\fP, int \fIretveclen\fP)
+.B int hes_to_bind_r(const char *\fIname\fP, const char *\fItype\fP,
+.B 	char *\fIbuffer\fP, int \fIbuflen\fP)
+.B int hes_strerror_r(int \fIerrval\fP, char *\fIbuf\fP, int fIbufsize\fP)
+.B int hes_getpwnam_r(const char *\fIname\fP, struct passwd *\fIentry\fP,
+.B 	char *\fIbuf\fP, int \fIbufsize\fP, struct passwd **\fIresult\fP)
+.B int hes_getpwuid_r(int \fIuid\fP, struct passwd *\fIentry\fP,
+.B 	char *\fIbuf\fP, int \fIbufsize\fP, struct passwd **\fIresult\fP)
+.B int hes_getmailhost_r(const char *\fIuser\fP,
+.B 	struct hes_postoffice *\fIret\fP, char *\fIlinebuf\fP,
+.B 	int \fIbufsize\fP)
+.B int hes_getservbyname_r(const char *\fIname\fP, const char *\fIproto\fP,
+.B 	struct servent *\fIresult\fP, char *\fIbuffer\fP, int \fIbuflen\fP)
 .PP
 .B cc file.c -lhesiod
 .PP
 .SH DESCRIPTION
-.I hes_resolve
-is the primary interface to the Hesiod name server.
-It takes two arguments, a name to be resolved and a string, known
-as a HesiodNameType.  It returns a NULL terminated vector of
-strings (a la argv), one for each resource record
-containing Hesiod data, or NULL if there is any error.  The
-function
-.I hes_error
-may be called to determine the source of the error.  It will return
-one of the HES_ER_* codes defined in
-.I hesiod.h.
+\fIhes_resolve\fP is the primary interface to the Hesiod name server.
+It takes two arguments, a \fIname\fP to be resolved and a type of
+hesiod name to resolve.  If it succeeds, it returns a NULL-terminated
+vector of strings (a la argv), one for each record containing Hesiod
+data.  Each such string is allocated using \fIcalloc\fP and should be
+freed using \fIfree\fP when its memory is no longer needed.  On error,
+\fIhes_resolve\fP returns NULL; the function \fIhes_error\fP may be
+called to determine the source of the error.  It will return one of
+the HES_ER_* codes defined in \fIhesiod.h\fP.  \fIhes_strerror\fP may
+be called to translate an error number into a string describing the
+error.
 
-If the environment variable
-.B HES_DOMAIN
-is set, this domain will override what is in /etc/athena/hesiod.conf.
-.SH FILES
-/usr/athena/include/hesiod.h, /etc/athena/hesiod.conf
-.SH "SEE ALSO"
+\fIhes_to_bind\fP converts a hesiod name and type into a BIND name
+which may be resolved using a DNS lookup of class HESIOD.
+
+\fIhes_getpwnam\fP, \fIhes_getpwuid\fP, and \fIhes_getservbyname\fP
+look up a password or service name using Hesiod instead of the
+system's local databases.  Each function works like its counterpart in
+the C library.  The function \fIhes_error\fP may be called to
+determine the source of errors in these functions.
+\fIhes_getmailhost\fP looks up a user's mail host using Hesiod, and
+returns a pointer to a struct hes_postoffice, which contains strings
+describing the type, hostname, and user name of the user's mail drop:
+
+.nf
+struct hes_postoffice {
+	char	*po_type;
+	char	*po_host;
+	char	*po_name;
+};
+.fi
+
+The *_r versions of the Hesiod functions provide a reentrant interface
+to the Hesiod library (if the DNS resolver is reentrant).  The
+function \fIhes_init\fP must be called before entering any of the
+reentrant Hesiod functions (this is unnecessary for the non-reentrant
+versions).  Each function accepts extra parameters giving locations to
+place the result of the call.  Each function except for
+\fIhes_strerror_r\fP returns one of the HES_ER_* codes on failure, or
+HES_ER_OK on success.  \fIhes_strerror_r\fP returns 0 on success and
+-1 if its result buffer is not large enough to hold the resulting
+error string; if the result buffer size is at least HES_MAX_ERRLEN,
+\fIhes_strerror_r\fP will never fail.  The password, mail host, and
+service lookup functions require, in addition to a location for the
+result, a character buffer in which to hold the data pointed to by the
+result structure.  They return HES_ER_RANGE if their result buffers
+are not large enough to hold the result of the lookup.  The password
+lookup functions also accept a \fIresult\fP pointer, into which
+\fIentry\fP will be stored on success, or NULL on failure.
+.SH ENVIRONMENT
+If the environment variable \fBHES_DOMAIN\fP is set, this domain will
+override what is in \fI/etc/athena/hesiod.conf\fP.
+.SH SEE ALSO
 `Hesiod - Project Athena Technical Plan -- Name Service', named(8)
 .SH AUTHOR
 Steve Dyer, IBM/Project Athena
 .br
-Copyright 1987, 1988 by the Massachusetts Institute of Technology.
+Greg Hudson, MIT Team Athena
 .br
+Copyright 1987, 1988, 1995, 1996 by the Massachusetts Institute of Technology.
 .SH BUGS
+The interface for the password lookup functions is ridiculous, in
+order to achieve similarity with POSIX.1-1996.  (The password lookup
+functions in POSIX.1-1996 are equally ridiculous.)
