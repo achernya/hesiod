@@ -1,3 +1,23 @@
+/* This file contains hes_postoffice, which retrieves post-office information
+ * for a user.
+ *
+ * For copying and distribution information, see the file <mit-copyright.h>
+ *
+ * Original version by Steve Dyer, IBM/Project Athena.
+ *
+ *	$Author: treese $
+ *	$Athena$
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesmailhost.c,v $
+ *	$Log: not supported by cvs2svn $
+ *
+ */
+
+#include "mit-copyright.h"
+
+#ifndef lint
+static char rcsid_hesmailhost_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesmailhost.c,v 1.2 1988-06-05 19:51:36 treese Exp $";
+#endif
+
 #include <ctype.h>
 #include <stdio.h>
 #include <hesiod.h>

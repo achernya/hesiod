@@ -1,9 +1,21 @@
+.\" Copyright 1988 by the Massachusetts Institute of Technology.  For
+.\" copying and distribution information, see the file <mit-copyright.h>.
+.\"
+.\" Original version by Steve Dyer, IBM/Project Athena.
+.\"
+.\"	$Author: treese $
+.\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.3,v $
+.\"	$Athena$
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.3,v 1.2 1988-06-05 19:51:23 treese Exp $
+.\"	$Log: not supported by cvs2svn $
+.\"
 .TH HESIOD 3 "2 April 1987"
 .SH NAME
 hesiod \- C Language Hesiod name server Interface Library
 .SH SYNOPSIS
 .nf
 .B #include <hesiod.h>
+.PP
 .B char **hes_resolve(name, HesiodNameType)
 .B char *name, *HesiodNameType;
 .PP
@@ -28,6 +40,6 @@ may be called to determine the source of the error.
 .SH AUTHOR
 Steve Dyer, IBM/Project Athena
 .br
-Copyright 1987, Massachusetts Institute of Technology
+Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 .br
 .SH BUGS

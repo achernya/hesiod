@@ -1,11 +1,19 @@
-/*
+/* This is the source code for the hesinfo program, used to test the
+ * Hesiod name server.
+ *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v $
  *	$Author: treese $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v 1.1 1988-06-05 17:50:15 treese Exp $
+ *	$Athena: hesinfo.c,v 1.1 88/06/05 17:50:15 treese Locked $
+ *	$Log: not supported by cvs2svn $
+ *
+ * Copyright 1988 by the Massachusetts Institute of Technology.  See the
+ * file <mit-copyright.h> for copying and distribution information.
  */
 
+#include "mit-copyright.h"
+
 #ifndef lint
-static char rcsid_hesinfo_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v 1.1 1988-06-05 17:50:15 treese Exp $";
+static char rcsid_hesinfo_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v 1.2 1988-06-05 19:51:18 treese Exp $";
 #endif
 
 #include <stdio.h>
