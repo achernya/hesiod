@@ -47,112 +47,143 @@
  */
 
 /* This file is part of the Hesiod library.  It contains
- * hes_getservbyname, used to get information about network services.
+ * hesiod_getservbyname, used to get information about network
+ * services.
  */
 
-static char rcsid[] = "$Id: hesservbyname.c,v 1.5 1996-11-07 02:30:21 ghudson Exp $";
+static char rcsid[] = "$Id: hesservbyname.c,v 1.6 1996-12-08 21:40:44 ghudson Exp $";
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <errno.h>
+#include <pwd.h>
+#include <netdb.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <pwd.h>
-#include <stdlib.h>
 #include "hesiod.h"
-
-extern int hes_errno;
 
 static int cistrcmp(const char *s1, const char *s2);
 
-struct servent *hes_getservbyname(const char *name, const char *proto)
+struct servent *hesiod_getservbyname(void *context, const char *name,
+				     const char *proto)
 {
-  static struct servent result;
-  static char buf[2048];
-
-  hes_init();
-  hes_errno = hes_getservbyname_r(name, proto, &result, buf, sizeof(buf));
-  return (hes_errno == HES_ER_OK) ? &result : NULL;
-}
-
-int hes_getservbyname_r(const char *name, const char *proto,
-			struct servent *result, char *buffer, int buflen)
-{
-  char **p, **aliases = (char **) buffer, *vec[100], *line;
+  char **item, **list;
   int i = 0, status;
 
-  status = hes_resolve_r(name, "service", vec, 100);
-  if (status != HES_ER_OK)
-    return status;
-  status = HES_ER_NOTFOUND;
-  for (p = vec; *p; p++)
+  /* Ask for all entries matching the given service name. */
+  list = hesiod_resolve(context, name, "service");
+  if (!list)
+    return NULL;
+
+  /* Look through the returned list for entries matching the given protocol. */
+  for (item = list; *item; item++)
     {
-      char *servicename, *protoname, *port, *l = *p;
-      int len = strlen(l);
+      char **alias, *servicename, *protoname, *port, *p2, *p = *item;
+      int len = strlen(p), naliases;
+      struct servent *serv;
 
       /* Find the service name. */
-      while (isspace(*l))
-	l++;
-      servicename = l;
-      while (*l && !isspace(*l) && *l != ';')
-	l++;
-      if (!*l) /* Malformed entry */
+      while (isspace(*p))
+	p++;
+      servicename = p;
+      while (*p && !isspace(*p) && *p != ';')
+	p++;
+      if (!*p) /* Malformed entry */
 	continue;
-      *l++ = 0;
+      *p++ = 0;
 
       /* Find the protocol name and check it. */
-      while (isspace(*l))
-	l++;
-      protoname = l;
-      while (*l && !isspace(*l) && *l != ';')
-	l++;
-      if (!*l) /* Malformed entry */
+      while (isspace(*p))
+	p++;
+      protoname = p;
+      while (*p && !isspace(*p) && *p != ';')
+	p++;
+      if (!*p) /* Malformed entry */
 	continue;
-      *l++ = 0;
+      *p++ = 0;
       if (cistrcmp(proto, protoname)) /* Wrong protocol */
 	continue;
 
       /* Find the port number. */
-      while (isspace(*l) || *l == ';')
-	l++;
-      if (!*l) /* Malformed entry */
+      while (isspace(*p) || *p == ';')
+	p++;
+      if (!*p) /* Malformed entry */
 	continue;
-      port = l;
+      port = p;
 
-      while (*l && !isspace(*l) && *l != ';')
-	l++;
-      if (*l)
-	*l++ = 0;
-      while (*l)
+      while (*p && !isspace(*p) && *p != ';')
+	p++;
+      while (isspace(*p) || *p == ';')
+	p++;
+
+      /* Count the number of aliases. */
+      naliases = 0;
+      p2 = p;
+      while (*p2)
 	{
-	  if ((i + 2) * sizeof(char *) + len >= buflen)
-	    break;
-	  aliases[i++] = l;
-	  while (*l && !isspace(*l))
-	    l++;
-	  if (*l)
-	    *l++ = 0;
+	  naliases++;
+	  while (*p2 && !isspace(*p2))
+	    p2++;
+	  while (isspace(*p2))
+	    p2++;
 	}
-      if ((i + 1) * sizeof(char *) + len >= buflen)
+
+      /* Allocate space for the answer. */
+      serv = (struct servent *) malloc(sizeof(struct servent));
+      if (serv)
 	{
-	  status = HES_ER_RANGE;
-	  break;
+	  serv->s_name = malloc(strlen(servicename) + strlen(proto)
+				 + strlen(p) + 3);
+	  if (serv->s_name)
+	    serv->s_aliases = (char **)
+	      malloc((naliases + 1) * sizeof(char *));
+	  if (serv->s_name && !serv->s_aliases)
+	    free(serv->s_name);
+	  if (!serv->s_name || !serv->s_aliases)
+	    free(serv);
 	}
-      aliases[i++] = 0;
-      line = (char *) (aliases + i);
-      memcpy(line, *p, len + 1);
-      result->s_name = line;
-      result->s_port = htons(atoi(port));
-      result->s_proto = line + (protoname - *p);
-      result->s_aliases = aliases;
-      for (; *aliases; aliases++)
-	*aliases = line + (*aliases - *p);
-      status = HES_ER_OK;
-      break;
+      if (!serv || !serv->s_name || !serv->s_aliases)
+	{
+	  errno = ENOMEM;
+	  return NULL;
+	}
+
+      /* Copy the information we found into the answer. */
+      serv->s_port = htons(atoi(port));
+      strcpy(serv->s_name, name);
+      serv->s_proto = serv->s_name + strlen(name) + 1;
+      strcpy(serv->s_proto, proto);
+      p2 = serv->s_proto + strlen(proto) + 1;
+      strcpy(p2, p);
+      alias = serv->s_aliases;
+      while (*p2)
+	{
+	  *alias++ = p2;
+	  while (*p2 && !isspace(*p2))
+	    p2++;
+	  if (*p2)
+	    {
+	      *p2++ = 0;
+	      while (isspace(*p2))
+		p2++;
+	    }
+	}
+      *alias = NULL;
+
+      hesiod_free_list(context, list);
+      return serv;
     }
-  for (p = vec; *p; p++)
-    free(*p);
-  return status;
+  hesiod_free_list(context, list);
+  return NULL;
+}
+
+void hesiod_free_servent(void *context, struct servent *serv)
+{
+    free(serv->s_name);
+    free(serv->s_aliases);
+    free(serv);
 }
 
 static int cistrcmp(const char *s1, const char *s2)

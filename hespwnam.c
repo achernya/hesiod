@@ -13,116 +13,107 @@
  * without express or implied warranty.
  */
 
-/* This file is part of the Hesiod library.  It implements hes_getpwnam,
- * for retrieving passwd information about a user.
+/* This file is part of the Hesiod library.  It implements
+ * hesiod_getpwnam and hesiod_getpwuid, for retrieving passwd
+ * information about a user.
  */
 
-static char rcsid[] = "$Id: hespwnam.c,v 1.12 1996-11-07 02:30:19 ghudson Exp $";
+static char rcsid[] = "$Id: hespwnam.c,v 1.13 1996-12-08 21:40:37 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pwd.h>
 #include <string.h>
+#include <pwd.h>
+#include <errno.h>
 #include <netdb.h>
 #include "hesiod.h"
 #include "config.h"
 
-extern int hes_errno;
-
-static struct passwd pw_entry;
-static char buf[256];
-
-static int hes_getpwcommon(const char *arg, int which, struct passwd *entry,
-			   char *buf, int bufsize);
+static struct passwd *getpwcommon(void *context, const char *arg, int which);
 static char *next_field(char *ptr);
 
-struct passwd *hes_getpwnam(const char *nam)
+struct passwd *hesiod_getpwnam(void *context, const char *name)
 {
-  hes_init();
-  hes_errno = hes_getpwcommon(nam, 0, &pw_entry, buf, sizeof(buf));
-  return (hes_errno == HES_ER_OK) ? &pw_entry : NULL;
+  return getpwcommon(context, name, 0);
 }
 
-struct passwd *hes_getpwuid(int uid)
+struct passwd *hesiod_getpwuid(void *context, uid_t uid)
 {
   char uidstr[16];
 
-  hes_init();
   sprintf(uidstr, "%d", uid);
-  hes_errno = hes_getpwcommon(uidstr, 1, &pw_entry, buf, sizeof(buf));
-  return (hes_errno == HES_ER_OK) ? &pw_entry : NULL;
+  return getpwcommon(context, uidstr, 1);
 }
 
-int hes_getpwnam_r(const char *nam, struct passwd *entry, char *buf,
-		   int bufsize, struct passwd **result)
+void hesiod_free_passwd(void *context, struct passwd *pw)
 {
-  int status;
-
-  status = hes_getpwcommon(nam, 0, entry, buf, bufsize);
-  *result = (status == HES_ER_OK) ? entry : NULL;
-  return status;
+  free(pw->pw_name);
+  free(pw);
 }
 
-int hes_getpwuid_r(int uid, struct passwd *entry, char *buf, int bufsize,
-		   struct passwd **result)
+static struct passwd *getpwcommon(void *context, const char *arg, int which)
 {
-  char uidstr[16];
-  int status;
+  char *p, **list;
+  struct passwd *pw;
 
-  sprintf(uidstr, "%d", uid);
-  status = hes_getpwcommon(uidstr, 1, entry, buf, bufsize);
-  *result = (status == HES_ER_OK) ? entry : NULL;
-  return status;
-}
-
-static int hes_getpwcommon(const char *arg, int which, struct passwd *entry,
-			   char *buf, int bufsize)
-{
-  char *p;
-  char *pp[2];
-  int status;
-
-  /* Get the response, sanity-check it, and copy it into buf. */
-  status = hes_resolve_r(arg, which ? "uid" : "passwd", pp, 2);
-  if (status != HES_ER_OK)
-    return(status);
-  if (*pp == NULL)
-    return(HES_ER_INVAL);
-  if (strlen(pp[0]) > bufsize - 1)
+  /* Get the response and copy the first entry into a buffer. */
+  list = hesiod_resolve(context, arg, which ? "uid" : "passwd");
+  if (!list)
+    return NULL;
+  p = malloc(strlen(*list) + 1);
+  if (!p)
     {
-      free(pp[0]);
-      return(HES_ER_RANGE);
+      hesiod_free_list(context, list);
+      errno = ENOMEM;
+      return NULL;
     }
-  strcpy(buf, pp[0]);
-  free(pp[0]);
+  strcpy(p, *list);
+  hesiod_free_list(context, list);
+
+  /* Allocate memory for the result. */
+  pw = (struct passwd *) malloc(sizeof(struct passwd));
+  if (!pw)
+    {
+      free(p);
+      errno = ENOMEM;
+      return NULL;
+    }
 
   /* Split up buf into fields. */
-  p = buf;
-  entry->pw_name = p;
+  pw->pw_name = p;
   p = next_field(p);
-  entry->pw_passwd = p;
+  pw->pw_passwd = p;
   p = next_field(p);
-  entry->pw_uid = atoi(p);
+  pw->pw_uid = atoi(p);
   p = next_field(p);
-  entry->pw_gid = atoi(p);
+  pw->pw_gid = atoi(p);
   p = next_field(p);
-  entry->pw_gecos = p;
+  pw->pw_gecos = p;
   p = next_field(p);
-  entry->pw_dir = p;
+  pw->pw_dir = p;
   p = next_field(p);
-  entry->pw_shell = p;
+  pw->pw_shell = p;
   while (*p && *p != '\n')
     p++;
   *p = 0;
 
 #ifdef HAVE_PW_QUOTA
-  entry->pw_quota = 0;
+  pw->pw_quota = 0;
 #endif
 #ifdef HAVE_PW_COMMENT
-  entry->pw_comment = "";
+  pw->pw_comment = "";
+#endif
+#ifdef HAVE_PW_CLASS
+  pw->pw_class = "";
+#endif
+#ifdef HAVE_PW_CHANGE
+  pw->pw_change = 0;
+#endif
+#ifdef HAVE_PW_EXPIRE
+  pw->pw_expire = 0;
 #endif
 
-  return HES_ER_OK;
+  return pw;
 }
 
 /* Null-terminate the current colon-separated field in the passwd entry and

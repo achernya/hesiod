@@ -13,65 +13,65 @@
  * without express or implied warranty.
  */
 
-/* This file contains hes_postoffice, which retrieves post-office information
- * for a user.
+/* This file contains hesiod_postoffice, which retrieves post-office
+ * information for a user.
  */
 
-static char rcsid[] = "$Id: hesmailhost.c,v 1.7 1996-11-07 02:30:18 ghudson Exp $";
+static char rcsid[] = "$Id: hesmailhost.c,v 1.8 1996-12-08 21:40:32 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <errno.h>
 #include <netdb.h>
 #include <pwd.h>
 #include "hesiod.h"
 
-#define LINESIZE 80
-
-extern int hes_errno;
-
-struct hes_postoffice *hes_getmailhost(const char *user)
+struct hesiod_postoffice *hesiod_getmailhost(void *context, const char *user)
 {
-  static struct hes_postoffice ret;
-  static char linebuf[LINESIZE];
-
-  hes_init();
-  hes_errno = hes_getmailhost_r(user, &ret, linebuf, LINESIZE);
-  return (hes_errno == HES_ER_OK) ? &ret : NULL;
-}
-
-int hes_getmailhost_r(const char *user, struct hes_postoffice *ret,
-		      char *linebuf, int bufsize)
-{
-  char *p, *vec[2];
-  int status;
+  char *p, **list;
+  struct hesiod_postoffice *po;
 
   /* Get the result, sanity-check it, and copy it into linebuf. */
-  status = hes_resolve_r(user, "pobox", vec, 2);
-  if (status != HES_ER_OK)
-    return(status);
-  if (*vec == NULL)
-    return HES_ER_INVAL;
-  if (strlen(*vec) > bufsize - 1)
+  list = hesiod_resolve(context, user, "pobox");
+  if (!list)
+      return NULL;
+  p = malloc(strlen(*list) + 1);
+  if (!p)
     {
-      free(*vec);
-      return HES_ER_RANGE;
+      hesiod_free_list(context, list);
+      errno = ENOMEM;
+      return NULL;
     }
-  strcpy(linebuf, *vec);
-  free(*vec);
+  strcpy(p, *list);
+  hesiod_free_list(context, list);
+
+  /* Allocate memory for the result. */
+  po = (struct hesiod_postoffice *) malloc(sizeof(struct hesiod_postoffice));
+  if (!po)
+    {
+      free(p);
+      errno = ENOMEM;
+      return NULL;
+    }
 
   /* Break up linebuf into fields. */
-  ret->po_type = linebuf;
-  p = linebuf;
+  po->hesiod_po_type = p;
   while (!isspace(*p))
     p++;
   *p++ = 0;
-  ret->po_host = p;
+  po->hesiod_po_host = p;
   while (!isspace(*p))
     p++;
   *p++ = 0;
-  ret->po_name = p;
+  po->hesiod_po_name = p;
 
-  return HES_ER_OK;
+  return po;
+}
+
+void hesiod_free_postoffice(void *context, struct hesiod_postoffice *po)
+{
+    free(po->hesiod_po_type);
+    free(po);
 }
