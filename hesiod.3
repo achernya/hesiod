@@ -1,0 +1,33 @@
+.TH HESIOD 3 "2 April 1987"
+.SH NAME
+hesiod \- C Language Hesiod name server Interface Library
+.SH SYNOPSIS
+.nf
+.B #include <hesiod.h>
+.B char **hes_resolve(name, HesiodNameType)
+.B char *name, *HesiodNameType;
+.PP
+.B int hes_error()
+.PP
+.B cc file.c -lhesiod
+.PP
+.SH DESCRIPTION
+.I hes_resolve
+is the primary interface to the Hesiod name server.
+It takes two arguments, a name to be resolved and a string, known
+as a HesiodNameType.  It returns a NULL terminated vector of
+strings (a la argv), one for each resource record
+containing Hesiod data, or NULL if there is any error.  The
+function
+.I hes_error
+may be called to determine the source of the error.
+.SH FILES
+/usr/include/hesiod.h, /etc/hesiod.conf
+.SH "SEE ALSO"
+`Hesiod - Project Athena Technical Plan -- Name Service', named(8)
+.SH AUTHOR
+Steve Dyer, IBM/Project Athena
+.br
+Copyright 1987, Massachusetts Institute of Technology
+.br
+.SH BUGS
