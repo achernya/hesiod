@@ -2,7 +2,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v $
 #	$Author: probe $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.8 1989-10-18 09:43:53 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.9 1989-12-03 17:58:59 probe Exp $
 
 DEFINES= -DHESIOD
 INCPATH=
@@ -34,7 +34,7 @@ install:	all
 	ranlib ${DESTDIR}${LIBDIR}/libhesiod_p.a
 	install -m 644 hesiod.h ${DESTDIR}${INCDIR}/hesiod.h
 	cp hesiod.3 ${DESTDIR}${MANDIR}${MAN3}
-	cp hesinfo.1 ${DESTDIR}${MANDIR}${MAN3}
+	cp hesinfo.1 ${DESTDIR}${MANDIR}${MAN1}
 	install -m 755 hesinfo ${DESTDIR}${BINDIR}
 	install -c -m 644 llib-lhesiod.ln ${DESTDIR}${LINTDIR}/llib-lhesiod.ln
 
@@ -59,19 +59,3 @@ llib-lhesiod.ln: $(SRCS)
 depend:
 	makedepend ${CFLAGS} ${SRCS} hesinfo.c
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-
-hesiod.o: hesiod.c mit-copyright.h /usr/include/stdio.h /usr/include/errno.h
-hesiod.o: /usr/include/strings.h /usr/include/sys/types.h
-hesiod.o: /usr/include/netinet/in.h /usr/include/arpa/nameser.h
-hesiod.o: /usr/include/resolv.h resscan.h hesiod.h
-hespwnam.o: hespwnam.c mit-copyright.h /usr/include/stdio.h
-hespwnam.o: /usr/include/pwd.h /usr/include/strings.h
-hesmailhost.o: hesmailhost.c mit-copyright.h /usr/include/ctype.h
-hesmailhost.o: /usr/include/stdio.h /usr/include/strings.h hesiod.h
-resolve.o: resolve.c /usr/include/strings.h /usr/include/sys/param.h
-resolve.o: /usr/include/machine/machparam.h /usr/include/sys/signal.h
-resolve.o: /usr/include/sys/types.h /usr/include/netinet/in.h
-resolve.o: /usr/include/sys/errno.h /usr/include/arpa/nameser.h
-resolve.o: /usr/include/resolv.h resscan.h
-cistrcmp.o: cistrcmp.c
-hesinfo.o: hesinfo.c mit-copyright.h /usr/include/stdio.h
