@@ -5,7 +5,7 @@
  *
  * Original version by Steve Dyer, IBM/Project Athena.
  *
- *	$Author: epeisach $
+ *	$Author: cfields $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v $
  *	$Athena: hespwnam.c,v 1.4 88/08/07 21:52:51 treese Locked $
  */
@@ -13,7 +13,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.10 1993-10-22 14:06:11 epeisach Exp $";
+static char rcsid_pwnam_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hespwnam.c,v 1.11 1995-06-29 23:59:56 cfields Exp $";
 #endif
 #include <stdio.h>
 #include <pwd.h>
@@ -45,11 +45,13 @@ hes_getpwcommon(arg, which)
 	pw_entry.pw_uid = atoi(p);
 	p = _NextPWField(p);
 	pw_entry.pw_gid = atoi(p);
-#if (!defined(_AIX) || (AIXV < 31)) && !defined(sun)
+#ifdef ultrix
 	pw_entry.pw_quota = 0;
-#if defined(_AIX) && (AIXV < 31)
-	pw_entry.pw_age =
 #endif
+#ifdef SYSV
+	pw_entry.pw_age = "";
+#endif
+#ifndef _AIX
 	pw_entry.pw_comment = "";
 #endif
 	p = _NextPWField(p);
