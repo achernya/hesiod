@@ -41,7 +41,7 @@
  * it uses res_send() and accesses _res.
  */
 
-static const char rcsid[] = "$Id: hesiod.c,v 1.28 2000-01-05 22:01:54 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod.c,v 1.29 2000-12-30 11:59:32 ghudson Exp $";
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -414,7 +414,10 @@ static char **get_txt_records(struct hesiod_p *ctx, int qclass,
   n = res_mkquery(QUERY, name, qclass, T_TXT, NULL, 0,
 		  NULL, qbuf, PACKETSZ);
   if (n < 0)
+    {
+      errno = EMSGSIZE;
       return NULL;
+    }
 
   /* Send the query. */
   n = res_send(qbuf, n, abuf, MAX_HESRESP);
