@@ -2,7 +2,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v $
 #	$Author: treese $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.3 1988-08-07 21:47:04 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Makefile,v 1.4 1988-08-07 21:51:55 treese Exp $
 
 DEFINES= -DHESIOD
 INCPATH= -I../include

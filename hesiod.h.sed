@@ -6,10 +6,13 @@
  * Original version by Steve Dyer, IBM/Project Athena.
  *
  *	$Author: treese $
- *	$Athena$
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.h.sed,v 1.2 1988-06-05 19:51:32 treese Exp $
+ *	$Athena: hesiod.h,v 1.2 88/06/05 19:51:32 treese Locked $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.h.sed,v 1.3 1988-08-07 21:52:39 treese Exp $
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesiod.h.sed,v $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.2  88/06/05  19:51:32  treese
+ * Cleaned up for public distribution
+ * 
  */
 
 /* Configuration information. */

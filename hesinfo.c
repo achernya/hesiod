@@ -3,8 +3,12 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v $
  *	$Author: treese $
- *	$Athena: hesinfo.c,v 1.2 88/06/05 19:51:18 treese Locked $
+ *	$Athena: hesinfo.c,v 1.3 88/06/12 00:52:34 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.3  88/06/12  00:52:34  treese
+ * Cleaned up to work with Saber.
+ * First public distribution.
+ * 
  * Revision 1.2  88/06/05  19:51:18  treese
  * Cleaned up for public distribution
  * 
@@ -16,7 +20,7 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesinfo_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v 1.3 1988-06-12 00:52:34 treese Exp $";
+static char rcsid_hesinfo_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v 1.4 1988-08-07 21:52:19 treese Exp $";
 #endif
 
 #include <stdio.h>
