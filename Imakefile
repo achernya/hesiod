@@ -2,17 +2,12 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v $
 #	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.2 1990-07-12 11:35:08 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/Imakefile,v 1.3 1990-11-07 11:39:39 epeisach Exp $
 
 DEFINES= -DHESIOD
 INCPATH=
 CFLAGS = -O ${INCPATH} ${DEFINES}
-#if defined(ultrix) && defined(mips) 
-# The -p on the decmips causes memory faults.
 LINTFLAGS=-uhvb
-#else
-LINTFLAGS= -uhvpb
-#endif
 
 SRCS = hesiod.c hespwnam.c hesmailhost.c hesservbyname.c resolve.c cistrcmp.c 
 OBJS = hesiod.o hespwnam.o hesmailhost.o hesservbyname.o resolve.o cistrcmp.o 
@@ -44,7 +39,7 @@ install::	all
 	install -c -m 644 llib-lhesiod.ln ${DESTDIR}${LINTDIR}/llib-lhesiod.ln
 
 hesiod.a:	${OBJS}
-#ifdef ultrix
+#if defined(ultrix) && defined(ULTRIX31)
 	rm -rf tmp
 	mkdir tmp
 	(cd tmp; ar x /usr/local/lib/libresolv.a)
