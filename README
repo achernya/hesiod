@@ -1,0 +1,21 @@
+This directory contains the Hesiod name service library, test program, and
+documentation.  The following files are included:
+
+	Makefile - for building the library, test program, and manual pages.
+	README - this file
+	cistrcmp.c - Case-insensitive string comparison routines.  These
+		have been distributed as a bug fix to 4.3BSD with the
+		names "strcasecmp" and "strncasecmp."
+	hesinfo.1 - Manual page source for the 'hesinfo' program.
+	hesinfo.c - Source for the 'hesinfo' program.
+	hesiod.3 - Manul page for the Hesiod library routines.
+	hesiod.c - Source code for the Hesiod library.
+	hesiod.h - Header file for Hesiod library and applications.
+	hesmailhost.c - Routines for finding a user's mail host using Hesiod.
+	hespwnam.c - Routines for getting a user's password entry using Hesiod.
+	hesservbyname.c - Routines for getting service port information using
+		Hesiod.
+	resolve.c - Routines for interacting with the BIND nameserver and
+		parsing responses.
+
+	
