@@ -2,9 +2,12 @@
  * Hesiod name server.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v $
- *	$Author: treese $
+ *	$Author: probe $
  *	$Athena: hesinfo.c,v 1.4 88/08/07 21:52:19 treese Locked $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.5  88/08/07  23:16:50  treese
+ * Second-public-distribution
+ * 
  * Revision 1.4  88/08/07  21:52:19  treese
  * First public distribution
  * 
@@ -23,10 +26,11 @@
 #include "mit-copyright.h"
 
 #ifndef lint
-static char rcsid_hesinfo_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v 1.5 1988-08-07 23:16:50 treese Exp $";
+static char rcsid_hesinfo_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/hesiod/hesinfo.c,v 1.6 1991-01-21 12:35:27 probe Exp $";
 #endif
 
 #include <stdio.h>
+#include <hesiod.h>
 
 main(argc, argv)
 char *argv[];
@@ -70,6 +74,19 @@ char *argv[];
 	cpp = hes_resolve(identifier, type);
 	if (cpp == NULL) { 
 		if (lflag) printf("nothing\n");
+		switch(hes_error()) {
+		case 0:
+			break;
+		case HES_ER_NOTFOUND:
+			fputs("Hesiod name not found\n", stderr);
+			break;
+		case HES_ER_CONFIG:
+			fputs("Hesiod configuration error\n", stderr);
+			break;
+		default:
+			fputs("Unknown Hesiod error\n", stderr);
+			break;
+		}
 	} else {
 		while(*cpp) printf("%s\n", *cpp++);
 	}
