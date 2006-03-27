@@ -1,0 +1,11 @@
+This is release 3.1.0 of the hesinfo program, which is a simple
+command-line interface to the Hesiod nae service library.
+
+To prepare this directory for building, run the command "./configure".
+configure takes a number of options; use "./configure --help" to find
+out what they are.  Hesiod requires a vaguely ANSI compiler to build;
+gcc will do.
+
+Run "make" or "make all" to build hesinfo.
+
+Run "make install" to install hesinfo.
