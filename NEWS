@@ -1,3 +1,15 @@
+Major changes in release 3.1.0:
+* hesinfo has been moved into a separate source tree.
+* The build system now installs a shared library by default.
+* A new function, hesiod_free_string, ensures that strings can be
+  freed at the same library level as they are allocated.  (Important
+  in some runtime environments.)
+* A new function, hesiod_parse_result, can be used in combination with
+  hesiod_to_bind to allow Hesiod resolutions to be done using an
+  alternate resolver.
+* Support for class HS is removed; Hesiod resolution is always done in
+  class IN now.
+
 Major changes in release 3.0.2:
 * Better observance of Autoconf environment variable conventions (you
   can set CPPFLAGS, CFLAGS, LDFLAGS, and LIBS).  CDEBUGFLAGS is gone;
