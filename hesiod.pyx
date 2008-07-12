@@ -3,11 +3,15 @@ cdef extern from "hesiod.h":
     void hesiod_end(void *context)
     char *hesiod_to_bind(void *context, char *name, char *type)
     char **hesiod_resolve(void *context, char *name, char *type)
-    void hesiod_free_string(void *context, char *str)
     void hesiod_free_list(void *context, char **list)
+    # This function isn't defined in 3.0.2, which is what Debian/Ubuntu use
+    #void hesiod_free_string(void *context, char *str)
 
 cdef extern from "errno.h":
     int errno
+
+cdef extern from "stdlib.h":
+    void free(void *)
 
 cdef void * __context
 
@@ -37,7 +41,7 @@ def bind(hes_name, hes_type):
         raise IOError, errno
     py_result = c_result
     
-    hesiod_free_string(__context, c_result)
+    free(c_result)
     return py_result
 
 def resolve(hes_name, hes_type):
@@ -57,7 +61,7 @@ def resolve(hes_name, hes_type):
         if c_result[i] is NULL:
             break
         py_result.append(c_result[i])
-        i += 1
+        i = i + 1
     
     hesiod_free_list(__context, c_result)
     return py_result
