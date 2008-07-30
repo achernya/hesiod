@@ -8,6 +8,7 @@ lookups in Hesiod, Project Athena's service name resolution protocol.
 from _hesiod import bind, resolve
 
 from pwd import struct_passwd
+from grp import struct_group
 
 class HesiodParseError(Exception):
     pass
@@ -84,6 +85,21 @@ class UidLookup(PasswdLookup):
     def __init__(self, uid):
         Lookup.__init__(self, uid, 'uid')
 
+class GroupLookup(Lookup):
+    def __init__(self, group):
+        Lookup.__init__(self, group, 'group')
+    
+    def parseRecords(self):
+        group_info = self.results[0].split(':')
+        group_info[3] = group_info[3].split(',') if group_info[3] != '' else []
+        
+        self.group = struct_group(group_info)
+
+class GidLookup(GroupLookup):
+    def __init__(self, gid):
+        Lookup.__init__(self, gid, 'gid')
+
 __all__ = ['bind', 'resolve',
            'Lookup', 'FilsysLookup', 'PasswdLookup', 'UidLookup',
+           'GroupLookup', 'GidLookup',
            'HesiodParseError']
