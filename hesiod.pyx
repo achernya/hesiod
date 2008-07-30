@@ -26,6 +26,9 @@ cdef class __ContextManager:
 cdef object __cm
 __cm = __ContextManager()
 
+import threading
+__lookup_lock = threading.Lock()
+
 def bind(hes_name, hes_type):
     """
     Convert the provided arguments into a DNS name.
@@ -53,7 +56,10 @@ def resolve(hes_name, hes_type):
     py_result = list()
     cdef char ** c_result
     
+    __lookup_lock.acquire()
     c_result = hesiod_resolve(__context, hes_name, hes_type)
+    __lookup_lock.release()
+    
     if c_result is NULL:
         raise IOError, errno
     i = 0
