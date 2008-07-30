@@ -6,7 +6,7 @@ from Pyrex.Distutils import build_ext
 
 setup(
     name="PyHesiod",
-    version="0.1.2",
+    version="0.2.0",
     description="PyHesiod - Python bindings for the Heisod naming library",
     author="Evan Broder",
     author_email="broder@mit.edu",
