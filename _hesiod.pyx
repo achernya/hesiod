@@ -39,7 +39,9 @@ def bind(hes_name, hes_type):
     cdef object py_result
     cdef char * c_result
     
-    c_result = hesiod_to_bind(__context, hes_name, hes_type)
+    name_str, type_str = map(str, (hes_name, hes_type))
+    
+    c_result = hesiod_to_bind(__context, name_str, type_str)
     if c_result is NULL:
         raise IOError, errno
     py_result = c_result
@@ -56,8 +58,10 @@ def resolve(hes_name, hes_type):
     py_result = list()
     cdef char ** c_result
     
+    name_str, type_str = map(str, (hes_name, hes_type))
+    
     __lookup_lock.acquire()
-    c_result = hesiod_resolve(__context, hes_name, hes_type)
+    c_result = hesiod_resolve(__context, name_str, type_str)
     __lookup_lock.release()
     
     if c_result is NULL:
