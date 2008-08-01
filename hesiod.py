@@ -91,7 +91,12 @@ class GroupLookup(Lookup):
     
     def parseRecords(self):
         group_info = self.results[0].split(':')
-        group_info[3] = group_info[3].split(',') if group_info[3] != '' else []
+        members = group_info[3]
+        if members != '':
+            members = members.split(',')
+        else:
+            members = []
+        group_info[3] = members
         
         self.group = struct_group(group_info)
 
