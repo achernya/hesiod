@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Present both functional and object-oriented interfaces for executing
 lookups in Hesiod, Project Athena's service name resolution protocol.
