@@ -18,7 +18,7 @@ cdef void * __context
 cdef class __ContextManager:
     def __init__(self):
         if hesiod_init(&__context) == -1:
-            raise IOError, errno
+            raise IOError(errno)
     
     def __del__(self):
         hesiod_end(__context)
@@ -43,7 +43,7 @@ def bind(hes_name, hes_type):
     
     c_result = hesiod_to_bind(__context, name_str, type_str)
     if c_result is NULL:
-        raise IOError, errno
+        raise IOError(errno)
     py_result = c_result
     
     free(c_result)
@@ -65,7 +65,7 @@ def resolve(hes_name, hes_type):
     __lookup_lock.release()
     
     if c_result is NULL:
-        raise IOError, errno
+        raise IOError(errno)
     i = 0
     while True:
         if c_result[i] is NULL:
