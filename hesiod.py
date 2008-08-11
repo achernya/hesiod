@@ -77,7 +77,10 @@ class PasswdLookup(Lookup):
         Lookup.__init__(self, name, 'passwd')
     
     def parseRecords(self):
-        self.passwd = struct_passwd(self.results[0].split(':'))
+        passwd_info = self.results[0].split(':')
+        passwd_info[2] = int(passwd_info[2])
+        passwd_info[3] = int(passwd_info[3])
+        self.passwd = struct_passwd(passwd_info)
 
 class UidLookup(PasswdLookup):
     def __init__(self, uid):
@@ -89,6 +92,7 @@ class GroupLookup(Lookup):
     
     def parseRecords(self):
         group_info = self.results[0].split(':')
+        group_info[2] = int(group_info[2])
         members = group_info[3]
         if members != '':
             members = members.split(',')
