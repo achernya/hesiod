@@ -71,6 +71,8 @@ class FilsysLookup(Lookup):
                                         priority=priority))
             else:
                 raise HesiodParseError('Unknown filsys type: %s' % type)
+        
+        self.filsys.sort(key=(lambda x: x['priority']))
 
 class PasswdLookup(Lookup):
     def __init__(self, name):
