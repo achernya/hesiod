@@ -6,11 +6,16 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
-AC_EGREP_HEADER(pw_quota, pwd.h, AC_DEFINE(HAVE_PW_QUOTA))
-AC_EGREP_HEADER(pw_comment, pwd.h, AC_DEFINE(HAVE_PW_COMMENT))
-AC_EGREP_HEADER(pw_class, pwd.h, AC_DEFINE(HAVE_PW_CLASS))
-AC_EGREP_HEADER(pw_change, pwd.h, AC_DEFINE(HAVE_PW_CHANGE))
-AC_EGREP_HEADER(pw_expire, pwd.h, AC_DEFINE(HAVE_PW_EXPIRE))
+AC_EGREP_HEADER(pw_quota, pwd.h,
+  AC_DEFINE([HAVE_PW_QUOTA], 1, [Define if struct passwd has a field pw_quota]))
+AC_EGREP_HEADER(pw_comment, pwd.h,
+  AC_DEFINE([HAVE_PW_COMMENT], 1, [Define if struct passwd has a field pw_comment]))
+AC_EGREP_HEADER(pw_class, pwd.h,
+  AC_DEFINE([HAVE_PW_CLASS], 1, [Define if struct passwd has a field pw_class]))
+AC_EGREP_HEADER(pw_change, pwd.h,
+  AC_DEFINE([HAVE_PW_CHANGE], 1, [Define if struct passwd has a field pw_change]))
+AC_EGREP_HEADER(pw_expire, pwd.h,
+  AC_DEFINE([HAVE_PW_EXPIRE], 1, [Define if struct passwd has a field pw_expire]))
 
 AC_CHECK_FUNC(res_mkquery, :, [AC_CHECK_LIB(resolv, res_mkquery)])
 
