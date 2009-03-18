@@ -126,6 +126,10 @@ failed because the
 .I name
 argument had a domain extension which could not be resolved with type
 ``rhs-extension'' in the local Hesiod domain.
+.IP EINVAL
+.I hesiod_to_bind
+failed to convert the resulting domain name from UTF-8 to an
+internationalized domain name.
 .SH AUTHOR
 Steve Dyer, IBM/Project Athena
 .br
