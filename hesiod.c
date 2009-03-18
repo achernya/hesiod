@@ -58,6 +58,7 @@ static const char rcsid[] = "$Id: hesiod.c,v 1.30 2002-04-03 21:40:55 ghudson Ex
 #include <ctype.h>
 #ifdef LIBIDN
 #include <idna.h>
+#include <idn-free.h>
 #endif
 #include "hesiod.h"
 
@@ -148,7 +149,7 @@ void hesiod_end(void *context)
 char *hesiod_to_bind(void *context, const char *name, const char *type)
 {
   struct hesiod_p *ctx = (struct hesiod_p *) context;
-  char bindname[MAXDNAME], *p, *ret, **rhs_list = NULL;
+  char bindname[MAXDNAME], *p, *ret, *idn_ret, **rhs_list = NULL;
   const char *rhs;
   int len, rc;
 
@@ -212,21 +213,22 @@ char *hesiod_to_bind(void *context, const char *name, const char *type)
 
   /* Make a copy of the result and return it to the caller. */
 #ifdef LIBIDN
-  rc = idna_to_ascii_lz(bindname, &ret, 0);
+  rc = idna_to_ascii_lz(bindname, &idn_ret, 0);
   if (rc != IDNA_SUCCESS)
     {
       errno = EINVAL;
       return NULL;
     }
+  ret = strdup(idn_ret);
+  idn_free(idn_ret);
 #else
-  ret = malloc(strlen(bindname) + 1);
+  ret = strdup(bindname);
+#endif
   if (!ret)
     {
       errno = ENOMEM;
       return NULL;
     }
-  strcpy(ret, bindname);
-#endif
   return ret;
 }
 
