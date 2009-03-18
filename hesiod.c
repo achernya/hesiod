@@ -45,6 +45,8 @@ static const char rcsid[] = "$Id: hesiod.c,v 1.30 2002-04-03 21:40:55 ghudson Ex
 
 #include <sys/types.h>
 #include <netinet/in.h>
+#define BIND_4_COMPAT
+#define BIND_8_COMPAT
 #include <arpa/nameser.h>
 #include <errno.h>
 #include <netdb.h>
