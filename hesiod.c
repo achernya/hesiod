@@ -43,6 +43,7 @@
 
 static const char rcsid[] = "$Id: hesiod.c,v 1.30 2002-04-03 21:40:55 ghudson Exp $";
 
+#include "config.h"
 #include <sys/types.h>
 #include <netinet/in.h>
 #define BIND_4_COMPAT
