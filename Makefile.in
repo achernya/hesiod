@@ -33,7 +33,7 @@ libhesiod.la: ${OBJS}
 	 ${LIBTOOLFLAGS} -o $@ ${OBJS} ${LIBS}
 
 hestest: hestest.lo libhesiod.la
-	${LIBTOOL} --mode=link ${CC} -o $@ hestest.lo libhesiod.la
+	${LIBTOOL} --mode=link ${CC} ${LIBTOOLFLAGS} -o $@ hestest.lo libhesiod.la
 
 ${OBJS}: hesiod.h
 
