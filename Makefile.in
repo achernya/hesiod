@@ -22,6 +22,7 @@ LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 ALL_CFLAGS=-I. -DSYSCONFDIR=\"${sysconfdir}\" ${CPPFLAGS} ${CFLAGS}
 OBJS=hesiod.lo hesmailhost.lo hespwnam.lo hesservbyname.lo hescompat.lo
+LIBTOOLFLAGS=$(foreach flag,$(LDFLAGS),-Xlinker $(flag))
 
 .SUFFIXES: .lo
 
@@ -29,7 +30,7 @@ all: libhesiod.la hestest
 
 libhesiod.la: ${OBJS}
 	${LIBTOOL} --mode=link ${CC} -rpath ${libdir} -version-info 0:0:0 \
-	  -o $@ ${OBJS} ${LIBS}
+	 ${LIBTOOLFLAGS} -o $@ ${OBJS} ${LIBS}
 
 hestest: hestest.lo libhesiod.la
 	${LIBTOOL} --mode=link ${CC} -o $@ hestest.lo libhesiod.la
