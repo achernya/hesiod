@@ -25,7 +25,7 @@ hesiod_getpwnam, hesiod_getpwuid, hesiod_free_passwd \- Hesiod functions for ret
 .B struct passwd *hesiod_getpwuid(void *\fIcontext\fP, uid_t \fIuid\fP)
 .B void hesiod_free_passwd(void *\fIcontext\fP, struct passwd *\fIpw\fP)
 .PP
-.B cc file.c -lhesiod
+.B cc file.c \-lhesiod
 .fi
 .SH DESCRIPTION
 This family of functions allows you to retrieve passwd database
