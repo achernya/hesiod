@@ -34,6 +34,6 @@ build the Debian package of the latest release, run::
 You will need the devscripts and git-buildpackage packages installed,
 as well as this package's build dependencies (cdbs, debhelper,
 python-all-dev, python-support, python-pyrex, python-setuptools,
-libhesiod -dev).
+libhesiod-dev).
 
 .. _Pyrex: http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/
