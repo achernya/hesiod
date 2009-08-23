@@ -1,3 +1,9 @@
+Major changes in release 3.1.1:
+* If available, libhesiod will use libidn to internationalize a domain
+  name before returning it from hesiod_to_bind()
+* LDFLAGS as set by autoconf aren't ignored when building hestest or
+  libhesiod
+
 Major changes in release 3.1.0:
 * hesinfo has been moved into a separate source tree.
 * The build system now installs a shared library by default.
