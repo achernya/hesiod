@@ -1,0 +1,131 @@
+# translation of hesiod_3.0.2-18_cs.po to czech
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+# Jakub Kasparec <mr.k@centrum.cz>, 2006.
+# Miroslav Kure <kurem@debian.cz>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: hesiod\n"
+"Report-Msgid-Bugs-To: Source: hesiod@packages.debian.org\n"
+"POT-Creation-Date: 2007-12-13 12:21+0530\n"
+"PO-Revision-Date: 2007-12-24 14:30+0100\n"
+"Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
+"Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Hesiod domain for searches:"
+msgstr "Doména Hesiodu pro vyhledávání:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Please enter the Hesiod RHS (right hand-side) to do searches in."
+msgstr "Zadejte prosím pravou část domény, ve které se má prohledávat."
+
+#. Type: string
+#. Description
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001 ../libhesiod0.templates:3001
+msgid ""
+"If the Hesiod server is 'ns.example.org' then the LHS will be '.ns', the RHS "
+"will be '.example.org' (note leading periods) and directory lookups will be "
+"performed as DNS requests to (e.g.) 'sam.passwd.ns.example.org'."
+msgstr ""
+"Jmenuje-li se Hesiod server „ns.priklad.org“, pak levá strana bude „.ns“, "
+"pravá pak „.priklad.org“ (všimněte si úvodních teček) a vyhledávání v "
+"adresáři bude probíhat formou DNS dotazů na (například) „sam.passwd.ns."
+"priklad.org“."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Hesiod prefix for searches:"
+msgstr "Prefix Hesiodu pro vyhledávání:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Please enter the Hesiod LHS (left hand-side) to do searches in."
+msgstr "Zadejte prosím levou část domény, ve které se má prohledávat."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid "DNS class search order:"
+msgstr "Pořadí prohledávání DNS tříd:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Hesiod looks up names using DNS TXT records. In addition to using the "
+"standard IN DNS class for Internet names, it also uses by default the "
+"special HS class."
+msgstr ""
+"Hesiod vyhledává jména za použití DNS TXT záznamů. Jako doplňku k použití "
+"standardní třídy IN DNS pro internetová jména se jako výchozí používá také "
+"speciální třída HS."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Please enter the class search order (the default value is suitable for most "
+"sites). There should be no spaces in this search order value."
+msgstr ""
+"Zadejte prosím pořadí prohledávání tříd (výchozí hodnota se hodí pro většinu "
+"serverů. V této hodnotě by se neměly vyskytovat mezery."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Sites using older Hesiod installations may need to use the 'HS,IN' search "
+"order."
+msgstr ""
+"Na serverech, na kterých se stále používá starší verze Hesiodu, zřejmě "
+"budete muset zadat pořadí „HS,IN“."
+
+#~| msgid ""
+#~| "Hesiod looks up keys using the standard Domain Name System.  Enter the "
+#~| "right-hand side of the domain name to do searches in.  This name should "
+#~| "begin with a \".\"."
+#~ msgid ""
+#~ "Hesiod looks up keys using the standard Domain Name System. Please enter "
+#~ "the rightmost part of the domain name to do searches in. This name should "
+#~ "begin with a '.' character."
+#~ msgstr ""
+#~ "Hesiod vyhledává klíče s použitím standardního DNS (jmenného doménového "
+#~ "systému). Zadejte doménové jméno (jeho pravou část), které se má "
+#~ "prohledávat. Toto jméno by mělo začínat znakem „.“."
+
+#~| msgid ""
+#~| "Hesiod lookups generally happen in a subdomain of the main domain. Enter "
+#~| "the name of the subdomain here.  This name should begin with a \".\".  "
+#~| "At most sites, this entry should be \".ns\"."
+#~ msgid ""
+#~ "Hesiod lookups generally happen in a subdomain of the main domain. Please "
+#~ "enter the name of the subdomain. This name should begin with a '.' "
+#~ "character. This entry is '.ns' at many sites."
+#~ msgstr ""
+#~ "Vyhledávání Hesiodu se obecně děje v poddoméně domény. Zadejte jméno této "
+#~ "poddomény. Jméno by mělo začínat „.“. U většiny serverů to pravděpodobně "
+#~ "bude „.ns“."

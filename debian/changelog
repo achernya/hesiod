@@ -1,0 +1,240 @@
+hesiod (3.1.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Sun, 24 Mar 2013 04:18:06 -0400
+
+hesiod (3.0.2-21) unstable; urgency=low
+
+  * Danish debconf transaltion by Joe Dalton; Closes: #619058
+  * Add build-{indep,arch} targets.
+  * Drop the old, wrong, bad watch file.
+  * Bumped Standards-Version.
+
+ -- Karl Ramm <kcr@debian.org>  Wed, 01 Feb 2012 09:32:17 -0500
+
+hesiod (3.0.2-20) unstable; urgency=low
+
+  * New ES debconf translation thanks to Fernando González de Requena.
+    Closes: #528971
+  * Fix up dependencies, don't call dh_undocumented anymore, remove broken
+    watch file (I already _know_ there's a new version), help shut
+    lintian up.
+
+ -- Karl Ramm <kcr@debian.org>  Thu, 14 Jan 2010 18:35:37 -0500
+
+hesiod (3.0.2-19) unstable; urgency=low
+
+  * Acknowledge NMUs.
+  * Only fiddle with hesiod.conf at the configuration stage.  Closes: #435876
+  * Set the debconf priority for rhs to low; Closes: #321530
+    Automatically deal with perhaps the one case ever where the obvious
+    default is wrong.
+  * JA debconf translation, thanks to Hideki Yamane.  Closes: #512866
+
+ -- Karl Ramm <kcr@debian.org>  Thu, 12 Mar 2009 01:08:20 -0400
+
+hesiod (3.0.2-18.3) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix pending l10n issues. Debconf translations:
+    - Swedish. Closes: #492065
+
+ -- Christian Perrier <bubulle@debian.org>  Thu, 09 Oct 2008 22:29:31 +0200
+
+hesiod (3.0.2-18.2) unstable; urgency=low
+
+  * Non-maintainer upload to fix longstanding l10n issues
+  * Debconf templates and debian/control reviewed by the debian-l10n-
+    english team as part of the Smith review project. Closes: #452495
+  * [Debconf translation updates]
+    - Basque. Closes: #453298
+    - Galician. Closes: #453329, #412660
+    - Vietnamese. Closes: #453375
+    - Finnish. Closes: #453649
+    - Italian. Closes: #454644
+    - French. Closes: #454696
+    - Czech. Closes: #455551
+    - Russian. Closes: #455966
+    - Portuguese. Closes: #456361, #420364, #439696
+    - Norwegian Bokmål. Closes: #456406
+    - Portuguese. Closes: #456361
+    - Italian. Closes: #456510
+    - Vietnamese. Closes: #453375, #427051
+    - Czech. Closes: #455551
+    - Spanish. Closes: #426175
+    - Dutch. Closes: #468304
+    - Brazilian Portuguese. Closes: #470930
+  * [Lintian] Set debhelper compatibility in debian/compat
+  * [Lintian] No longer ignoer errors from "make distclean"
+  * [Lintian] Move libhesiod-dev to libdevel section
+
+ -- Christian Perrier <bubulle@debian.org>  Sat, 15 Mar 2008 00:09:08 +0100
+
+hesiod (3.0.2-18.1) unstable; urgency=low
+
+  * Non-maintainer upload to fix longstanding l10n issues
+  * Debconf templates translations updates:
+    - Portuguese. Closes: #394024
+    - French. Closes: #394066
+    - German. Closes: #396429
+    - Czech. Closes: #396715
+    - Basque. Closes: #398575
+    - Russian. Closes: #404411
+
+ -- Christian Perrier <bubulle@debian.org>  Fri, 19 Jan 2007 20:00:08 +0100
+
+hesiod (3.0.2-18) unstable; urgency=low
+
+  * New maintainer. Closes: #203001
+  * Make debconf templates lintian compliant (add colons)
+  * Assert Standards-Version: 3.7.2
+
+ -- Karl Ramm <kcr@debian.org>  Mon, 16 Oct 2006 03:14:28 -0400
+
+hesiod (3.0.2-17.1) unstable; urgency=low
+
+  * Non-maintainer upload, with maintainer's permission, to fix pending l10n issues
+  * Debconf translations:
+    - Fixed German. Closes: #314045
+    - Added Dutch. Closes: #263714
+    - Added Czech. Closes: #312150
+    - Added Vietnamese. Closes: #311897
+    - Added Swedish. Closes: #337769
+    - Added Basque. Sent during the call for updates of the NMU.
+    - Added Russian. Sent during the call for updates of the NMU.
+
+ -- Christian Perrier <bubulle@debian.org>  Tue,  3 Oct 2006 18:45:29 +0200
+
+hesiod (3.0.2-16) unstable; urgency=low
+
+  * Use ${misc:Depends} instead of depending on debconf directly, for
+    compatibility with cdebconf.
+
+ -- Steve Langasek <vorlon@debian.org>  Fri,  5 Aug 2005 01:05:31 -0700
+
+hesiod (3.0.2-15.1) unstable; urgency=low
+
+  * Non-maintainer upload with maintainer permission.
+  * Fix configure not detecting correctly libresolv on some systems where
+    the symbols it tries to link to are macros.
+    Bug #200160 is now a wishlist.
+  * Fix manpages using hyphen as a minus sign.
+
+ -- Guillem Jover <guillem@debian.org>  Fri, 14 May 2004 05:24:52 +0200
+
+hesiod (3.0.2-15) unstable; urgency=low
+
+  * Maintenance release: incorporate pt_BR and fr debconf translations;
+    thanks to André Luís Lopes <andrelop@debian.org> and Christian
+    Perrier <bubulle@debian.org>.  (Closes: #206179, #207074.)
+
+ -- Steve Langasek <vorlon@debian.org>  Sun, 24 Aug 2003 21:54:39 -0500
+
+hesiod (3.0.2-14) unstable; urgency=low
+
+  * Adjust debconf handling to derive sane defaults from
+    /etc/resolv.conf, so the question priorities can be lowered
+    (closes: #202585).
+  * Migrate debconf templates to po-debconf for l10n and integrate
+    the translations that were hiding on the DDTP site.
+  * Link libhesiod against -lresolv (closes: #194462).
+
+ -- Steve Langasek <vorlon@debian.org>  Sat, 26 Jul 2003 14:52:38 -0500
+
+hesiod (3.0.2-13) unstable; urgency=low
+
+  * Correct the hesiod.conf path listed in the hesinfo manpages.  Thanks
+    to John T. Rose <rose@iastate.edu> for reporting.
+
+ -- Steve Langasek <vorlon@debian.org>  Sun,  8 Dec 2002 21:35:20 -0600
+
+hesiod (3.0.2-12) unstable; urgency=medium
+
+  * Significant bug in dpkg-reconfigure: the one thing in the config
+    users are really going to want to change doesn't get updated
+    properly. (closes: #144401)
+  * Remove /etc/hesiod.conf on purge (closes: #144400)
+
+ -- Steve Langasek <vorlon@debian.org>  Mon, 22 Apr 2002 16:14:21 -0500
+
+hesiod (3.0.2-11) unstable; urgency=low
+
+  * fix package priorities to match the archive.
+  * fix /usr/share/doc symlinks.
+
+ -- Steve Langasek <vorlon@debian.org>  Wed, 20 Mar 2002 22:39:39 -0600
+
+hesiod (3.0.2-10) unstable; urgency=medium
+
+  * The "just because no one uses it doesn't mean I should let it 
+    release like this" release.
+  * Add proper dependency on debconf.
+  * Fix unsafe ldconfig handling in maintainer scripts.  I guess that 
+    could accidentally destroy someone's print job during an upgrade, if 
+    you timed it just right.
+
+ -- Steve Langasek <vorlon@debian.org>  Wed, 20 Mar 2002 22:03:11 -0600
+
+hesiod (3.0.2-9) unstable; urgency=low
+
+  * Nor should /etc/hesiod.conf belong to our package.
+
+ -- Steve Langasek <vorlon@debian.org>  Mon, 22 Jan 2001 19:15:22 -0600
+
+hesiod (3.0.2-8) unstable; urgency=low
+
+  * If we're going to edit /etc/hesiod.conf, it should *not* be a conffile.
+
+ -- Steve Langasek <vorlon@debian.org>  Tue, 16 Jan 2001 00:31:20 -0600
+
+hesiod (3.0.2-7) unstable; urgency=low
+
+  * Incorporated debconf support from David Maze's package <dmaze@mit.edu>
+  * Fixed configure args to use the correct sysconfdir setting
+
+ -- Steve Langasek <vorlon@dodds.net>  Tue, 02 Jan 2001 11:24:14 -0600
+
+hesiod (3.0.2-6) unstable; urgency=low
+
+  * use dh_links to create symlinks between doc directories.
+
+ -- Steve Langasek <vorlon@dodds.net>  Tue, 26 Dec 2000 19:15:23 -0600
+
+hesiod (3.0.2-5) unstable; urgency=low
+
+  * Removed debian/shlibs.local again, using LD_LIBRARY_PATH to let
+    dpkg-shlibdeps detect dependencies (per conversation with Ben Collins)
+  * Switched to using DH_COMPAT=2 during build.
+  * Use dh_makeshlibs for auto-generation of shlibs file
+
+ -- Steve Langasek <vorlon@dodds.net>  Tue, 19 Dec 2000 00:14:50 -0600
+
+hesiod (3.0.2-4) unstable; urgency=low
+
+  * Added debian/shlibs.local to ensure proper dependencies; fixes warning
+    from dpkg-shlibdeps
+
+ -- Steve Langasek <vorlon@dodds.net>  Tue, 19 Dec 2000 00:14:50 -0600
+
+hesiod (3.0.2-3) unstable; urgency=low
+
+  * Fixed sharedlib to properly link as PIC code.
+  * Moved .so symlink to the dev package.  Now builds lintian-clean.
+
+ -- Steve Langasek <vorlon@dodds.net>  Wed, 29 Nov 2000 12:48:24 -0600
+
+hesiod (3.0.2-2) unstable; urgency=low
+
+  * Fixed to include a proper libhesiod package (addition of soname,
+    ldconfig called on install, .shlibs file created)
+
+ -- Steve Langasek <vorlon@dodds.net>  Mon, 06 Nov 2000 00:55:13 -0600
+
+hesiod (3.0.2-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Steve Langasek <vorlon@dodds.net>  Tue, 31 Oct 2000 23:27:22 -0600
+
+

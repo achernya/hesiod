@@ -1,0 +1,111 @@
+# hesiod po-debconf translation to Spanish.
+# Copyright (C) 2009 Software in the Public Interest.
+# This file is distributed under the same license as the hesiod package.
+#
+#  Changes:
+# - Initial translation
+#       Fernando González de Requena <fgrequena@gmail.com>, 2009.
+#
+#
+#  Traductores, si no conoce el formato PO, merece la pena leer la
+#  documentación de gettext, especialmente las secciones dedicadas a este
+#  formato, por ejemplo ejecutando:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+# Equipo de traducción al español, por favor lean antes de traducir
+# los siguientes documentos:
+#
+# - El proyecto de traducción de Debian al español
+#   http://www.debian.org/intl/spanish/
+#   especialmente las notas y normas de traducción en
+#   http://www.debian.org/intl/spanish/notas
+#
+# - La guía de traducción de po's de debconf:
+#   /usr/share/doc/po-debconf/README-trans
+#   o http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+# Si tiene dudas o consultas sobre esta traducción consulte con el último
+# traductor (campo Last-Translator) y ponga en copia a la lista de
+# traducción de Debian al español (<debian-l10n-spanish@lists.debian.org>)
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hesiod 3.0.2-19\n"
+"Report-Msgid-Bugs-To: Source: hesiod@packages.debian.org\n"
+"POT-Creation-Date: 2007-12-13 12:21+0530\n"
+"PO-Revision-Date: 2009-05-04 18:37+0200\n"
+"Last-Translator: Fernando González de Requena <fgrequena@gmail.com>\n"
+"Language-Team: Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Hesiod domain for searches:"
+msgstr "Dominio de Hesiod para las búsquedas:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Please enter the Hesiod RHS (right hand-side) to do searches in."
+msgstr "Introduzca el RHS («right hand-side», lado derecho) en el que hacer las búsquedas."
+
+#. Type: string
+#. Description
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001 ../libhesiod0.templates:3001
+msgid ""
+"If the Hesiod server is 'ns.example.org' then the LHS will be '.ns', the RHS "
+"will be '.example.org' (note leading periods) and directory lookups will be "
+"performed as DNS requests to (e.g.) 'sam.passwd.ns.example.org'."
+msgstr "Si el servidor Hesiod es «ns.example.org», el LHS será «.ns», el RHS será «.example.org» (tenga en cuenta los puntos al inicio), y las búsquedas de directorio se realizarán como peticiones de DNS a (p. ej.) «sam.passwd.ns.example.org»."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Hesiod prefix for searches:"
+msgstr "Prefijo de Hesiod para búsquedas:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Please enter the Hesiod LHS (left hand-side) to do searches in."
+msgstr "Introduzca el LHS («left hand-side», parte izquierda) en el que realizar las búsquedas."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid "DNS class search order:"
+msgstr "Orden de búsqueda para las clases DNS:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Hesiod looks up names using DNS TXT records. In addition to using the "
+"standard IN DNS class for Internet names, it also uses by default the "
+"special HS class."
+msgstr "Hesiod busca los nombres utilizando registros DNS TXT. Además de usar la clase estándar IN DNS para los nombres de Internet, también utiliza de manera predeterminada la clase especial HS."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Please enter the class search order (the default value is suitable for most "
+"sites). There should be no spaces in this search order value."
+msgstr "Introduzca el orden de búsqueda para las clases (el valor por omisión es adecuado para la mayor parte de los sitios). No debe haber espacios en el valor del orden de búsqueda."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Sites using older Hesiod installations may need to use the 'HS,IN' search "
+"order."
+msgstr "Los sitios que utilizan instalaciones antiguas de Hesiod pueden necesitar usar el orden de búsqueda «HS,IN»."
+

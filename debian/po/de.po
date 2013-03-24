@@ -1,0 +1,133 @@
+# Translation of hesiod debconf templates to German
+# Copyright (C) Helge Kreutzmann <debian@helgefjell.de>, 2006, 2007.
+# This file is distributed under the same license as the hesiod package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hesiod 3.0.2-18.2\n"
+"Report-Msgid-Bugs-To: Source: hesiod@packages.debian.org\n"
+"POT-Creation-Date: 2007-12-13 12:21+0530\n"
+"PO-Revision-Date: 2007-12-13 19:38+0100\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: de <debian-l10n-german@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Hesiod domain for searches:"
+msgstr "Hesiod-Domain, in der gesucht werden soll:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Please enter the Hesiod RHS (right hand-side) to do searches in."
+msgstr ""
+"Bitte geben Sie die RHS (rechte Seite, »right hand-side«) von Hesiod für "
+"Suchen ein."
+
+#. Type: string
+#. Description
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001 ../libhesiod0.templates:3001
+msgid ""
+"If the Hesiod server is 'ns.example.org' then the LHS will be '.ns', the RHS "
+"will be '.example.org' (note leading periods) and directory lookups will be "
+"performed as DNS requests to (e.g.) 'sam.passwd.ns.example.org'."
+msgstr ""
+"Falls der Hesiod-Server »ns.example.org« ist, dann ist die linke Seite (LHS, "
+"»left hand side«) ».ns«, die RHS ist dann ».example.org« (beachten Sie die "
+"einleitenden Punkte) und Verzeichnisabfragen werden als DNS-Anfragen an (z."
+"B.) »sam.passwd.ns.example.org« gerichtet."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Hesiod prefix for searches:"
+msgstr "Hesiod-Präfix für Recherchen:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Please enter the Hesiod LHS (left hand-side) to do searches in."
+msgstr ""
+"Bitte geben Sie die LHS (linke Seite, »left hand-side«) von Hesiod für Suchen "
+"ein."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid "DNS class search order:"
+msgstr "Such-Reihenfolge der DNS-Klassen:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Hesiod looks up names using DNS TXT records. In addition to using the "
+"standard IN DNS class for Internet names, it also uses by default the "
+"special HS class."
+msgstr ""
+"Hesiod schlägt Namen in DNS TXT-Datensätzen nach. Zusätzlich zur Verwendung "
+"der normalen IN DNS-Klasse für Internet-Namen verwendet es standardmäßig "
+"auch spezielle HS-Klassen."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Please enter the class search order (the default value is suitable for most "
+"sites). There should be no spaces in this search order value."
+msgstr ""
+"Bitte geben Sie die Klassen-Suchreihenfolge ein (der voreingestellte Wert "
+"ist für die meisten Sites geeignet). Es sollte im Wert der Suchreihenfolge "
+"keine Leerzeichen geben."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Sites using older Hesiod installations may need to use the 'HS,IN' search "
+"order."
+msgstr ""
+"Sites, die eine ältere Hesiod-Installation verwenden, könnten die "
+"Suchreihenfolge »HS,IN« benötigen."
+
+#~ msgid ""
+#~ "Hesiod looks up keys using the standard Domain Name System. Please enter "
+#~ "the rightmost part of the domain name to do searches in. This name should "
+#~ "begin with a '.' character."
+#~ msgstr ""
+#~ "Hesiod sucht Schlüssel mit Hilfe des normalen Domain Name Systems. Bitte "
+#~ "geben Sie hier den am weitesten rechts stehenden Teil des Domainnamens "
+#~ "ein, in dem gesucht werden soll. Dieser Name sollte mit einem Punkt (».«) "
+#~ "beginnen."
+
+#~ msgid ""
+#~ "Hesiod lookups generally happen in a subdomain of the main domain. Please "
+#~ "enter the name of the subdomain. This name should begin with a '.' "
+#~ "character. This entry is '.ns' at many sites."
+#~ msgstr ""
+#~ "Hesiod-Recherchen finden generell in einer Subdomäne der Hauptdomäne "
+#~ "statt. Bitte geben Sie den Namen der Subdomäne ein. Der Name sollte mit "
+#~ "einem ».« beginnen. Dieser Eintrag lautet bei vielen Sites ».ns«."
+
+#~ msgid ""
+#~ "Hesiod looks up names using DNS TXT records.  In addition to using the "
+#~ "standard IN DNS class for Internet names, it also uses by default the "
+#~ "special HS class.  You can change the class search order here, or leave "
+#~ "out IN or HS if you want to.  Don't insert extra spaces in the value.  "
+#~ "The default search path is \"IN,HS\" to search both classes. At some "
+#~ "sites where older hesiod installations are still in use, you may need to "
+#~ "specify \"HS,IN\" instead."
+#~ msgstr ""
+#~ "Hesiod löst die Namen anhand von DNS-TXT-Einträgen auf. Zusätzlich zu der "
+#~ "Standard-IN-DNS-Klasse für Internet-Namen kann auch der Gebrauch der "
+#~ "speziellen HS-Klasse voreingestellt werden. Sie können Sie Klassen-Such-"
+#~ "Reihenfolge hier verändern oder auch IN bzw. HS herausnehmen. Bitte fügen "
+#~ "Sie keine Leerzeichen ein. Der Standard-Suchpfad ist »IN,HS« für die Suche "
+#~ "in beiden Klassen. In einigen Betrieben mit älteren Hesiod-Installationen "
+#~ "brauchen Sie vielleicht stattdessen »HS,IN«."

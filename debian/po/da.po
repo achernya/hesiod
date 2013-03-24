@@ -1,0 +1,96 @@
+# Danish translation hesiod.
+# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER.
+# This file is distributed under the same license as the postgresql-common package.
+# Joe Hansen (joedalton2@yahoo.dk), 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hesiod\n"
+"Report-Msgid-Bugs-To: Source: hesiod@packages.debian.org\n"
+"POT-Creation-Date: 2007-12-13 12:21+0530\n"
+"PO-Revision-Date: 2011-03-20 19:25+0200\n"
+"Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
+"Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Hesiod domain for searches:"
+msgstr "Hesioddomæne til søgninger:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Please enter the Hesiod RHS (right hand-side) to do searches in."
+msgstr "Indtast venligst Hesiod-RHS'en (højre side) som søgninger skal foretages i."
+
+#. Type: string
+#. Description
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001 ../libhesiod0.templates:3001
+msgid ""
+"If the Hesiod server is 'ns.example.org' then the LHS will be '.ns', the RHS "
+"will be '.example.org' (note leading periods) and directory lookups will be "
+"performed as DNS requests to (e.g.) 'sam.passwd.ns.example.org'."
+msgstr ""
+"Hvis Hesiodserveren er »ns.example.org«, så vil LHS'en være ».ns«, "
+"RHS'en vil være ».example.org« (bemærk foranstillede perioder) og "
+"mappeopslag vil blive udført som DNS-forespørgsler til (f.eks.) "
+"»sam.passwd.ns.example.org«."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Hesiod prefix for searches:"
+msgstr "Hesiodpræfiks til søgninger:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Please enter the Hesiod LHS (left hand-side) to do searches in."
+msgstr "Indtast venligst Hesiod-LHS'en (venstre side) som søgninger skal foretages i."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid "DNS class search order:"
+msgstr "Søgerækkefølge for DNS-klasse:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Hesiod looks up names using DNS TXT records. In addition to using the "
+"standard IN DNS class for Internet names, it also uses by default the "
+"special HS class."
+msgstr ""
+"Hesiod slår navne op ved brug af DNS TXT-poster. Udover at bruge "
+"standard IN DNS-klassen for internetnavne, bruger den også som standard "
+"den specielle HS-klasse."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Please enter the class search order (the default value is suitable for most "
+"sites). There should be no spaces in this search order value."
+msgstr ""
+"Indtast venligst søgerækkefølgen for klassen (standardværdien er egnet "
+"for de fleste sider). Der bør ikke være mellemrum i denne søgerækkefølges "
+"værdi."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Sites using older Hesiod installations may need to use the 'HS,IN' search "
+"order."
+msgstr ""
+"Sider som bruger ældre installationer af Hesiod kan bruge søgerækkefølgen "
+"»HS,IN«."
+
+

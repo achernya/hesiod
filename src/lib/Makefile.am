@@ -1,5 +1,7 @@
 AM_CFLAGS = -DSYSCONFDIR=\"${sysconfdir}\"
 
+include_HEADERS = hesiod.h
+
 lib_LTLIBRARIES = libhesiod.la
 libhesiod_la_SOURCES = \
 	hesiod.c \

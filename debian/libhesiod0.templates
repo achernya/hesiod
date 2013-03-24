@@ -1,0 +1,42 @@
+# These templates have been reviewed by the debian-l10n-english
+# team
+#
+# If modifications/additions/rewording are needed, please ask
+# debian-l10n-english@lists.debian.org for advice.
+#
+# Even minor modifications require translation updates and such
+# changes should be coordinated with translators and reviewers.
+
+Template: hesiod/rhs
+Type: string
+Default: .athena.mit.edu
+_Description: Hesiod domain for searches:
+ Please enter the Hesiod RHS (right hand-side) to do searches in.
+ .
+ If the Hesiod server is 'ns.example.org' then the LHS will be '.ns', the
+ RHS will be '.example.org' (note leading periods) and directory lookups
+ will be performed as DNS requests to (e.g.) 'sam.passwd.ns.example.org'.
+
+Template: hesiod/lhs
+Type: string
+Default: .ns
+_Description: Hesiod prefix for searches:
+ Please enter the Hesiod LHS (left hand-side) to do searches in.
+ .
+ If the Hesiod server is 'ns.example.org' then the LHS will be '.ns', the
+ RHS will be '.example.org' (note leading periods) and directory lookups
+ will be performed as DNS requests to (e.g.) 'sam.passwd.ns.example.org'.
+
+Template: hesiod/classes
+Type: string
+Default: IN,HS
+_Description: DNS class search order:
+ Hesiod looks up names using DNS TXT records. In addition to using the
+ standard IN DNS class for Internet names, it also uses by default the
+ special HS class.
+ .
+ Please enter the class search order (the default value is suitable for
+ most sites). There should be no spaces in this search order value.
+ .
+ Sites using
+ older Hesiod installations may need to use the 'HS,IN' search order.

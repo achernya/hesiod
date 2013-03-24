@@ -1,0 +1,117 @@
+# Vietnamese Translation for hesiod.
+# Copyright © 2007 Free Software Foundation, Inc.
+# Clytie Siddall <clytie@riverland.net.au>, 2005-2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hesiod 3.0.2-18.2\n"
+"Report-Msgid-Bugs-To: Source: hesiod@packages.debian.org\n"
+"POT-Creation-Date: 2007-12-13 12:21+0530\n"
+"PO-Revision-Date: 2007-12-21 23:02+1030\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: LocFactoryEditor 1.7b1\n"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Hesiod domain for searches:"
+msgstr "Miền Hesiod để tìm kiếm:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Please enter the Hesiod RHS (right hand-side) to do searches in."
+msgstr "Hãy nhập RHS (bên phải) Hesiod trong đó cần tìm kiếm."
+
+#. Type: string
+#. Description
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001 ../libhesiod0.templates:3001
+msgid ""
+"If the Hesiod server is 'ns.example.org' then the LHS will be '.ns', the RHS "
+"will be '.example.org' (note leading periods) and directory lookups will be "
+"performed as DNS requests to (e.g.) 'sam.passwd.ns.example.org'."
+msgstr ""
+"Nếu máy phục vụ Hesiod là « ns.example.org » thì LHS (bên trái) là « .ns », "
+"RHS (bên phải) là « .example.org » (phải ghi dấu chấm đi trước), và các công "
+"việc tra cứu thư mục sẽ được thực hiện như yêu cầu DNS đến (v.d.) « sam."
+"passwd.ns.example.org »."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Hesiod prefix for searches:"
+msgstr "Tiền tố Hesiod để tìm kiếm:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Please enter the Hesiod LHS (left hand-side) to do searches in."
+msgstr "Hãy nhập LHS (bên trái) Hesiod trong đó cần tìm kiếm."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid "DNS class search order:"
+msgstr "Thứ tự tìm kiếm hạng DNS:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Hesiod looks up names using DNS TXT records. In addition to using the "
+"standard IN DNS class for Internet names, it also uses by default the "
+"special HS class."
+msgstr ""
+"Trình Hesiod tra cứu tên dùng các mục ghi TXT kiểu DNS. Thêm vào dùng hạng "
+"DNS IN cho tên Internet, mặc định là nó cũng dùng hạng HS đặc biệt."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Please enter the class search order (the default value is suitable for most "
+"sites). There should be no spaces in this search order value."
+msgstr ""
+"Hãy nhập vào đây thứ tự tìm kiếm qua các hạng (giá trị mặc định thích hợp "
+"với phần lớn địa chỉ). Không cho phép dấu cách trong giá trị thứ tự tìm kiếm."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Sites using older Hesiod installations may need to use the 'HS,IN' search "
+"order."
+msgstr ""
+"Địa chỉ dùng bản cài đặt Hesiod cũ thì có thể cần phải dùng thứ tự tìm kiếm « "
+"HS,IN »."
+
+# Hesiod looks up keys using the standard Domain Name System.  Enter the
+# right-hand side of the domain name to do searches in.  This name should
+# begin with a \".\".
+#~ msgid ""
+#~ "Hesiod looks up keys using the standard Domain Name System. Please enter "
+#~ "the rightmost part of the domain name to do searches in. This name should "
+#~ "begin with a '.' character."
+#~ msgstr ""
+#~ "Trình Hesiod tra cứu khóa dùng Hệ thống Tên Miền (DNS) chuẩn. Hãy nhập "
+#~ "phần tận bên phải của tên miền qua đó cần tìm kiếm. Tên này nên bắt đầu "
+#~ "với một dấu chấm « . », v.d. « .vnoss.org »."
+
+# Hesiod lookups generally happen in a subdomain of the main domain. Enter
+# the name of the subdomain here.  This name should begin with a \".\".  At
+# most sites, this entry should be \".ns\".
+#~ msgid ""
+#~ "Hesiod lookups generally happen in a subdomain of the main domain. Please "
+#~ "enter the name of the subdomain. This name should begin with a '.' "
+#~ "character. This entry is '.ns' at many sites."
+#~ msgstr ""
+#~ "Việc tra cứu Hesiod thường xây ra trong một miền con của miền chính. Hãy "
+#~ "nhập vào đây tên của miền con đó. Tên nên bắt đầu với một dấu chấm « . ». "
+#~ "Tại phần lớn địa chỉ Internet, mục nhập này là « .ns »."

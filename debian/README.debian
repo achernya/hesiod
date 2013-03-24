@@ -1,0 +1,10 @@
+hesiod for Debian
+----------------------
+
+This is the hesiod name service library, available from
+ftp://athena-dist.mit.edu/pub/ATHENA/hesiod.  Hesiod is derived from BIND,
+the Berkeley Internet Name Daemon, and can leverage the existing DNS
+infrastructure of a network to provide name service for a variety of
+applications.
+
+Steve Langasek <vorlon@debian.org>, Tue, 31 Oct 2000 23:27:22 -0600

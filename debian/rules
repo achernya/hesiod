@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+%:
+	dh $@ --with autoreconf
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		--sysconfdir=/etc
+
+override_dh_installdocs:
+	dh_installdocs -plibhesiod0
+
+override_dh_installchangelogs:
+	dh_installchangelogs -plibhesiod0

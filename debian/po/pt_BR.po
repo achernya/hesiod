@@ -1,0 +1,100 @@
+# hesiod Brazilian Portuguese translation
+# Copyright (c) 2008 hesiod's COPYRIGHT HOLDER
+# This file is distributed under the same license as the hesiod package.
+# Eder L. Marques (frolic) <frolic@debian-ce.org>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hesiod\n"
+"Report-Msgid-Bugs-To: Source: hesiod@packages.debian.org\n"
+"POT-Creation-Date: 2007-12-13 12:21+0530\n"
+"PO-Revision-Date: 2008-03-11 11:33-0300\n"
+"Last-Translator: Eder L. Marques (frolic) <frolic@debian-ce.org>\n"
+"Language-Team: l10n Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"pt_BR utf-8\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n > 1);\n"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Hesiod domain for searches:"
+msgstr "Domínio do hesiod para pesquisas:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001
+msgid "Please enter the Hesiod RHS (right hand-side) to do searches in."
+msgstr ""
+"Por favor, informe o Hesiod RHS (\"right hand-side\") onde as pesquisas "
+"devem ser feitas."
+
+#. Type: string
+#. Description
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:2001 ../libhesiod0.templates:3001
+msgid ""
+"If the Hesiod server is 'ns.example.org' then the LHS will be '.ns', the RHS "
+"will be '.example.org' (note leading periods) and directory lookups will be "
+"performed as DNS requests to (e.g.) 'sam.passwd.ns.example.org'."
+msgstr ""
+"Se o servidor Hesiod é 'ns.exemplo.org', então o LHS será '.ns', o RHS será "
+"'.exemplo.org' (observe os pontos finais) e pesquisas de diretório serão "
+"realizadas como pedidos DNS para (e.g) 'sam.passwd.ns.exemplo.org'."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Hesiod prefix for searches:"
+msgstr "Prefixo do Hesiod para pesquisas:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:3001
+msgid "Please enter the Hesiod LHS (left hand-side) to do searches in."
+msgstr ""
+"Por favor, informe o Hesiod LHS (\"left hand-side\") onde as pesquisas devem "
+"ser feitas."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid "DNS class search order:"
+msgstr "Ordem de pesquisa da classe DNS:"
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Hesiod looks up names using DNS TXT records. In addition to using the "
+"standard IN DNS class for Internet names, it also uses by default the "
+"special HS class."
+msgstr ""
+"O Hesiod consulta nomes usando registros DNS TXT. Além de utilizar a classe "
+"padrão DNS IN para nomes de internet, ele também usa por padrão a classe "
+"especial HS."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Please enter the class search order (the default value is suitable for most "
+"sites). There should be no spaces in this search order value."
+msgstr ""
+"Por favor, informe a ordem da classe de pesquisa (o valor padrão é adequado "
+"para a maioria dos sites) Não deve haver espaços no valor desta ordem de "
+"pesquisa."
+
+#. Type: string
+#. Description
+#: ../libhesiod0.templates:4001
+msgid ""
+"Sites using older Hesiod installations may need to use the 'HS,IN' search "
+"order."
+msgstr ""
+"Sites usando instalações antigas do Hesiod podem precisar usar a ordem de "
+"pesquisa 'HS,IN'."
