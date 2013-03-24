@@ -1,6 +1,7 @@
-dist_man_MANS = \
-	hesiod.3
-	hesiod.conf.5 \
+dist_man1_MANS = hesinfo.1
+
+dist_man3_MANS = \
+	hesiod.3 \
 	hesiod_end.3 \
 	hesiod_free_list.3 \
 	hesiod_free_passwd.3 \
@@ -14,5 +15,6 @@ dist_man_MANS = \
 	hesiod_init.3 \
 	hesiod_parse_result.3 \
 	hesiod_resolve.3 \
-	hesiod_to_bind.3 \
-	hesinfo.1
+	hesiod_to_bind.3
+
+dist_man5_MANS = hesiod.conf.5

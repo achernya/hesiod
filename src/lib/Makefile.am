@@ -14,3 +14,5 @@ hestest_LDADD = libhesiod.la
 
 TESTS_ENVIRONMENT = ./hestest
 TESTS = hestest.conf
+
+EXTRA_DIST = hesiod.conf.sample hestest.conf
