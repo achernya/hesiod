@@ -187,7 +187,7 @@ void hesiod_free_servent(void *context, struct servent *serv)
 
 static int cistrcmp(const char *s1, const char *s2)
 {
-  while (*s1 && tolower(*s1) == tolower(*s2))
+  while (*s1 && *s2 && tolower(*s1) == tolower(*s2))
     {
       s1++;
       s2++;
