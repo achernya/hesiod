@@ -48,6 +48,7 @@ AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
 	src/lib/Makefile
+	src/hesinfo/Makefile
 	man/Makefile
 ])
 AC_OUTPUT

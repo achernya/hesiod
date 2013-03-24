@@ -14,4 +14,5 @@ dist_man_MANS = \
 	hesiod_init.3 \
 	hesiod_parse_result.3 \
 	hesiod_resolve.3 \
-	hesiod_to_bind.3
+	hesiod_to_bind.3 \
+	hesinfo.1
