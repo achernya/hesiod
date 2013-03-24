@@ -3,6 +3,7 @@
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
+# Load debconf values
 db_version 2.0
 db_get hesiod/rhs
 rhs="$RET"
@@ -13,29 +14,48 @@ classes="$RET"
 
 hesconf=/etc/hesiod.conf
 
-if test "$1" = configure -a -z "$2"; then
-# If we don't have a hesiod.conf file yet, go ahead and populate it.
-  if [ ! -f $hesconf ]; then
-    echo "# This file determines the behavior of the Hesiod library." > $hesconf
-    echo >> $hesconf
-    echo "# This line should pretty much always be the same, unless you have a" >> $hesconf
-    echo "# funny environment." >> $hesconf
-    echo "lhs=$lhs" >> $hesconf
-    echo >> $hesconf
-    echo "# This determines the Hesiod domain.  You must specify an rhs line." >> $hesconf
-    echo "rhs=$rhs" >> $hesconf
-    echo >> $hesconf
-    echo "# This line specifies the class search order.  You can reverse the" >> $hesconf
-    echo "# order or leave out IN or HS if you want.  Don't add spaces after the" >> $hesconf
-    echo "# beginning of the value." >> $hesconf
-    echo "classes=$classes" >> $hesconf
-  else
+createhesconf() {
+    cat <<EOF > "$hesconf"
+# This file determines the behavior of the Hesiod library.
+
+# This line should pretty much always be the same, unless you have a
+# funny environment.
+lhs=$lhs
+
+# This determines the Hesiod domain.  You must specify an rhs line.
+rhs=$rhs
+
+# This line specifies the class search order.  You can reverse the
+# order or leave out IN or HS if you want.  Don't add spaces after the
+# beginning of the value.
+classes=$classes
+EOF
+}
+
+edithesconf() {
     sed -e "s/^lhs=.*/lhs=$lhs/" \
 	-e "s/^rhs=.*/rhs=$rhs/" \
 	-e "s/^classes=.*/classes=$classes/" \
-	-i $hesconf
-  fi
-fi
+	-i "$hesconf"
+}
+
+case "$1" in
+    configure)
+	if [ ! -f "$hesconf" ]; then
+	    createhesconf
+	else
+	    edithesconf
+	fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
 
 #DEBHELPER#
 
