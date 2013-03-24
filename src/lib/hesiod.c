@@ -55,6 +55,7 @@ static const char rcsid[] = "$Id: hesiod.c,v 1.30 2002-04-03 21:40:55 ghudson Ex
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <ctype.h>
 #ifdef HAVE_LIBIDN
 #include <idna.h>
@@ -95,13 +96,13 @@ int hesiod_init(void **context)
   if (ctx)
     {
       *context = ctx;
-      configname = getenv("HESIOD_CONFIG");
+      configname = ((getuid() == geteuid()) && (getgid() == getegid())) ? getenv("HESIOD_CONFIG") : NULL;
       if (!configname)
 	configname = SYSCONFDIR "/hesiod.conf";
       if (read_config_file(ctx, configname) >= 0)
 	{
 	  /* The default rhs can be overridden by an environment variable. */
-	  p = getenv("HES_DOMAIN");
+	  p = ((getuid() == geteuid()) && (getgid() == getegid())) ? getenv("HES_DOMAIN") : NULL;
 	  if (p)
 	    {
 	      if (ctx->rhs)
