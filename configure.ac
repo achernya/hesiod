@@ -12,9 +12,16 @@ AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_AWK
+AC_PROG_CC
+AC_PROG_CPP
 AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
 # automake 1.12 seems to require this, but automake 1.11 doesn't recognize it
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+LT_INIT
 AC_PROG_LIBTOOL
 
 
@@ -39,10 +46,12 @@ AC_HEADER_RESOLV
 AC_CHECK_HEADERS([netdb.h netinet/in.h stdlib.h string.h sys/socket.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_SSIZE_T
 AC_TYPE_UID_T
 
 # Checks for library functions.
 AC_FUNC_MALLOC
+AC_FUNC_REALLOC
 AC_CHECK_FUNCS([strchr strdup])
 
 AC_CONFIG_FILES([
