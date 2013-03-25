@@ -1,26 +1,35 @@
-This package was debianized by Steve Langasek vorlon@debian.org on
-Tue, 31 Oct 2000 23:27:22 -0600.
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: hesiod
+Source: https://github.com/achernya/hesiod
 
-It was downloaded from ftp://athena-dist.mit.edu/pub/ATHENA/hesiod/
+Files: *
+Copyright: 1996, Massachusetts Institute of Technology.
+License: MIT
+  Permission to use, copy, modify, and distribute this software and
+  its documentation for any purpose and without fee is hereby granted,
+  provided that the above copyright notice appear in all copies and
+  that both that copyright notice and this permission notice appear in
+  supporting documentation, and that the name of M.I.T. not be used in
+  advertising or publicity pertaining to distribution of the software
+  without specific, written prior permission.  M.I.T. makes no
+  representations about the suitability of this software for any
+  purpose.  It is provided "as is" without express or implied
+  warranty.
 
-Copyright:
+Files: src/lib/hesiod.*
+Copyright: 1996, Internet Software Consortium.
+License: ISC
+  Permission to use, copy, modify, and distribute this software for
+  any purpose with or without fee is hereby granted, provided that the
+  above copyright notice and this permission notice appear in all
+  copies.
+  .
+  THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM
+  DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+  INTERNET SOFTWARE CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT,
+  INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+  CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-Copyright (C) 1996 by Internet Software Consortium.
-
-Permission to use, copy, modify, and distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-Copyright 1996 by the Massachusetts Institute of Technology.
-
-Permission to use, copy, modify, and distribute this
-software and its documentation for any purpose and without
-fee is hereby granted, provided that the above copyright
-notice appear in all copies and that both that copyright
-notice and this permission notice appear in supporting
-documentation, and that the name of M.I.T. not be used in
-advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.
-M.I.T. makes no representations about the suitability of
-this software for any purpose.  It is provided "as is"
-without express or implied warranty.
