@@ -344,8 +344,9 @@ static int read_config_file(struct hesiod_p *ctx, const char *filename)
  */
 static char **get_txt_records(struct hesiod_p *ctx, const char *name)
 {
-  unsigned char qbuf[PACKETSZ], abuf[MAX_HESRESP];
-  int n;
+  unsigned char qbuf[PACKETSZ], *abuf;
+  char **tmp;
+  int n, i, len;
 
   /* Make sure the resolver is initialized. */
   if ((_res.options & RES_INIT) == 0 && res_init() == -1)
@@ -360,14 +361,36 @@ static char **get_txt_records(struct hesiod_p *ctx, const char *name)
     }
 
   /* Send the query. */
-  n = res_send(qbuf, n, abuf, MAX_HESRESP);
-  if (n < 0)
+  abuf = NULL;
+  len = 1024;
+  i = n;
+  do
+    {
+      abuf = realloc(abuf, len);
+      if (abuf == NULL)
+        {
+          n = -1;
+          break;
+        }
+      n = res_send(qbuf, i, abuf, len);
+      if (n < len)
+        {
+          break;
+        }
+      len = n + 1024;
+    } while(1);
+  if (n < (ssize_t) sizeof(HEADER))
     {
       errno = ECONNREFUSED;
+      free(abuf);
       return NULL;
     }
 
-  return hesiod_parse_result(ctx, abuf, n);
+  tmp = hesiod_parse_result(ctx, abuf, n);
+
+  free(abuf);
+
+  return tmp;
 }
 
 char **hesiod_parse_result(void *ctx, const unsigned char *abuf, int alen)
