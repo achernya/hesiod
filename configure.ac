@@ -4,6 +4,7 @@
 AC_PREREQ([2.69])
 AC_INIT([hesiod], [3.1.1], [hesiod@mit.edu])
 AM_INIT_AUTOMAKE([-Wall])
+AM_MAINTAINER_MODE([enable])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/lib/hesiod.h])
