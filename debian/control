@@ -5,7 +5,7 @@ Maintainer: Karl Ramm <kcr@debian.org>
 Uploaders: Alexander Chernyakhovsky <achernya@mit.edu>
 DM-Upload-Allowed: yes
 Standards-Version: 3.9.4
-Build-Depends: debhelper (>= 7.0.50~), dpkg-dev (>= 1.16.1~), autotools-dev, dh-autoreconf, libidn11-dev
+Build-Depends: debhelper (>= 9), dpkg-dev (>= 1.16.1~), dh-exec (>=0.3), autotools-dev, dh-autoreconf, libidn11-dev
 Vcs-git: git://github.com/achernya/hesiod.git
 Vcs-browser: https://github.com/achernya/hesiod
 
@@ -25,7 +25,9 @@ Description: Project Athena's DNS-based directory service - utilities
 
 Package: libhesiod0
 Architecture: any
+Multi-Arch: same
 Section: libs
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Project Athena's DNS-based directory service - libraries
  Hesiod is a name service library that can provide general name service
@@ -38,6 +40,8 @@ Description: Project Athena's DNS-based directory service - libraries
 
 Package: libhesiod-dev
 Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Section: libdevel
 Depends: libhesiod0 (= ${binary:Version}), ${misc:Depends}
 Description: Project Athena's DNS-based directory service - development files

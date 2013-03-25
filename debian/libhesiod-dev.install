@@ -1,4 +1,5 @@
+#!/usr/bin/dh-exec
 usr/include/*
-usr/lib/*.a
-usr/lib/*.so
+usr/lib/${DEB_HOST_MULTIARCH}/libhesiod.so usr/lib/${DEB_HOST_MULTIARCH}/
+usr/lib/${DEB_HOST_MULTIARCH}/libhesiod.a usr/lib/${DEB_HOST_MULTIARCH}/
 usr/share/man/man3/*.3
