@@ -1,9 +1,18 @@
+Major changes in release 3.2.0:
+
+* Entirely rewrite the buildsystem to use automake.
+* Incorporate 3 patches from Fedora, fixing issues when libhesiod was
+  used from setuid programs, the response from the DNS server was
+  longer than 1024 bytes, and in which string lengths were ignored
+  while doing a case-insensitive comparison.
+* Ship with Debian packaging.
+
 Major changes in release 3.1.1:
 * If available, libhesiod will use libidn to internationalize a domain
   name before returning it from hesiod_to_bind()
 * LDFLAGS as set by autoconf aren't ignored when building hestest or
   libhesiod
-
+
 Major changes in release 3.1.0:
 * hesinfo has been moved into a separate source tree.
 * The build system now installs a shared library by default.
@@ -15,7 +24,7 @@ Major changes in release 3.1.0:
   alternate resolver.
 * Support for class HS is removed; Hesiod resolution is always done in
   class IN now.
-
+
 Major changes in release 3.0.2:
 * Better observance of Autoconf environment variable conventions (you
   can set CPPFLAGS, CFLAGS, LDFLAGS, and LIBS).  CDEBUGFLAGS is gone;
@@ -23,12 +32,12 @@ Major changes in release 3.0.2:
 * Bugs fixed: "make clean" missed config.h, hesiod_to_bind() would
   core dump on names with right hand sides, hesiod_to_bind() didn't
   length-check its arguments.
-
+
 Major changes in release 3.0.1:
 * hes_init() function added to backward compatibility interfaces.
 * You can use "#ifdef HESIOD_INTERFACES" in an application to test if
   the new interfaces are available.
-
+
 Major changes in release 3.0.0:
 * This NEWS file added.
 * Wire protocol change: Hesiod data on the name servers should now be
@@ -50,7 +59,7 @@ Major changes in release 3.0.0:
   README left out periods in sample rhs and lhs values, "make check"
   didn't set fixed hesiod configuration, manual pages weren't
   installed.
-
+
 Major changes in release 2.0.0:
 * The hesiod.3 man page now documents all exported functions.
 * Reentrant interfaces were added to the API.  See the man page for
