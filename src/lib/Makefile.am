@@ -9,6 +9,7 @@ libhesiod_la_SOURCES = \
 	hespwnam.c \
 	hesservbyname.c \
 	hescompat.c
+libhesiod_la_LIBADD = @SUPPORTING_LIBS@
 
 noinst_PROGRAMS = hestest
 hestest_SOURCES = hestest.c

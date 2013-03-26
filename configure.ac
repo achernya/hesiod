@@ -26,6 +26,8 @@ AC_PROG_LIBTOOL
 
 
 # Checks for libraries.
+hesiod_save_LIBS="$LIBS"
+LIBS=
 AC_ARG_WITH([libidn],
   [AS_HELP_STRING([--with-libidn], [Support IDN (needs GNU libidn) @<:@check@:>@])],
   [with_libidn="$withval"],
@@ -37,9 +39,19 @@ AS_IF([test x"$with_libidn" != xno],
       [AC_MSG_WARN([Unable to find libidn.])],
       [AC_MSG_ERROR([--with-libidn was given but libidn was not found.])])])])
 
-AC_SEARCH_LIBS([res_mkquery], [resolv], [],
-  [AC_SEARCH_LIBS([__res_mkquery], [resolv], [],
-    [AC_MSG_ERROR([Could not find a library providing res_mkquery])])])
+AC_CHECK_LIB([resolv], [res_mkquery], [], [
+    AC_MSG_CHECKING([if res_mkquery is provided by libresolv with mangled symbols])
+    save_LIBS="$LIBS"
+    LIBS="-lresolv $LIBS"
+    AC_TRY_LINK([#include <resolv.h>],
+                [res_mkquery(0,NULL,0,0,NULL,0,NULL,NULL,0);], [
+                    AC_DEFINE(HAVE_LIBRESOLV, [1], [Define if your libresolv provides res_mkquery.])
+		    AC_MSG_RESULT(yes)], [
+		    LIBS="$save_LIBS"
+		    AC_MSG_RESULT(no)])])
+
+AC_SUBST([SUPPORTING_LIBS], $LIBS)
+LIBS=$hesiod_save_LIBS
 
 # Checks for header files.
 AC_HEADER_RESOLV
