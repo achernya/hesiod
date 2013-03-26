@@ -1,5 +1,6 @@
 #!/usr/bin/dh-exec
 usr/include/*
-usr/lib/${DEB_HOST_MULTIARCH}/libhesiod.so usr/lib/${DEB_HOST_MULTIARCH}/
-usr/lib/${DEB_HOST_MULTIARCH}/libhesiod.a usr/lib/${DEB_HOST_MULTIARCH}/
+usr/lib/${DEB_HOST_MULTIARCH}/libhesiod.so
+usr/lib/${DEB_HOST_MULTIARCH}/libhesiod.a
+usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/hesiod.pc
 usr/share/man/man3/*.3
