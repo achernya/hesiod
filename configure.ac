@@ -72,5 +72,6 @@ AC_CONFIG_FILES([
 	src/lib/Makefile
 	src/hesinfo/Makefile
 	man/Makefile
+	src/hesiod.pc
 ])
 AC_OUTPUT
