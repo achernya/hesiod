@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <netdb.h>
 #include <ctype.h>
+#include <errno.h>
 #include <arpa/inet.h>
 
 #include "hesiod.h"
@@ -66,16 +67,30 @@ hesiod_getservbyname(void *context, const char *name,
 	    // Protocol doesn't match
 	    continue;
 	}
-	// Found the entry!
+	// Found the entry! Do memory allocations first.
 	result = (struct servent *) malloc(sizeof(struct servent));
+	if (result != NULL) {
+	    result->s_name =
+		(char *) malloc(sizeof(char) * (strlen(service) + 1));
+	    result->s_proto =
+		(char *) malloc(sizeof(char) * (strlen(protocol) + 1));
+	    result->s_aliases = (char **) malloc(sizeof(char*) * 1);
+	}
+	// Make sure we got valid buffers from malloc
+	if ((result == NULL) || (result->s_name == NULL) ||
+	    (result->s_proto == NULL) || (result->s_aliases == NULL)) {
+	    // Set errno to note we ran out of memory, as subsequent
+	    // malloc() calls may have clobbered it. Go ahead an try
+	    // to delete the structure we allocated.
+	    hesiod_free_servent(context, result);
+	    errno = ENOMEM;
+	    return NULL;
+	}
 
-	result->s_name = (char *) malloc(sizeof(char) * (strlen(service) + 1));
+	// Perform the assignments
 	strcpy(result->s_name, service);
-	result->s_proto = (char *) malloc(sizeof(char) * (strlen(protocol) + 1));
 	strcpy(result->s_proto, protocol);
 	result->s_port = htons(port);
-	// Allocate an array of size 1
-	result->s_aliases = (char **) malloc(sizeof(char*) * 1);
 	*result->s_aliases = NULL;
 
 	break;
@@ -87,9 +102,18 @@ hesiod_getservbyname(void *context, const char *name,
 
 void
 hesiod_free_servent(void *context, struct servent *serv) {
-    free(serv->s_name);
-    free(serv->s_proto);
-    free(serv->s_aliases);
+    if (serv == NULL) {
+	return;
+    }
+    if (serv->s_name != NULL) {
+	free(serv->s_name);
+    }
+    if (serv->s_proto != NULL) {
+	free(serv->s_proto);
+    }
+    if (serv->s_aliases != NULL) {
+	free(serv->s_aliases);
+    }
     free(serv);
 }
 
