@@ -61,6 +61,22 @@ AC_CHECK_HEADERS([netdb.h netinet/in.h stdlib.h string.h sys/socket.h])
 AC_TYPE_SSIZE_T
 AC_TYPE_UID_T
 
+AC_EGREP_HEADER([pw_quota], [pwd.h],
+    AC_DEFINE([HAVE_PW_QUOTA], 1,
+	      [Define if struct passwd has a field pw_quota]))
+AC_EGREP_HEADER([pw_comment], [pwd.h],
+AC_DEFINE([HAVE_PW_COMMENT], 1,
+	  [Define if struct passwd has a field pw_comment]))
+AC_EGREP_HEADER([pw_class], [pwd.h],
+   AC_DEFINE([HAVE_PW_CLASS], 1,
+	     [Define if struct passwd has a field pw_class]))
+AC_EGREP_HEADER([pw_change], [pwd.h],
+    AC_DEFINE([HAVE_PW_CHANGE], 1,
+	      [Define if struct passwd has a field pw_change]))
+AC_EGREP_HEADER([pw_expire], [pwd.h],
+    AC_DEFINE([HAVE_PW_EXPIRE], 1,
+	      [Define if struct passwd has a field pw_expire]))
+
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
