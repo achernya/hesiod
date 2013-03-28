@@ -1,196 +1,104 @@
 /*
- * Copyright (c) 1983, 1993
- *	The Regents of the University of California.  All rights reserved.
+ * Copyright (c) 2013, Alex Chernyakhovsky <achernya@mit.edu>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
-
-/* Copyright 1988, 1996 by the Massachusetts Institute of Technology.
+ * 2. Redistributions in binary form must reproduce the above
+ *    copyright notice, this list of conditions and the following
+ *    disclaimer in the documentation and/or other materials provided
+ *    with the distribution.
  *
- * Permission to use, copy, modify, and distribute this
- * software and its documentation for any purpose and without
- * fee is hereby granted, provided that the above copyright
- * notice appear in all copies and that both that copyright
- * notice and this permission notice appear in supporting
- * documentation, and that the name of M.I.T. not be used in
- * advertising or publicity pertaining to distribution of the
- * software without specific, written prior permission.
- * M.I.T. makes no representations about the suitability of
- * this software for any purpose.  It is provided "as is"
- * without express or implied warranty.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* This file is part of the Hesiod library.  It contains
- * hesiod_getservbyname, used to get information about network
- * services.
- */
-
-static const char rcsid[] = "$Id: hesservbyname.c,v 1.7 1999-10-23 19:29:16 danw Exp $";
-
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <errno.h>
-#include <pwd.h>
 #include <netdb.h>
-#include <sys/types.h>
-#include <netinet/in.h>
+#include <ctype.h>
+#include <arpa/inet.h>
+
 #include "hesiod.h"
 
-static int cistrcmp(const char *s1, const char *s2);
+// strcasecmp is sufficiently strange that it's better to define our
+// own case-insensitive string comparison function
+static int
+hesiod_strcasecmp(const char* first, const char* second);
 
-struct servent *hesiod_getservbyname(void *context, const char *name,
-				     const char *proto)
-{
-  char **item, **list;
+struct servent *
+hesiod_getservbyname(void *context, const char *name,
+		     const char *proto) {
+    char **list, **iterator;
+    char service[256], protocol[256];
+    int port, retval;
+    struct servent *result = NULL;
+    list = hesiod_resolve(context, name, "service");
 
-  /* Ask for all entries matching the given service name. */
-  list = hesiod_resolve(context, name, "service");
-  if (!list)
-    return NULL;
-
-  /* Look through the returned list for entries matching the given protocol. */
-  for (item = list; *item; item++)
-    {
-      char **alias, *servicename, *protoname, *port, *p2, *p = *item;
-      int naliases;
-      struct servent *serv;
-
-      /* Find the service name. */
-      while (isspace((unsigned char)*p))
-	p++;
-      servicename = p;
-      while (*p && !isspace((unsigned char)*p) && *p != ';')
-	p++;
-      if (!*p) /* Malformed entry */
-	continue;
-      *p++ = 0;
-
-      /* Find the protocol name and check it. */
-      while (isspace((unsigned char)*p))
-	p++;
-      protoname = p;
-      while (*p && !isspace((unsigned char)*p) && *p != ';')
-	p++;
-      if (!*p) /* Malformed entry */
-	continue;
-      *p++ = 0;
-      if (cistrcmp(proto, protoname)) /* Wrong protocol */
-	continue;
-
-      /* Find the port number. */
-      while (isspace((unsigned char)*p) || *p == ';')
-	p++;
-      if (!*p) /* Malformed entry */
-	continue;
-      port = p;
-
-      while (*p && !isspace((unsigned char)*p) && *p != ';')
-	p++;
-      while (isspace((unsigned char)*p) || *p == ';')
-	p++;
-
-      /* Count the number of aliases. */
-      naliases = 0;
-      p2 = p;
-      while (*p2)
-	{
-	  naliases++;
-	  while (*p2 && !isspace((unsigned char)*p2))
-	    p2++;
-	  while (isspace((unsigned char)*p2))
-	    p2++;
-	}
-
-      /* Allocate space for the answer. */
-      serv = (struct servent *) malloc(sizeof(struct servent));
-      if (serv)
-	{
-	  serv->s_name = malloc(strlen(servicename) + strlen(proto)
-				 + strlen(p) + 3);
-	  if (serv->s_name)
-	    serv->s_aliases = (char **)
-	      malloc((naliases + 1) * sizeof(char *));
-	  if (serv->s_name && !serv->s_aliases)
-	    free(serv->s_name);
-	  if (!serv->s_name || !serv->s_aliases)
-	    free(serv);
-	}
-      if (!serv || !serv->s_name || !serv->s_aliases)
-	{
-	  errno = ENOMEM;
-	  return NULL;
-	}
-
-      /* Copy the information we found into the answer. */
-      serv->s_port = htons(atoi(port));
-      strcpy(serv->s_name, name);
-      serv->s_proto = serv->s_name + strlen(name) + 1;
-      strcpy(serv->s_proto, proto);
-      p2 = serv->s_proto + strlen(proto) + 1;
-      strcpy(p2, p);
-      alias = serv->s_aliases;
-      while (*p2)
-	{
-	  *alias++ = p2;
-	  while (*p2 && !isspace((unsigned char)*p2))
-	    p2++;
-	  if (*p2)
-	    {
-	      *p2++ = 0;
-	      while (isspace((unsigned char)*p2))
-		p2++;
-	    }
-	}
-      *alias = NULL;
-
-      hesiod_free_list(context, list);
-      return serv;
+    if (list == NULL) {
+	// No results
+	return NULL;
     }
-  hesiod_free_list(context, list);
-  return NULL;
+
+    for (iterator = list; (*iterator != NULL); iterator++) {
+	retval = sscanf(*iterator, "%256s %256s %d", service, protocol, &port);
+	if (retval != 3) {
+	    // Malformed record, skip it for now
+	    continue;
+	}
+	if (hesiod_strcasecmp(protocol, proto) != 0) {
+	    // Protocol doesn't match
+	    continue;
+	}
+	// Found the entry!
+	result = (struct servent *) malloc(sizeof(struct servent));
+
+	result->s_name = (char *) malloc(sizeof(char) * (strlen(service) + 1));
+	strcpy(result->s_name, service);
+	result->s_proto = (char *) malloc(sizeof(char) * (strlen(protocol) + 1));
+	strcpy(result->s_proto, protocol);
+	result->s_port = htons(port);
+	// Allocate an array of size 1
+	result->s_aliases = (char **) malloc(sizeof(char*) * 1);
+	*result->s_aliases = NULL;
+
+	break;
+    }
+
+    hesiod_free_list(context, list);
+    return result;
 }
 
-void hesiod_free_servent(void *context, struct servent *serv)
-{
+void
+hesiod_free_servent(void *context, struct servent *serv) {
     free(serv->s_name);
+    free(serv->s_proto);
     free(serv->s_aliases);
     free(serv);
 }
 
-static int cistrcmp(const char *s1, const char *s2)
-{
-  while (*s1 && *s2 && tolower(*s1) == tolower(*s2))
-    {
-      s1++;
-      s2++;
+static int
+hesiod_strcasecmp(const char* first, const char* second) {
+    while ((*first) && (*second) &&
+	   (tolower(*first) == tolower(*second))) {
+	first++;
+	second++;
     }
-  return tolower(*s1) - tolower(*s2);
+    return tolower(*first) - tolower(*second);
 }
