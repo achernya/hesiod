@@ -34,7 +34,7 @@
 #include <netdb.h>
 #include <ctype.h>
 #include <errno.h>
-#include <arpa/inet.h>
+#include <netinet/in.h>
 
 #include "hesiod.h"
 
