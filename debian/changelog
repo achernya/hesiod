@@ -1,3 +1,9 @@
+hesiod (3.2.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Tue, 02 Apr 2013 17:21:02 -0400
+
 hesiod (3.2.0-1) unstable; urgency=low
 
   * New upstream release.

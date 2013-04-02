@@ -1,3 +1,8 @@
+Major changes in release 3.2.1:
+* Provide a pkg-config file for hesiod.
+* Rewrite hesservbyname and license with 2-clause BSD.
+* Relicense MIT material with 2-clause BSD.
+
 Major changes in release 3.2.0:
 
 * Entirely rewrite the buildsystem to use automake.
