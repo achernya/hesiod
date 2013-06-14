@@ -1,3 +1,11 @@
+hesiod (3.2.1-2) unstable; urgency=low
+
+  * Don't run make check when build packages. (Closes: #710468)
+  * Show compiler arguments at build time.
+  * Remove DM-Upload-Allowed.
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Fri, 14 Jun 2013 17:25:47 -0400
+
 hesiod (3.2.1-1) unstable; urgency=low
 
   * New upstream release.
