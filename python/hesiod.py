@@ -55,7 +55,7 @@ class FilsysLookup(Lookup):
                                         priority=priority))
             elif type == 'ERR':
                 self.filsys.append(dict(type=type,
-                                        message=parts[1],
+                                        message=" ".join(parts[1:]),
                                         priority=priority))
             elif type == 'UFS':
                 self.filsys.append(dict(type=type,
