@@ -1,0 +1,9 @@
+language: c
+compiler:
+  - clang
+  - gcc
+before_install:
+  - sudo apt-get install -qq autotools-dev libidn11-dev
+before_script:
+  - ./autogen.sh
+scripts: ./configure && make && make test
