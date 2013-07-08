@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.65])
 AC_INIT([hesiod], [3.2.1], [hesiod@mit.edu])
 AM_INIT_AUTOMAKE([-Wall])
 AM_MAINTAINER_MODE([enable])
