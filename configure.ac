@@ -30,6 +30,11 @@ AS_IF([test x"$with_libidn" != xno],
       [AC_MSG_WARN([Unable to find libidn.])],
       [AC_MSG_ERROR([--with-libidn was given but libidn was not found.])])])])
 
+AC_ARG_WITH([libidn-headers],
+       [AS_HELP_STRING([--with-libidn-headers], [Path to libidn headers @<:@default=/usr/include@:>@])],
+       [CFLAGS="$CFLAGS -I$with_libidn_headers"],
+       []) 
+
 AC_CHECK_LIB([resolv], [res_mkquery], [], [
     AC_MSG_CHECKING([if res_mkquery is provided by libresolv with mangled symbols])
     save_LIBS="$LIBS"
