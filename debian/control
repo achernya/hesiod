@@ -3,7 +3,7 @@ Section: libs
 Priority: extra
 Maintainer: Karl Ramm <kcr@debian.org>
 Uploaders: Alexander Chernyakhovsky <achernya@mit.edu>
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Build-Depends: debhelper (>= 9), dpkg-dev (>= 1.16.1~), dh-exec (>=0.3), autotools-dev, dh-autoreconf, libidn11-dev
 Vcs-git: git://github.com/achernya/hesiod.git
 Vcs-browser: https://github.com/achernya/hesiod
@@ -11,7 +11,7 @@ Vcs-browser: https://github.com/achernya/hesiod
 Package: hesiod
 Architecture: any
 Section: utils
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, hesiod-common (= ${source:Version})
 Description: Project Athena's DNS-based directory service - utilities
  Hesiod is a name service library that can provide general name service
  for a variety of applications. It is derived from BIND, the Berkeley
@@ -22,12 +22,27 @@ Description: Project Athena's DNS-based directory service - utilities
  This package is only useful on networks that already use
  Hesiod.
 
+Package: hesiod-common
+Architecture: all
+Section: utils
+Depends: ${misc:Depends}
+Breaks: libhesiod0 (<= 3.2.1-2)
+Replaces: libhesiod0 (<= 3.2.1-2)
+Description:  Project Athena's DNS-based directory service - libraries
+ Hesiod is a name service library that can provide general name service
+ for a variety of applications. It is derived from BIND, the Berkeley
+ Internet Name Daemon, and leverages the existing DNS infrastructure of a
+ network. It is used on a number of university networks, including MIT
+ and Iowa State University.
+ .
+ This package contains Hesiod's configuration files.
+
 Package: libhesiod0
 Architecture: any
 Multi-Arch: same
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: hesiod-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Project Athena's DNS-based directory service - libraries
  Hesiod is a name service library that can provide general name service
  for a variety of applications. It is derived from BIND, the Berkeley

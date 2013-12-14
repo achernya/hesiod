@@ -1,3 +1,11 @@
+hesiod (3.2.1-3) unstable; urgency=low
+
+  * Move hesiod.conf-related material to architecture-independent hesiod-common
+    package. (Closes: #718564)
+  * Bump Standards-Version.
+
+ -- Alexander Chernyakhovsky <achernya@mit.edu>  Sat, 14 Dec 2013 18:38:30 -0500
+
 hesiod (3.2.1-2) unstable; urgency=low
 
   * Don't run make check when build packages. (Closes: #710468)

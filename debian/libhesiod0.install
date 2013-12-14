@@ -1,3 +1,2 @@
 #!/usr/bin/dh-exec
 usr/lib/${DEB_HOST_MULTIARCH}/libhesiod.so.*
-usr/share/man/man5/*.5

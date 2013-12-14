@@ -16,7 +16,9 @@ override_dh_auto_build:
 override_dh_auto_test:
 
 override_dh_installdocs:
+	dh_installdocs -phesiod-common
 	dh_installdocs -plibhesiod0
 
 override_dh_installchangelogs:
+	dh_installchangelogs -phesiod-common
 	dh_installchangelogs -plibhesiod0
