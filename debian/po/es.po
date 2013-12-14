@@ -45,13 +45,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../libhesiod0.templates:2001
+#: ../hesiod-common.templates:2001
 msgid "Hesiod domain for searches:"
 msgstr "Dominio de Hesiod para las búsquedas:"
 
 #. Type: string
 #. Description
-#: ../libhesiod0.templates:2001
+#: ../hesiod-common.templates:2001
 msgid "Please enter the Hesiod RHS (right hand-side) to do searches in."
 msgstr "Introduzca el RHS («right hand-side», lado derecho) en el que hacer las búsquedas."
 
@@ -59,7 +59,7 @@ msgstr "Introduzca el RHS («right hand-side», lado derecho) en el que hacer la
 #. Description
 #. Type: string
 #. Description
-#: ../libhesiod0.templates:2001 ../libhesiod0.templates:3001
+#: ../hesiod-common.templates:2001 ../hesiod-common.templates:3001
 msgid ""
 "If the Hesiod server is 'ns.example.org' then the LHS will be '.ns', the RHS "
 "will be '.example.org' (note leading periods) and directory lookups will be "
@@ -68,25 +68,25 @@ msgstr "Si el servidor Hesiod es «ns.example.org», el LHS será «.ns», el RH
 
 #. Type: string
 #. Description
-#: ../libhesiod0.templates:3001
+#: ../hesiod-common.templates:3001
 msgid "Hesiod prefix for searches:"
 msgstr "Prefijo de Hesiod para búsquedas:"
 
 #. Type: string
 #. Description
-#: ../libhesiod0.templates:3001
+#: ../hesiod-common.templates:3001
 msgid "Please enter the Hesiod LHS (left hand-side) to do searches in."
 msgstr "Introduzca el LHS («left hand-side», parte izquierda) en el que realizar las búsquedas."
 
 #. Type: string
 #. Description
-#: ../libhesiod0.templates:4001
+#: ../hesiod-common.templates:4001
 msgid "DNS class search order:"
 msgstr "Orden de búsqueda para las clases DNS:"
 
 #. Type: string
 #. Description
-#: ../libhesiod0.templates:4001
+#: ../hesiod-common.templates:4001
 msgid ""
 "Hesiod looks up names using DNS TXT records. In addition to using the "
 "standard IN DNS class for Internet names, it also uses by default the "
@@ -95,7 +95,7 @@ msgstr "Hesiod busca los nombres utilizando registros DNS TXT. Además de usar l
 
 #. Type: string
 #. Description
-#: ../libhesiod0.templates:4001
+#: ../hesiod-common.templates:4001
 msgid ""
 "Please enter the class search order (the default value is suitable for most "
 "sites). There should be no spaces in this search order value."
@@ -103,7 +103,7 @@ msgstr "Introduzca el orden de búsqueda para las clases (el valor por omisión 
 
 #. Type: string
 #. Description
-#: ../libhesiod0.templates:4001
+#: ../hesiod-common.templates:4001
 msgid ""
 "Sites using older Hesiod installations may need to use the 'HS,IN' search "
 "order."
