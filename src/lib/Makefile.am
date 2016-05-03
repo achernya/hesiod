@@ -15,7 +15,7 @@ noinst_PROGRAMS = hestest
 hestest_SOURCES = hestest.c
 hestest_LDADD = libhesiod.la
 
-TESTS_ENVIRONMENT = ./hestest
+TESTS_ENVIRONMENT = HESIOD_CONFIG=$(srcdir)/hesiod.conf.sample ./hestest
 TESTS = hestest.conf
 
 EXTRA_DIST = hesiod.conf.sample hestest.conf

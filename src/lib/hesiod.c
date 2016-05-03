@@ -81,10 +81,6 @@ static const char rcsid[] = "$Id: hesiod.c,v 1.30 2002-04-03 21:40:55 ghudson Ex
 #define T_TXT	16
 #endif
 
-/* Defaults if the configuration file is not present. */
-#define DEF_RHS ".athena.mit.edu"
-#define DEF_LHS ".ns"
-
 /* Maximum size of a Hesiod response from the DNS. */
 #define MAX_HESRESP 1024
 
@@ -301,22 +297,7 @@ static int read_config_file(struct hesiod_p *ctx, const char *filename)
   /* Try to open the configuration file. */
   fp = fopen(filename, "r");
   if (!fp)
-    {
-      /* Use compiled in default domain names. */
-      ctx->lhs = malloc(strlen(DEF_LHS) + 1);
-      ctx->rhs = malloc(strlen(DEF_RHS) + 1);
-      if (ctx->lhs && ctx->rhs)
-	{
-	  strcpy(ctx->lhs, DEF_LHS);
-	  strcpy(ctx->rhs, DEF_RHS);
-	  return 0;
-	}
-      else
-	{
-	  errno = ENOMEM;
-	  return -1;
-	}
-    }
+    return -1;
 
   ctx->lhs = NULL;
   ctx->rhs = NULL;
