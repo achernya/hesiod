@@ -99,6 +99,17 @@ static int read_config_file(struct hesiod_p *ctx, const char *filename);
 static char **get_txt_records(struct hesiod_p *ctx, const char *name);
 static int cistrcmp(const char *s1, const char *s2);
 
+static const char *hesiod_getenv(const char *e)
+{
+  if ((getuid() != geteuid()) || (getgid() != getegid()))
+    return NULL;
+#ifdef HAVE_SECURE_GETENV
+  return secure_getenv(e);
+#else
+  return getenv(e);
+#endif
+}
+
 /* This function is called to initialize a hesiod_p. */
 int hesiod_init(void **context)
 {
@@ -109,13 +120,13 @@ int hesiod_init(void **context)
   if (ctx)
     {
       *context = ctx;
-      configname = ((getuid() == geteuid()) && (getgid() == getegid())) ? getenv("HESIOD_CONFIG") : NULL;
+      configname = hesiod_getenv("HESIOD_CONFIG");
       if (!configname)
 	configname = SYSCONFDIR "/hesiod.conf";
       if (read_config_file(ctx, configname) >= 0)
 	{
 	  /* The default rhs can be overridden by an environment variable. */
-	  p = ((getuid() == geteuid()) && (getgid() == getegid())) ? getenv("HES_DOMAIN") : NULL;
+	  p = hesiod_getenv("HES_DOMAIN");
 	  if (p)
 	    {
 	      if (ctx->rhs)

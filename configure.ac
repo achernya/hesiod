@@ -9,6 +9,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/lib/hesiod.h])
 AC_CONFIG_HEADERS([config.h])
+AC_USE_SYSTEM_EXTENSIONS
 
 # Checks for programs.
 AC_PROG_CC
@@ -76,7 +77,7 @@ AC_EGREP_HEADER([pw_expire], [pwd.h],
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([strchr strdup])
+AC_CHECK_FUNCS([strchr strdup secure_getenv])
 
 AC_CONFIG_FILES([
 	Makefile
