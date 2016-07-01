@@ -1,0 +1,39 @@
+===================
+Installing PyHesiod
+===================
+
+To install PyHesiod, you will first need to install Pyrex_. It's
+always a good idea to install Pyrex through your package manager, if
+possible. Your system's Pyrex package may be named ``python-pyrex`` or
+``pyrex-py25``. If your package manager doesn't have a package for
+Pyrex, or if you wish to install Pyrex by hand anyway, you can do so
+by running::
+
+  $ easy_install Pyrex
+
+Once you've done that, to install PyHesiod globally, run::
+
+  $ python setup.py install
+
+If you want to build PyHesiod without installing it globally, you may
+want to run::
+
+  $ python setup.py build_ext --inplace
+
+which will build the C extensions in place next to their source,
+allowing you to import the various modules, so long as your current
+working directory is the root of the PyHesiod source tree.
+
+Alternatively, PyHesiod has been packaged for Debian and Ubuntu. To
+build the Debian package of the latest release, run::
+
+  $ git checkout debian
+  $ git buildpackage
+  $ sudo debi
+
+You will need the devscripts and git-buildpackage packages installed,
+as well as this package's build dependencies (cdbs, debhelper,
+python-all-dev, python-support, python-pyrex, python-setuptools,
+libhesiod-dev).
+
+.. _Pyrex: http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/
