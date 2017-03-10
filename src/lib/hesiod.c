@@ -144,16 +144,13 @@ int hesiod_init(void **context)
 	  else
 	    return 0;
 	}
+      free(ctx->lhs);
+      free(ctx->rhs);
+      free(ctx);
     }
   else
     errno = ENOMEM;
 
-  if (ctx->lhs)
-    free(ctx->lhs);
-  if (ctx->rhs)
-    free(ctx->rhs);
-  if (ctx)
-    free(ctx);
   return -1;
 }
 
