@@ -36,6 +36,17 @@ AC_ARG_WITH([libidn-headers],
        [CFLAGS="$CFLAGS -I$with_libidn_headers"],
        []) 
 
+AC_ARG_WITH([libidn2],
+  [AS_HELP_STRING([--with-libidn2], [Support IDN (needs GNU libidn2) @<:@check@:>@])],
+  [with_libidn2="$withval"],
+  [with_libidn2="check"])
+AS_IF([test x"$with_libidn2" != xno],
+  [AC_SEARCH_LIBS([idn2_check_version], [idn2],
+    [AC_DEFINE([HAVE_LIBIDN2], [1], [Define if libidn2 is available.])],
+    [AS_IF([test x"$with_idn2" = xcheck],
+      [AC_MSG_WARN([Unable to find libidn2.])],
+      [AC_MSG_ERROR([--with-libidn2 was given but libidn2 was not found.])])])])
+
 AC_CHECK_LIB([resolv], [res_mkquery], [], [
     AC_MSG_CHECKING([if res_mkquery is provided by libresolv with mangled symbols])
     save_LIBS="$LIBS"
