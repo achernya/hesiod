@@ -74,6 +74,9 @@ static const char rcsid[] = "$Id: hesiod.c,v 1.30 2002-04-03 21:40:55 ghudson Ex
 #include <idna.h>
 #include <idn-free.h>
 #endif
+#ifdef HAVE_LIBIDN2
+#include <idn2.h>
+#endif
 #include "hesiod.h"
 
 /* A few operating systems don't define this. */
@@ -246,6 +249,15 @@ char *hesiod_to_bind(void *context, const char *name, const char *type)
     }
   ret = strdup(idn_ret);
   idn_free(idn_ret);
+#elif HAVE_LIBIDN2
+  rc = idn2_to_ascii_lz(bindname, &idn_ret, 0);
+  if (rc != IDN2_OK)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+  ret = strdup(idn_ret);
+  idn2_free(idn_ret);
 #else
   ret = strdup(bindname);
 #endif
