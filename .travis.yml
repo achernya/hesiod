@@ -3,7 +3,7 @@ compiler:
   - clang
   - gcc
 before_install:
-  - sudo apt-get install -qq autotools-dev libidn11-dev
+  - sudo apt-get install -qq autotools-dev libidn11-dev libidn2-0-dev
 before_script:
   - ./autogen.sh
 script: ./configure && make V=1 && make check V=1
